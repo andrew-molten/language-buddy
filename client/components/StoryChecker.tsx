@@ -3,8 +3,12 @@ import { useChatGPT } from '../hooks/useStories.ts'
 import StoryDifference from './StoryDifference'
 
 function StoryChecker() {
-  const [englishStory, setEnglishStory] = useState('Say this is a test!')
-  const [germanStory, setGermanStory] = useState('Say this is a test!')
+  const [englishStory, setEnglishStory] = useState(
+    'Today I have spent the morning hanging out with my family, before getting into some coding. I had a burger for lunch, and tonight we are going to Ben & Annekes for dinner.',
+  )
+  const [germanStory, setGermanStory] = useState(
+    'Heute morgen habe ich mit meine familie sein, und dann ich habe entwickeln gemacht. Ich hatte zum mittagessen ein burger gegessen, und heute abend gehen wir nach Ben und Annekes fur abendessen.',
+  )
   const [submittedStories, setSubmittedStories] = useState({
     englishStory: '',
     germanStory: '',

@@ -3,7 +3,8 @@ import { useQuery } from '@tanstack/react-query'
 import { API_KEY } from '../env'
 import superagent from 'superagent'
 
-// const gpt35= 'gpt-3.5-turbo-0613'
+const gpt35 = 'gpt-3.5-turbo-0613'
+// const gpt4 = 'gpt-4o'
 
 const fetchChatGPTResponse = async (
   englishStory: string,
@@ -13,7 +14,7 @@ const fetchChatGPTResponse = async (
     .post('https://api.openai.com/v1/chat/completions')
     .set('Authorization', `Bearer ${API_KEY}`)
     .send({
-      model: 'gpt-4o',
+      model: gpt35,
       messages: [
         {
           role: 'user',
@@ -38,7 +39,7 @@ const fetchChatGPTResponse = async (
       German story: ${germanStory}`,
         },
       ],
-      max_tokens: 300,
+      // max_tokens: 300, //having the max tokens can cause it to stop writing mid json.
     })
 
   return response.body
