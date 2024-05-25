@@ -29,8 +29,6 @@ function StoryDifference({ data }: Props) {
   // const sliceTo = messageString.lastIndexOf('}')
   // const messageContent = messageString.slice(sliceFrom, sliceTo + 1)
 
-  console.log(messageContent)
-  console.log(typeof messageContent)
   const parsedContent = JSON.parse(messageContent)
   // add guards against corrections, words or translation not being available
   return (

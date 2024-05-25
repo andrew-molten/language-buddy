@@ -13,6 +13,11 @@ function StoryChecker() {
     englishStory: '',
     germanStory: '',
   })
+
+  // SWAP THIS OUT FOR USEMUTATION FUNCTION
+  // CHECK REQ.BODY IN SERVER & GET STORIES OUT OF IT
+  // TRY TO MAKE API CALL
+  // SEND RESPONSE BACK TO CLIENT AND CHECK DATA
   const { data, error, isLoading } = useChatGPT(submittedStories)
 
   // Have tabs to see the submitted english and german stories
