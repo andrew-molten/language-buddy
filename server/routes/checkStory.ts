@@ -12,22 +12,18 @@ router.post('/', async (req, res) => {
     if (apiKey === undefined) {
       throw new Error('missing apiKey from environment variables..')
     }
-    const gpt35 = 'gpt-3.5-turbo-0613'
-    // const gpt4 = 'gpt-4o'
 
-    // Just need to figure out how to send these 2 stories to the server and then use them here`
-    // console.log(req.body)
-    // englishStory: string,
-    // germanStory: string,
+    const gptModels = {
+      gpt35: 'gpt-3.5-turbo-0613',
+      gpt4: 'gpt-4o',
+    }
 
     const { englishStory, germanStory }: Stories = req.body
-    console.log(englishStory, germanStory)
-
     const response = await request
       .post('https://api.openai.com/v1/chat/completions')
       .set('Authorization', `Bearer ${apiKey}`)
       .send({
-        model: gpt35,
+        model: gptModels.gpt35,
         messages: [
           {
             role: 'user',
@@ -54,15 +50,13 @@ router.post('/', async (req, res) => {
         ],
         // max_tokens: 300, //having the max tokens can cause it to stop writing mid json.
       })
-    console.log('Response: ', response.body)
     res.json(response.body)
-    // return response.body
   } catch (err) {
     if (err instanceof Error) {
-      console.log(err)
+      console.log('error: ', err)
       res.status(500).send((err as Error).message)
     } else {
-      console.log(err)
+      console.log('error: ', err)
       res.status(500).send('Something went wrong')
     }
   }
