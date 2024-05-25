@@ -4,16 +4,23 @@ import StoryDifference from './StoryDifference'
 
 function StoryChecker() {
   const differentiate = useChatGPT()
-  const [englishStory, setEnglishStory] = useState(
-    'Today I have spent the morning hanging out with my family, before getting into some coding. I had a burger for lunch, and tonight we are going to Ben & Annekes for dinner.',
-  )
-  const [germanStory, setGermanStory] = useState(
-    'Heute morgen habe ich mit meine familie sein, und dann ich habe entwickeln gemacht. Ich hatte zum mittagessen ein burger gegessen, und heute abend gehen wir nach Ben und Annekes fur abendessen.',
-  )
-  // const [submittedStories, setSubmittedStories] = useState({
-  //   englishStory: '',
-  //   germanStory: '',
-  // })
+  const [stories, setStories] = useState({
+    englishStory:
+      'Today I have spent the morning hanging out with my family, before getting into some coding. I had a burger for lunch, and tonight we are going to Ben & Annekes for dinner.',
+    germanStory:
+      'Heute morgen habe ich mit meine familie sein, und dann ich habe entwickeln gemacht. Ich hatte zum mittagessen ein burger gegessen, und heute abend gehen wir nach Ben und Annekes fur abendessen.',
+  })
+
+  // const [englishStory, setEnglishStory] = useState(
+  //   'Today I have spent the morning hanging out with my family, before getting into some coding. I had a burger for lunch, and tonight we are going to Ben & Annekes for dinner.',
+  // )
+  // const [germanStory, setGermanStory] = useState(
+  //   'Heute morgen habe ich mit meine familie sein, und dann ich habe entwickeln gemacht. Ich hatte zum mittagessen ein burger gegessen, und heute abend gehen wir nach Ben und Annekes fur abendessen.',
+  // )
+  const [submittedStories, setSubmittedStories] = useState({
+    englishStory: '',
+    germanStory: '',
+  })
 
   // SWAP THIS OUT FOR USEMUTATION FUNCTION
 
@@ -27,26 +34,19 @@ function StoryChecker() {
   const handleSubmit = async function (e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault()
     // add the same check to the server side?
-    if (englishStory.length > 10 && germanStory.length > 10) {
-      await differentiate.mutateAsync({
-        englishStory: englishStory,
-        germanStory: germanStory,
+    if (stories.englishStory.length > 10 && stories.germanStory.length > 10) {
+      setSubmittedStories({
+        englishStory: stories.englishStory,
+        germanStory: stories.germanStory,
       })
+      await differentiate.mutateAsync(stories)
     }
-    // setSubmittedStories({
-    //   englishStory: englishStory,
-    //   germanStory: germanStory,
-    // })
+    setStories({ englishStory: '', germanStory: '' })
   }
 
   function handleChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
     const { name, value } = e.target
-    if (name === 'english-story') {
-      setEnglishStory(value)
-    }
-    if (name === 'german-story') {
-      setGermanStory(value)
-    }
+    setStories({ ...stories, [name]: value })
   }
 
   if (differentiate.data) console.log(differentiate.data)
@@ -55,21 +55,21 @@ function StoryChecker() {
     <>
       <h1>Story Checker</h1>
       <form>
-        <label htmlFor="english-story">English story</label>
+        <label htmlFor="englishStory">English story</label>
         <br />
         <textarea
-          value={englishStory}
-          name="english-story"
+          value={stories.englishStory}
+          name="englishStory"
           // maxLength={}
           onChange={handleChange}
           style={{ width: '400px', height: '200px' }}
         />
         <br />
-        <label htmlFor="german-story">German story</label>
+        <label htmlFor="germanStory">German story</label>
         <br />
         <textarea
-          value={germanStory}
-          name="german-story"
+          value={stories.germanStory}
+          name="germanStory"
           // maxLength={}
           onChange={handleChange}
           style={{ width: '400px', height: '200px' }}
