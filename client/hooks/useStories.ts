@@ -11,7 +11,7 @@ export const useChatGPT = () => {
       const res = await request
         .post(`${rootUrl}/check-story`)
         .send({ englishStory, germanStory })
-      console.log('useMutatation: ', res.body)
+      // console.log('useMutatation: ', res.body)
       return res.body
       // as CheckedStory
     },
