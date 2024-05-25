@@ -3,31 +3,40 @@ import { useChatGPT } from '../hooks/useStories.ts'
 import StoryDifference from './StoryDifference'
 
 function StoryChecker() {
+  const differentiate = useChatGPT()
   const [englishStory, setEnglishStory] = useState(
     'Today I have spent the morning hanging out with my family, before getting into some coding. I had a burger for lunch, and tonight we are going to Ben & Annekes for dinner.',
   )
   const [germanStory, setGermanStory] = useState(
     'Heute morgen habe ich mit meine familie sein, und dann ich habe entwickeln gemacht. Ich hatte zum mittagessen ein burger gegessen, und heute abend gehen wir nach Ben und Annekes fur abendessen.',
   )
-  const [submittedStories, setSubmittedStories] = useState({
-    englishStory: '',
-    germanStory: '',
-  })
+  // const [submittedStories, setSubmittedStories] = useState({
+  //   englishStory: '',
+  //   germanStory: '',
+  // })
 
   // SWAP THIS OUT FOR USEMUTATION FUNCTION
+
   // CHECK REQ.BODY IN SERVER & GET STORIES OUT OF IT
   // TRY TO MAKE API CALL
   // SEND RESPONSE BACK TO CLIENT AND CHECK DATA
-  const { data, error, isLoading } = useChatGPT(submittedStories)
+  // const { data, error, isLoading } = useChatGPT(submittedStories)
 
   // Have tabs to see the submitted english and german stories
 
-  function handleSubmit(e: React.MouseEvent<HTMLButtonElement>) {
+  const handleSubmit = async function (e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault()
-    setSubmittedStories({
-      englishStory: englishStory,
-      germanStory: germanStory,
-    })
+    // add the same check to the server side?
+    if (englishStory.length > 10 && germanStory.length > 10) {
+      await differentiate.mutateAsync({
+        englishStory: englishStory,
+        germanStory: germanStory,
+      })
+    }
+    // setSubmittedStories({
+    //   englishStory: englishStory,
+    //   germanStory: germanStory,
+    // })
   }
 
   function handleChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
@@ -40,7 +49,7 @@ function StoryChecker() {
     }
   }
 
-  if (data) console.log(data)
+  if (differentiate.data) console.log(differentiate.data)
 
   return (
     <>
@@ -69,9 +78,9 @@ function StoryChecker() {
 
         <button onClick={handleSubmit}>Check Stories</button>
       </form>
-      {isLoading && <p>Loading...</p>}
-      {error && <p>Error: {error.message}</p>}
-      {data && <StoryDifference data={data} />}
+      {differentiate.isPending && <p>Loading...</p>}
+      {differentiate.error && <p>Error: {differentiate.error.message}</p>}
+      {differentiate.data && <StoryDifference data={differentiate.data} />}
     </>
   )
 }

@@ -1,6 +1,7 @@
 import express from 'express'
 import request from 'superagent'
 import 'dotenv/config'
+import type { Stories } from '../../models/stories'
 
 const router = express.Router()
 
@@ -15,47 +16,53 @@ router.post('/', async (req, res) => {
     // const gpt4 = 'gpt-4o'
 
     // Just need to figure out how to send these 2 stories to the server and then use them here`
-    console.log(req.body)
+    // console.log(req.body)
     // englishStory: string,
     // germanStory: string,
 
-    // const response = await request
-    //   .post('https://api.openai.com/v1/chat/completions')
-    //   .set('Authorization', `Bearer ${apiKey}`)
-    //   .send({
-    //     model: gpt35,
-    //     messages: [
-    //       {
-    //         role: 'user',
-    //         content: `
-    // I am going to give you 2 stories, one in English, and one in German, I'm not very good at speaking german so please can you tell me what I could improve in my German story so that it translates to the english story.
+    const { englishStory, germanStory }: Stories = req.body
+    console.log(englishStory, germanStory)
 
-    // Don't include any new line notation, the response MUST be JSON formatted like this so that it is easy to parse: '{translatedGermanStory: "string", corrections: Correction[], wordsToAddToVocabulary: NewWord[]}'
+    const response = await request
+      .post('https://api.openai.com/v1/chat/completions')
+      .set('Authorization', `Bearer ${apiKey}`)
+      .send({
+        model: gpt35,
+        messages: [
+          {
+            role: 'user',
+            content: `
+    I am going to give you 2 stories, one in English, and one in German, I'm not very good at speaking german so please can you tell me what I could improve in my German story so that it translates to the english story.
 
-    // interface Correction {
-    // original: "string",
-    // correction: "string"
-    // }
+    Don't include any new line notation, the response MUST be JSON formatted like this so that it is easy to parse: '{translatedGermanStory: "string", corrections: Correction[], wordsToAddToVocabulary: NewWord[]}'
 
-    // interface NewWord {
-    // word: "string",
-    // meaning: "string",
-    // }
+    interface Correction {
+    original: "string",
+    correction: "string"
+    }
 
-    // English story:
-    // ${englishStory}
+    interface NewWord {
+    word: "string",
+    meaning: "string",
+    }
 
-    // German story: ${germanStory}`,
-    //       },
-    //     ],
-    //     // max_tokens: 300, //having the max tokens can cause it to stop writing mid json.
-    //   })
+    English story:
+    ${englishStory}
 
+    German story: ${germanStory}`,
+          },
+        ],
+        // max_tokens: 300, //having the max tokens can cause it to stop writing mid json.
+      })
+    console.log('Response: ', response.body)
+    res.json(response.body)
     // return response.body
   } catch (err) {
     if (err instanceof Error) {
+      console.log(err)
       res.status(500).send((err as Error).message)
     } else {
+      console.log(err)
       res.status(500).send('Something went wrong')
     }
   }
