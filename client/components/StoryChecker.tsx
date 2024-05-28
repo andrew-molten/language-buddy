@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useChatGPT } from '../hooks/useStories.ts'
-import StoryDifference from './StoryDifference'
+// import StoryDifference from './StoryDifference'
 
 function StoryChecker() {
   const differentiate = useChatGPT()
@@ -17,6 +17,14 @@ function StoryChecker() {
   })
 
   // Have tabs to see the submitted english and german stories
+
+  // SAVE SUBMITTEDSTORIES LOCALLY JUST IN CASE THE SERVER FAILS - SO THAT THE STORIES ARE NOT LOST
+
+  // ADD SUBMITTED STORIES TO DATABASE - WITH CHECKED STORY DATA - useChatGPT fn?
+
+  // delete locally stored stories once response has come through
+
+  // THEN PERHAPS STORY DIFFERENCE SHOULD use query to get that storydata? Or useChatGPT should create it's own full reply on the backend
 
   const handleSubmit = async function (e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault()
@@ -36,7 +44,7 @@ function StoryChecker() {
     setStories({ ...stories, [name]: value })
   }
 
-  if (differentiate.data) console.log(differentiate.data)
+  // if (differentiate.data) console.log(differentiate.data)
 
   return (
     <>
@@ -67,7 +75,7 @@ function StoryChecker() {
       </form>
       {differentiate.isPending && <p>Loading...</p>}
       {differentiate.error && <p>Error: {differentiate.error.message}</p>}
-      {differentiate.data && <StoryDifference data={differentiate.data} />}
+      {/* {differentiate.data && <StoryDifference data={differentiate.data} />} */}
     </>
   )
 }
