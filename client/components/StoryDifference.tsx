@@ -1,33 +1,18 @@
-interface Props {
-  data: Data
-}
+// use array.map tp map over corrections and words to add to vocab, so that we can get the objects from it
+import type { Message, Correction, NewWord } from '../../models/stories'
+import { useLocation } from 'react-router-dom'
+
 interface Data {
   choices: Message[]
 }
 
-interface Message {
-  message: { content: string; role: string }
-}
+function StoryDifference() {
+  const location = useLocation()
+  const data: Data = location.state.response
 
-interface Correction {
-  original: string
-  correction: string
-}
-
-interface NewWord {
-  word: string
-  meaning: string
-}
-
-// use array.map tp map over corrections and words to add to vocab, so that we can get the objects from it
-
-function StoryDifference({ data }: Props) {
   // create a function for this
   // also guard against index -1
   const messageContent = data.choices[0].message.content
-  // const sliceFrom = messageString.indexOf('{')
-  // const sliceTo = messageString.lastIndexOf('}')
-  // const messageContent = messageString.slice(sliceFrom, sliceTo + 1)
 
   const parsedContent = JSON.parse(messageContent)
   // add guards against corrections, words or translation not being available

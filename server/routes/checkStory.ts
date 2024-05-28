@@ -18,6 +18,12 @@ router.post('/', async (req, res) => {
       gpt4: 'gpt-4o',
     }
 
+    // change the prompt so that the Correction is:
+    // interface Correction {
+    // correction: "string"
+    // translation: "string",
+    // }
+
     const { englishStory, germanStory }: Stories = req.body
     const response = await request
       .post('https://api.openai.com/v1/chat/completions')
