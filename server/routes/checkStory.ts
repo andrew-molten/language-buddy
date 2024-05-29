@@ -19,10 +19,12 @@ router.post('/', async (req, res) => {
     }
 
     // change the prompt so that the Correction is:
-    // interface Correction {
-    // correction: "string"
+    // interface PhraseCorrection {
+    // sentence: "string"
     // translation: "string",
     // }
+
+    // ask to also return an array of up to 5 notable words that were used perfectly in the first story, returning more complex words before simpler words - I can then use these to affect the weight
 
     const { englishStory, germanStory }: Stories = req.body
     const response = await request
@@ -34,7 +36,7 @@ router.post('/', async (req, res) => {
           {
             role: 'user',
             content: `
-    I am going to give you 2 stories, one in English, and one in German, I'm not very good at speaking german so please can you tell me what I could improve in my German story so that it translates to the english story.
+    I'm going to give you 2 stories, one in English, and one in German. I'm learning german so please tell me how to improve my German story so that it translates to the english story.
 
     Don't include any new line notation, the response MUST be JSON formatted like this so that it is easy to parse: '{translatedGermanStory: "string", corrections: Correction[], wordsToAddToVocabulary: NewWord[]}'
 
@@ -69,3 +71,23 @@ router.post('/', async (req, res) => {
 })
 
 export default router
+
+// const promptAttemptOne = `
+// I am going to give you 2 stories, one in English, and one in German, I'm not very good at speaking german so please can you tell me what I could improve in my German story so that it translates to the english story.
+
+// Don't include any new line notation, the response MUST be JSON formatted like this so that it is easy to parse: '{translatedGermanStory: "string", corrections: Correction[], wordsToAddToVocabulary: NewWord[]}'
+
+// interface Correction {
+// original: "string",
+// correction: "string"
+// }
+
+// interface NewWord {
+// word: "string",
+// meaning: "string",
+// }
+
+// English story:
+// ${englishStory}
+
+// German story: ${germanStory}`
