@@ -1,17 +1,22 @@
 export interface CheckedStory {
   translatedGermanStory: string
-  corrections: Correction[]
+  corrections: PhraseCorrection[]
   wordsToAddToVocabulary: NewWord[]
+  wellUsedWords: Word[]
 }
 
-export interface Correction {
-  original: string
-  correction: string
+export interface PhraseCorrection {
+  germanSentence: 'string'
+  translation: 'string'
 }
 
 export interface NewWord {
   word: string
   meaning: string
+}
+
+export interface Word {
+  word: string
 }
 
 export interface Stories {

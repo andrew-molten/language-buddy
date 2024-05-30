@@ -1,5 +1,10 @@
 // use array.map tp map over corrections and words to add to vocab, so that we can get the objects from it
-import type { Message, Correction, NewWord } from '../../models/stories'
+import type {
+  Message,
+  PhraseCorrection,
+  NewWord,
+  Word,
+} from '../../models/stories'
 import { useLocation } from 'react-router-dom'
 
 interface Data {
@@ -19,16 +24,19 @@ function StoryDifference() {
   return (
     <div>
       <h1>Differences</h1>
-      <p>Proper translation: {parsedContent.translatedGermanStory}</p>
+      <p>AI translation: {parsedContent.translatedGermanStory}</p>
       <h2>Corrections</h2>
       <ul>
-        {parsedContent.corrections.map((correction: Correction) => {
-          return (
-            <li key={correction.original}>
-              {correction.original}: <strong>{correction.correction}</strong>
-            </li>
-          )
-        })}
+        {parsedContent.corrections.map(
+          (correction: PhraseCorrection, index: number) => {
+            return (
+              <li key={correction.germanSentence.slice(0, 3) + index}>
+                {correction.germanSentence}:{' '}
+                <strong>{correction.translation}</strong>
+              </li>
+            )
+          },
+        )}
       </ul>
       <h2>New words</h2>
       <ul>
@@ -38,6 +46,12 @@ function StoryDifference() {
               {newWord.word}: <strong>{newWord.meaning}</strong>
             </li>
           )
+        })}
+      </ul>
+      <h2>Well used words</h2>
+      <ul>
+        {parsedContent.wellUsedWords.map((word: Word) => {
+          return <li key={word.word}>{word.word}</li>
         })}
       </ul>
       {/* <p>Corrections: {messageContent.corrections}</p> */}

@@ -26,6 +26,8 @@ function StoryChecker() {
 
   // THEN PERHAPS STORY DIFFERENCE SHOULD use query to get that storydata? Or useChatGPT should create it's own full reply on the backend
 
+  // go through the translation and highlight the parts that came back in the corrections
+
   const handleSubmit = async function (e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault()
     // add the same check to the server side?

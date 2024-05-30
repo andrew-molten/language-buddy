@@ -18,37 +18,37 @@ router.post('/', async (req, res) => {
       gpt4: 'gpt-4o',
     }
 
-    // change the prompt so that the Correction is:
-    // interface PhraseCorrection {
-    // sentence: "string"
-    // translation: "string",
-    // }
-
-    // ask to also return an array of up to 5 notable words that were used perfectly in the first story, returning more complex words before simpler words - I can then use these to affect the weight
+    // create a preference for spelling accuracy
 
     const { englishStory, germanStory }: Stories = req.body
     const response = await request
       .post('https://api.openai.com/v1/chat/completions')
       .set('Authorization', `Bearer ${apiKey}`)
       .send({
-        model: gptModels.gpt35,
+        model: gptModels.gpt4,
         messages: [
           {
             role: 'user',
             content: `
     I'm going to give you 2 stories, one in English, and one in German. I'm learning german so please tell me how to improve my German story so that it translates to the english story.
 
-    Don't include any new line notation, the response MUST be JSON formatted like this so that it is easy to parse: '{translatedGermanStory: "string", corrections: Correction[], wordsToAddToVocabulary: NewWord[]}'
+    Don't include any new line notation, the response MUST be JSON formatted like this so that it is easy to parse: '{translatedGermanStory: "string", corrections: PhraseCorrection[], wordsToAddToVocabulary: NewWord[], wellUsedWords: Word[]}'
 
-    interface Correction {
-    original: "string",
-    correction: "string"
-    }
-
+    interface PhraseCorrection {
+      germanSentence: "string"
+      translation: "string",
+      }
+ 
     interface NewWord {
     word: "string",
     meaning: "string",
     }
+
+    interface Word {
+      word: "string"
+    }
+
+    wellUsedWords has a max length of 5 & only returns words that were used perfectly in the german story, returning more complex words first.
 
     English story:
     ${englishStory}
@@ -58,6 +58,7 @@ router.post('/', async (req, res) => {
         ],
         // max_tokens: 300, //having the max tokens can cause it to stop writing mid json.
       })
+    console.log(response.body)
     res.json(response.body)
   } catch (err) {
     if (err instanceof Error) {
