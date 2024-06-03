@@ -6,14 +6,14 @@ export interface CheckedStory {
 }
 
 export interface PhraseCorrection {
-  germanSentence: 'string'
+  germanSentenceCorrection: 'string'
   translation: 'string'
 }
 
 export interface NewWord {
   word: string
   meaning: string
-  wordForm: string
+  grammaticalForm: string
   lemma: string
 }
 

@@ -30,9 +30,9 @@ function StoryDifference() {
         {parsedContent.corrections.map(
           (correction: PhraseCorrection, index: number) => {
             return (
-              <li key={correction.germanSentence.slice(0, 3) + index}>
-                {correction.germanSentence}:{' '}
-                <strong>{correction.translation}</strong>
+              <li key={correction.germanSentenceCorrection.slice(0, 3) + index}>
+                <strong>{correction.germanSentenceCorrection}</strong>{' '}
+                {correction.translation}
               </li>
             )
           },
@@ -43,8 +43,8 @@ function StoryDifference() {
         {parsedContent.wordsToAddToVocabulary.map((newWord: NewWord) => {
           return (
             <li key={newWord.word}>
-              {newWord.word}({newWord.wordForm}):{' '}
-              <strong>{newWord.meaning}</strong>
+              <strong>{newWord.word}</strong>({newWord.grammaticalForm}):{' '}
+              {newWord.meaning}
               <br />
               Lemma: {newWord.lemma}
             </li>

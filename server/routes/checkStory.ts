@@ -35,7 +35,7 @@ router.post('/', async (req, res) => {
     Don't include any new line notation, the response MUST be JSON formatted like this so that it is easy to parse: '{translatedGermanStory: "string", corrections: PhraseCorrection[], wordsToAddToVocabulary: NewWord[], wellUsedWords: Word[]}'
 
     interface PhraseCorrection {
-      germanSentence: "string"
+      germanSentenceCorrection: "string"
       translation: "string",
       }
  
@@ -51,7 +51,9 @@ router.post('/', async (req, res) => {
       lemma: "string"
     }
 
-    wellUsedWords has a max length of 5 & only returns words that were used perfectly in the german story, returning more complex words first.
+    grammaticalForm should indicate the grammatical form of a word if not a lemma, e.g. past participle, second person singular, plural etc.
+
+    wellUsedWords has a max length of 5 & only returns words that were used perfectly in the german story, return more complex words first, don't return names of people or places.
 
     English story:
     ${englishStory}
