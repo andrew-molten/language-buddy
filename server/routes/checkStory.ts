@@ -42,12 +42,13 @@ router.post('/', async (req, res) => {
     interface NewWord {
     word: "string",
     meaning: "string",
-    wordForm: "string",
+    grammaticalForm: "string",
     lemma: "string",
     }
 
     interface Word {
       word: "string"
+      lemma: "string"
     }
 
     wellUsedWords has a max length of 5 & only returns words that were used perfectly in the german story, returning more complex words first.

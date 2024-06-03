@@ -7,6 +7,7 @@ export async function up(knex) {
     table.increments('id').primary()
     table.string('word_id').references('vocabulary.id')
     table.text('definition').notNullable()
+    table.string('definition_language').notNullable()
   })
 }
 
