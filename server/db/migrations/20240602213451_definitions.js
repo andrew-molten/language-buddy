@@ -5,7 +5,7 @@
 export async function up(knex) {
   return knex.schema.createTable('definitions', (table) => {
     table.increments('id').primary()
-    table.string('word_id').references('vocabulary.id')
+    table.integer('word_id').references('vocabulary.id')
     table.text('definition').notNullable()
     table.string('definition_language').notNullable()
   })

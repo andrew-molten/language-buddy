@@ -7,7 +7,7 @@ export async function seed(knex) {
   await knex('story_history').del()
   await knex('story_history').insert([
     {
-      story_id: 1,
+      id: 1,
       user_id: 1,
       story_one: 'Story One',
       story_two: 'Story Two',
@@ -17,7 +17,7 @@ export async function seed(knex) {
       new_words: 'New Words',
     },
     {
-      story_id: 2,
+      id: 2,
       user_id: 2,
       story_one: 'Story Three',
       story_two: 'Story Four',

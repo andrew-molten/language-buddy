@@ -3,7 +3,7 @@
  * @returns { Promise<void> }
  */
 export async function seed(knex) {
-  // Deletes ALL existing entries
+  await knex.raw('PRAGMA foreign_keys = OFF')
   await knex('phrase_translation').del()
   await knex('phrase_translation').insert([
     {
@@ -25,4 +25,5 @@ export async function seed(knex) {
       translation_language: 'English',
     },
   ])
+  await knex.raw('PRAGMA foreign_keys = ON')
 }
