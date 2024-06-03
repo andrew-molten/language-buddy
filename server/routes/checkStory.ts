@@ -2,6 +2,7 @@ import express from 'express'
 import request from 'superagent'
 import 'dotenv/config'
 import type { Stories } from '../../models/stories'
+import { saveStory } from '../db/storyProcessor'
 
 const router = express.Router()
 
@@ -63,8 +64,16 @@ router.post('/', async (req, res) => {
         ],
         // max_tokens: 300, //having the max tokens can cause it to stop writing mid json.
       })
-    console.log(response.body)
+    const messageContent = response.body.choices[0].message.content
+    const parsedContent = JSON.parse(messageContent)
+    const data = {
+      ...parsedContent,
+      story_one: englishStory,
+      story_two: germanStory,
+    }
+    console.log(data)
     res.json(response.body)
+    saveStory(data)
   } catch (err) {
     if (err instanceof Error) {
       console.log('error: ', err)
