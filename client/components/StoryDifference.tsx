@@ -43,7 +43,10 @@ function StoryDifference() {
         {parsedContent.wordsToAddToVocabulary.map((newWord: NewWord) => {
           return (
             <li key={newWord.word}>
-              {newWord.word}: <strong>{newWord.meaning}</strong>
+              {newWord.word}({newWord.wordForm}):{' '}
+              <strong>{newWord.meaning}</strong>
+              <br />
+              Lemma: {newWord.lemma}
             </li>
           )
         })}

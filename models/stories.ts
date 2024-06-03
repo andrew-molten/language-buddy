@@ -13,6 +13,8 @@ export interface PhraseCorrection {
 export interface NewWord {
   word: string
   meaning: string
+  wordForm: string
+  lemma: string
 }
 
 export interface Word {

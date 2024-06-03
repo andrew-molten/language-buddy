@@ -42,6 +42,8 @@ router.post('/', async (req, res) => {
     interface NewWord {
     word: "string",
     meaning: "string",
+    wordForm: "string",
+    lemma: "string",
     }
 
     interface Word {
