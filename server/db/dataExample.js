@@ -55,4 +55,21 @@ const data = {
     'Today I have spent the morning hanging out with my family, before getting into some coding. I had a burger for lunch, and tonight we are going to Ben & Annekes for dinner.',
   story_two:
     'Heute morgen habe ich mit meine familie sein, und dann ich habe entwickeln gemacht. Ich hatte zum mittagessen ein burger gegessen, und heute abend gehen wir nach Ben und Annekes fur abendessen.',
+  wordsToAdd: [
+    {
+      word: 'Verbracht',
+      meaning: 'spent',
+      grammaticalForm: 'past participle',
+      lemma: 'verbringen',
+    },
+    {
+      word: 'Programmieren',
+      meaning: 'coding',
+      grammaticalForm: 'noun',
+      lemma: 'Programmieren',
+    },
+  ],
+  language_native: 'English',
+  language_learning: 'German',
 }
+console.log(data)

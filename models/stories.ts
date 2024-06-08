@@ -30,3 +30,11 @@ export interface Stories {
 export interface Message {
   message: { content: string; role: string }
 }
+
+export interface BackendStory extends CheckedStory {
+  story_one: string
+  story_two: string
+  wordsToAdd: NewWord[]
+  language_native: string
+  language_learning: string
+}

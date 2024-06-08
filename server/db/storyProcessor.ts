@@ -1,9 +1,9 @@
-import { NewWord } from '../../models/stories.ts'
+import { BackendStory, NewWord } from '../../models/stories.ts'
 import connection from './connection.ts'
 
 const db = connection
 // collect the original stories from the request, to add with the data we get back (fs.writefile maybe?)
-export async function saveStory(data) {
+export async function saveStory(data: BackendStory) {
   console.log('language_learning: ', data.language_learning)
   try {
     await db.transaction(async (trx) => {
