@@ -31,10 +31,34 @@ export interface Message {
   message: { content: string; role: string }
 }
 
+export interface Lemma {
+  id: number
+  word: string
+  language: string
+}
+
+export interface LemmasData {
+  lemmasToAdd: NewWord[]
+  existingLemmas: Lemma[]
+}
+
+export interface wordsData {
+  wordsToAdd: NewWord[]
+  existingWords: DBWord[]
+}
+
+export interface DBWord {
+  id: number
+  lemma_id: number
+  word: string
+  grammatical_form: string
+}
+
 export interface BackendStory extends CheckedStory {
   story_one: string
   story_two: string
-  wordsToAdd: NewWord[]
+  lemmasData?: LemmasData
+  wordsData?: wordsData
   language_native: string
   language_learning: string
 }

@@ -20,15 +20,17 @@ export async function saveStory(data: BackendStory) {
         })
         .returning('id') //[{id:3}]
 
-      const lemmaIds = await trx('lemmas')
-        .insert(
-          data.wordsToAdd.map((word: NewWord) => ({
-            word: word.lemma,
-            language: data.language_learning,
-          })),
-        )
-        .returning('id') // [{id:3}, {id:4}]
-
+      let lemmaIds
+      if (data.lemmasData && data.lemmasData.lemmasToAdd.length > 0) {
+        lemmaIds = await trx('lemmas')
+          .insert(
+            data.lemmasData.lemmasToAdd.map((word: NewWord) => ({
+              word: word.lemma,
+              language: data.language_learning,
+            })),
+          )
+          .returning('id') // [{id:3}, {id:4}]
+      }
       console.log('storyHistoryId: ', storyHistoryId)
       console.log('lemmaIds: ', lemmaIds)
 
@@ -41,12 +43,15 @@ export async function saveStory(data: BackendStory) {
 }
 
 // query function for vocab and phrases
-export async function checkWordsInVocab(words: string[]) {
-  return db('lemmas').select().whereIn('word', words)
+export async function checkLemmas(words: string[], trx = connection) {
+  return trx('lemmas').select().whereIn('word', words)
+}
+export async function checkWords(words: string[], trx = connection) {
+  return trx('words').select().whereIn('word', words)
 }
 
-export async function checkWordsInUserVocab(words: string[]) {
-  return db('user_vocabulary').select().whereIn('word', words) //needcto check for id
+export async function checkWordsInUserVocab(words: string[], trx = connection) {
+  return trx('user_vocabulary').select().whereIn('word', words) //needcto check for id
 }
 
 // add server functions inside of storyProcessor to check whether the words exist and send back an object of their locations etc.

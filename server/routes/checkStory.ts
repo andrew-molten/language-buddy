@@ -1,7 +1,12 @@
 import express from 'express'
 import request from 'superagent'
 import 'dotenv/config'
-import type { NewWord, Stories } from '../../models/stories'
+import type {
+  BackendStory,
+  CheckedStory,
+  NewWord,
+  Stories,
+} from '../../models/stories'
 import * as storyProcessor from '../db/storyProcessor'
 
 const router = express.Router()
@@ -67,18 +72,8 @@ router.post('/', async (req, res) => {
       })
     const messageContent = response.body.choices[0].message.content
     const parsedContent = JSON.parse(messageContent)
-    const data = {
-      ...parsedContent,
-      story_one: englishStory,
-      story_two: germanStory,
-      language_native: 'English',
-      language_learning: 'German',
-    }
-    console.log(data)
     res.json(response.body)
-    const wordsToAdd = await checkWords(data.wordsToAddToVocabulary)
-    data.wordsToAdd = wordsToAdd
-    storyProcessor.saveStory(data)
+    saveToDB(parsedContent, englishStory, germanStory)
   } catch (err) {
     if (err instanceof Error) {
       console.log('error: ', err)
@@ -90,42 +85,46 @@ router.post('/', async (req, res) => {
   }
 })
 
-const checkWords = async (newWords: NewWord[]) => {
+const saveToDB = async (
+  parsedContent: CheckedStory,
+  story_one: string,
+  story_two: string,
+) => {
+  const data: BackendStory = {
+    ...parsedContent,
+    story_one,
+    story_two,
+    language_native: 'English',
+    language_learning: 'German',
+  }
+  const lemmasData = await checkLemmas(data.wordsToAddToVocabulary)
+  data.lemmasData = lemmasData
+  const wordsData = await checkWords(data.wordsToAddToVocabulary)
+  data.wordsData = wordsData
+  console.log(data)
+  storyProcessor.saveStory(data)
+}
+
+// match up words with lemma Id's to pass new words into DB
+
+const checkLemmas = async (newWords: NewWord[]) => {
   const lemmaArr: string[] = newWords.map((newWord) => newWord.lemma)
-  console.log('lemmaArr: ', lemmaArr)
-  // check for lemma
-  const existingWords = await storyProcessor.checkWordsInVocab(lemmaArr)
-
-  console.log('existingWords: ', existingWords)
-
-  const existingWordsStrings = existingWords.map((word) => word.word)
-
-  const wordsToAdd = newWords.filter(
-    (newWord) => !existingWordsStrings.includes(newWord.lemma),
+  const existingLemmas = await storyProcessor.checkLemmas(lemmaArr)
+  const existingLemmaStrings = existingLemmas.map((word) => word.word)
+  const lemmasToAdd = newWords.filter(
+    (newWord) => !existingLemmaStrings.includes(newWord.lemma),
   )
-  console.log('wordsToAdd: ', wordsToAdd)
-  // need to check for word form
-  return wordsToAdd
+  return { lemmasToAdd, existingLemmas }
+}
+
+const checkWords = async (newWords: NewWord[]) => {
+  const stringArr: string[] = newWords.map((newWord) => newWord.word)
+  const existingWords = await storyProcessor.checkWords(stringArr)
+  const existingWordStrings = existingWords.map((word) => word.word)
+  const wordsToAdd = newWords.filter(
+    (newWord) => !existingWordStrings.includes(newWord.word),
+  )
+  return { wordsToAdd, existingWords }
 }
 
 export default router
-
-// const promptAttemptOne = `
-// I am going to give you 2 stories, one in English, and one in German, I'm not very good at speaking german so please can you tell me what I could improve in my German story so that it translates to the english story.
-
-// Don't include any new line notation, the response MUST be JSON formatted like this so that it is easy to parse: '{translatedGermanStory: "string", corrections: Correction[], wordsToAddToVocabulary: NewWord[]}'
-
-// interface Correction {
-// original: "string",
-// correction: "string"
-// }
-
-// interface NewWord {
-// word: "string",
-// meaning: "string",
-// }
-
-// English story:
-// ${englishStory}
-
-// German story: ${germanStory}`
