@@ -18,19 +18,19 @@ export async function saveStory(data: BackendStory) {
           new_words: JSON.stringify(data.wordsToAddToVocabulary),
           well_used_words: JSON.stringify(data.wellUsedWords),
         })
-        .returning('id')
+        .returning('id') //[{id:3}]
 
-      const vocabularyIds = await trx('vocabulary')
+      const lemmaIds = await trx('lemmas')
         .insert(
           data.wordsToAdd.map((word: NewWord) => ({
             word: word.lemma,
             language: data.language_learning,
           })),
         )
-        .returning('id')
+        .returning('id') // [{id:3}, {id:4}]
 
       console.log('storyHistoryId: ', storyHistoryId)
-      console.log('vocabularyIds: ', vocabularyIds)
+      console.log('lemmaIds: ', lemmaIds)
 
       await trx.commit()
     })
@@ -42,7 +42,11 @@ export async function saveStory(data: BackendStory) {
 
 // query function for vocab and phrases
 export async function checkWordsInVocab(words: string[]) {
-  return db('vocabulary').select().whereIn('word', words)
+  return db('lemmas').select().whereIn('word', words)
+}
+
+export async function checkWordsInUserVocab(words: string[]) {
+  return db('user_vocabulary').select().whereIn('word', words) //needcto check for id
 }
 
 // add server functions inside of storyProcessor to check whether the words exist and send back an object of their locations etc.

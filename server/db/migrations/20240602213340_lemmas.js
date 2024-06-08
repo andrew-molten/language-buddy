@@ -4,7 +4,7 @@
  */
 export async function up(knex) {
   return knex.schema
-    .createTable('vocabulary', (table) => {
+    .createTable('lemmas', (table) => {
       table.increments('id').primary()
       table.string('word').notNullable()
       table.string('language').notNullable()
@@ -12,7 +12,7 @@ export async function up(knex) {
     })
     .then(() => {
       return knex.schema.raw(
-        'CREATE UNIQUE INDEX word_language_idx ON vocabulary (word, language)',
+        'CREATE UNIQUE INDEX word_language_idx ON lemmas (word, language)',
       )
     })
 }
@@ -22,5 +22,5 @@ export async function up(knex) {
  * @returns { Promise<void> }
  */
 export async function down(knex) {
-  return knex.schema.dropTable('vocabulary')
+  return knex.schema.dropTable('lemmas')
 }

@@ -4,8 +4,8 @@
  */
 export async function seed(knex) {
   await knex.raw('PRAGMA foreign_keys = OFF')
-  await knex('vocabulary').del()
-  await knex('vocabulary').insert([
+  await knex('lemmas').del()
+  await knex('lemmas').insert([
     { id: 1, word: 'kommen', language: 'German' },
     { id: 2, word: 'gehen', language: 'German' },
     { id: 3, word: 'essen', language: 'German' },

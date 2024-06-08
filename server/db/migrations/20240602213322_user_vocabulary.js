@@ -7,7 +7,7 @@ export async function up(knex) {
     .createTable('user_vocabulary', (table) => {
       table.increments('id').primary()
       table.integer('user_id').references('users.id').notNullable()
-      table.integer('word_id').references('vocabulary.id').notNullable()
+      table.integer('word_id').references('words.id').notNullable()
       table.integer('proficiency').notNullable()
       // table.index(['user_id', 'word_id'], 'user_word_idx')
     })

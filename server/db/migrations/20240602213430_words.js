@@ -3,10 +3,10 @@
  * @returns { Promise<void> }
  */
 export async function up(knex) {
-  return knex.schema.createTable('word_forms', (table) => {
+  return knex.schema.createTable('words', (table) => {
     table.increments('id').primary()
-    table.integer('word_id').references('vocabulary.id')
-    table.string('inflected_form').notNullable()
+    table.integer('lemma_id').references('lemmas.id')
+    table.string('word').notNullable()
     table.string('grammatical_form', 255).notNullable()
   })
 }
@@ -16,5 +16,5 @@ export async function up(knex) {
  * @returns { Promise<void> }
  */
 export async function down(knex) {
-  return knex.schema.dropTable('word_forms')
+  return knex.schema.dropTable('words')
 }

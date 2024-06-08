@@ -4,54 +4,54 @@
  */
 export async function seed(knex) {
   // Deletes ALL existing entries
-  await knex('word_forms').del()
-  await knex('word_forms').insert([
+  await knex('words').del()
+  await knex('words').insert([
     {
       id: 1,
-      word_id: 1,
-      inflected_form: 'komme',
+      lemma_id: 1,
+      word: 'komme',
       grammatical_form: 'first person singular',
     },
     {
       id: 2,
-      word_id: 1,
-      inflected_form: 'kommst',
+      lemma_id: 1,
+      word: 'kommst',
       grammatical_form: 'second person singular',
     },
     {
       id: 3,
-      word_id: 1,
-      inflected_form: 'kommt',
+      lemma_id: 1,
+      word: 'kommt',
       grammatical_form: 'third person singular',
     },
     {
       id: 4,
-      word_id: 2,
-      inflected_form: 'gehe',
+      lemma_id: 2,
+      word: 'gehe',
       grammatical_form: 'first person singular',
     },
     {
       id: 5,
-      word_id: 2,
-      inflected_form: 'gehst',
+      lemma_id: 2,
+      word: 'gehst',
       grammatical_form: 'second person singular',
     },
     {
       id: 6,
-      word_id: 2,
-      inflected_form: 'geht',
+      lemma_id: 2,
+      word: 'geht',
       grammatical_form: 'third person singular',
     },
     {
       id: 7,
-      word_id: 3,
-      inflected_form: 'esse',
+      lemma_id: 3,
+      word: 'esse',
       grammatical_form: 'first person singular',
     },
     {
       id: 8,
-      word_id: 3,
-      inflected_form: 'isst',
+      lemma_id: 3,
+      word: 'isst',
       grammatical_form: 'third person singular',
     },
   ])
