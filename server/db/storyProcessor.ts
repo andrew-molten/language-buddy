@@ -1,6 +1,10 @@
+import { NewWord } from '../../models/stories.ts'
 import connection from './connection.ts'
 
-export async function saveStory(data, db = connection) {
+const db = connection
+// collect the original stories from the request, to add with the data we get back (fs.writefile maybe?)
+export async function saveStory(data) {
+  console.log('language_learning: ', data.language_learning)
   try {
     await db.transaction(async (trx) => {
       const storyHistoryId = await trx('story_history')
@@ -8,15 +12,25 @@ export async function saveStory(data, db = connection) {
           user_id: 1,
           story_one: data.story_one,
           story_two: data.story_two,
-          language_native: 'English',
-          language_learning: 'German',
+          language_native: data.language_native,
+          language_learning: data.language_learning,
           corrections: JSON.stringify(data.corrections),
           new_words: JSON.stringify(data.wordsToAddToVocabulary),
           well_used_words: JSON.stringify(data.wellUsedWords),
         })
         .returning('id')
 
-      console.log('storyHisoryId: ', storyHistoryId)
+      const vocabularyIds = await trx('vocabulary')
+        .insert(
+          data.wordsToAdd.map((word: NewWord) => ({
+            word: word.lemma,
+            language: data.language_learning,
+          })),
+        )
+        .returning('id')
+
+      console.log('storyHistoryId: ', storyHistoryId)
+      console.log('vocabularyIds: ', vocabularyIds)
 
       await trx.commit()
     })
@@ -25,6 +39,10 @@ export async function saveStory(data, db = connection) {
     console.error('Error inserting data', error)
   }
 }
-// will need to use a transaction
 
-// collect the original stories from the request, to add with the data we get back (fs.writefile maybe?)
+// query function for vocab and phrases
+export async function checkWordsInVocab(words: string[]) {
+  return db('vocabulary').select().whereIn('word', words)
+}
+
+// add server functions inside of storyProcessor to check whether the words exist and send back an object of their locations etc.

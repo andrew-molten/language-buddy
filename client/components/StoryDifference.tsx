@@ -44,9 +44,10 @@ function StoryDifference() {
           return (
             <li key={newWord.word}>
               <strong>{newWord.word}</strong>({newWord.grammaticalForm}):{' '}
-              {newWord.meaning}
+              {newWord.definition}
               <br />
               Lemma: {newWord.lemma}
+              Lemma definition: {newWord.lemmaDefinition}
             </li>
           )
         })}

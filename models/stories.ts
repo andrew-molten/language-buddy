@@ -12,9 +12,10 @@ export interface PhraseCorrection {
 
 export interface NewWord {
   word: string
-  meaning: string
+  definition: string
   grammaticalForm: string
   lemma: string
+  lemmaDefinition: string
 }
 
 export interface Word {

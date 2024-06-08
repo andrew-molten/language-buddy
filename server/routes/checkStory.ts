@@ -1,8 +1,8 @@
 import express from 'express'
 import request from 'superagent'
 import 'dotenv/config'
-import type { Stories } from '../../models/stories'
-import { saveStory } from '../db/storyProcessor'
+import type { NewWord, Stories } from '../../models/stories'
+import * as storyProcessor from '../db/storyProcessor'
 
 const router = express.Router()
 
@@ -42,9 +42,10 @@ router.post('/', async (req, res) => {
  
     interface NewWord {
     word: "string",
-    meaning: "string",
+    definition: "string",
     grammaticalForm: "string",
     lemma: "string",
+    lemmaDefinition: "string"
     }
 
     interface Word {
@@ -70,10 +71,14 @@ router.post('/', async (req, res) => {
       ...parsedContent,
       story_one: englishStory,
       story_two: germanStory,
+      language_native: 'English',
+      language_learning: 'German',
     }
     console.log(data)
     res.json(response.body)
-    saveStory(data)
+    const wordsToAdd = await checkWords(data.wordsToAddToVocabulary)
+    data.wordsToAdd = wordsToAdd
+    storyProcessor.saveStory(data)
   } catch (err) {
     if (err instanceof Error) {
       console.log('error: ', err)
@@ -84,6 +89,24 @@ router.post('/', async (req, res) => {
     }
   }
 })
+
+const checkWords = async (newWords: NewWord[]) => {
+  const lemmaArr: string[] = newWords.map((newWord) => newWord.lemma)
+  console.log('lemmaArr: ', lemmaArr)
+  // check for lemma
+  const existingWords = await storyProcessor.checkWordsInVocab(lemmaArr)
+
+  console.log('existingWords: ', existingWords)
+
+  const existingWordsStrings = existingWords.map((word) => word.word)
+
+  const wordsToAdd = newWords.filter(
+    (newWord) => !existingWordsStrings.includes(newWord.lemma),
+  )
+  console.log('wordsToAdd: ', wordsToAdd)
+  // need to check for word form
+  return wordsToAdd
+}
 
 export default router
 
