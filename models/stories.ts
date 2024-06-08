@@ -22,6 +22,10 @@ export interface Word {
   word: string
 }
 
+export interface Id {
+  id: number
+}
+
 export interface Stories {
   englishStory: string
   germanStory: string
@@ -46,6 +50,10 @@ export interface WordsData {
   wordsToAdd: WordToAdd[]
   existingWords: DBWord[]
 }
+// export interface UsersVocabData {
+//   usersWordsToAdd: WordToAdd[]
+//   usersNewWordIds: number[]
+// }
 
 export interface WordToAdd extends NewWord {
   lemma_id?: number | null
@@ -61,12 +69,13 @@ export interface DBWord {
 export interface BackendCheckedStory extends CheckedStory {
   story_one: string
   story_two: string
-
   language_native: string
   language_learning: string
+  user_id: number
 }
 
 export interface BackendStory extends BackendCheckedStory {
   lemmasData: LemmasData
   wordsData: WordsData
+  usersNewWordIds: Id[]
 }

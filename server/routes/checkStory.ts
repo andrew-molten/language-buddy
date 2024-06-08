@@ -5,6 +5,8 @@ import type {
   BackendCheckedStory,
   BackendStory,
   CheckedStory,
+  DBWord,
+  Id,
   Lemma,
   NewWord,
   Stories,
@@ -98,23 +100,28 @@ const saveToDB = async (
     story_two,
     language_native: 'English',
     language_learning: 'German',
+    user_id: 1,
   }
   const lemmasData = await checkLemmas(data.wordsToAddToVocabulary)
   const wordsData = await checkWords(
     data.wordsToAddToVocabulary,
     lemmasData.existingLemmas,
   )
+  const usersNewWordIds = await checkUserVocab(
+    wordsData.existingWords,
+    data.user_id,
+  )
+
   const dataToSend: BackendStory = {
     ...data,
-    lemmasData: lemmasData,
-    wordsData: wordsData,
+    lemmasData,
+    wordsData,
+    usersNewWordIds,
   }
 
-  console.log(data)
+  console.log(dataToSend)
   storyProcessor.saveStory(dataToSend)
 }
-
-// match up words with lemma Id's to pass new words into DB
 
 const checkLemmas = async (newWords: NewWord[]) => {
   const lemmaArr: string[] = newWords.map((newWord) => newWord.lemma)
@@ -151,5 +158,29 @@ const giveWordsLemmaIDs = (wordsToAdd: NewWord[], existingLemmas: Lemma[]) => {
   })
   return formattedWordsToAdd
 }
+
+const checkUserVocab = async (existingWords: DBWord[], userId: number) => {
+  let usersNewWordIds: Id[] = []
+  if (existingWords.length > 0) {
+    const wordIds = existingWords.map((word) => word.id)
+    const ids: number[] = await storyProcessor.checkWordsInUserVocab(
+      wordIds,
+      userId,
+    )
+    usersNewWordIds = ids.map((id: number) => {
+      return { id: id }
+    })
+  }
+  // // remove existing word ids
+  // const existingWordStrings = existingWords.map((word) => word.word)
+  // const usersWordsToAdd = wordsToAddToVocabulary.filter(
+  //   (word) => !existingWordStrings.includes(word.word),
+  // )
+  return usersNewWordIds
+}
+
+// what is the word_id - existingWords
+// check if those word_id's already exist on the user
+// proficiency = 0
 
 export default router
