@@ -1,5 +1,6 @@
 import {
   BackendStory,
+  DBWord,
   Lemma,
   NewWord,
   WordToAdd,
@@ -12,6 +13,7 @@ export async function saveStory(data: BackendStory) {
   console.log('language_learning: ', data.language_learning)
   try {
     await db.transaction(async (trx) => {
+      // INSERT TO STORY HISTORY
       const storyHistoryId = await trx('story_history')
         .insert({
           user_id: 1,
@@ -25,6 +27,7 @@ export async function saveStory(data: BackendStory) {
         })
         .returning('id') //[{id:3}]
 
+      // INSERT TO LEMMAS
       let newLemmaIds: Lemma[]
       if (data.lemmasData.lemmasToAdd.length > 0) {
         newLemmaIds = await trx('lemmas')
@@ -37,7 +40,7 @@ export async function saveStory(data: BackendStory) {
           .returning(['id', 'word', 'language']) // [{id:3}, {id:4}]
       }
 
-      // give words lemma id's
+      // ADD LEMMA IDS BEFORE INSERT
       const wordsWithLemmaIds = data.wordsData.wordsToAdd.map((word) => {
         if (word.lemma_id === null) {
           const lemma = newLemmaIds.find((lemma) => lemma.word === word.word)
@@ -46,7 +49,7 @@ export async function saveStory(data: BackendStory) {
         return word
       })
 
-      // insert words
+      // INSERT TO WORDS
       const newWordIds = await trx('words')
         .insert(
           wordsWithLemmaIds.map((word: WordToAdd) => ({
@@ -55,10 +58,9 @@ export async function saveStory(data: BackendStory) {
             grammatical_form: word.grammaticalForm,
           })),
         )
-        .returning('id')
+        .returning(['id', 'word']) // all new word ids - definitely add these definitions
 
-      // insert users new words
-      // get ids from words that exist, & words newly added
+      // INSERT TO USERS VOCAB
       const usersWordIdsToInsert = [...newWordIds, ...data.usersNewWordIds]
       const usersNewWordIds = await trx('user_vocabulary')
         .insert(
@@ -70,10 +72,29 @@ export async function saveStory(data: BackendStory) {
         )
         .returning('id')
 
+      const newWordsWithWordIds = wordsWithLemmaIds.map((word) => {
+        const thisWord = newWordIds.find(
+          (newWord) => newWord.word === word.word,
+        )
+        return { ...word, word_id: thisWord.id }
+      })
+      // combine this with definitions to add
+
+      // INSERT TO DEFINITIONS
+      const definitionIds = await trx('definitions')
+        .insert(
+          newWordsWithWordIds.map((word) => ({
+            word_id: word.word_id,
+            definition: word.definition,
+            definition_language: data.language_native,
+          })),
+        )
+        .returning('id')
+
       console.log('storyHistoryId: ', storyHistoryId)
       console.log('newWordIds: ', newWordIds)
       console.log('usersNewWordIds: ', usersNewWordIds)
-      // console.log('lemmaIds: ', newLemmaIds)
+      console.log('definitionIds: ', definitionIds)
 
       await trx.commit()
     })
@@ -83,7 +104,7 @@ export async function saveStory(data: BackendStory) {
   }
 }
 
-// query function for vocab and phrases
+// QUERY FUNCTIONS
 export async function checkLemmas(words: string[], trx = connection) {
   return trx('lemmas').select().whereIn('word', words)
 }
@@ -100,4 +121,12 @@ export async function checkWordsInUserVocab(
     .select()
     .where({ user_id })
     .whereIn('word_id', ids)
+}
+
+export async function getDefinitionsById(ids: DBWord[], trx = connection) {
+  const justIds = ids.map((id) => id.id)
+  return trx('definitions')
+    .select()
+    .whereIn('word_id', justIds)
+    .join('words', 'definitions.word_id', 'words.id')
 }

@@ -10,6 +10,7 @@ import type {
   Lemma,
   NewWord,
   Stories,
+  WordToAdd,
 } from '../../models/stories'
 import * as storyProcessor from '../db/storyProcessor'
 
@@ -112,6 +113,12 @@ const saveToDB = async (
     data.user_id,
   )
 
+  // check if same definition of word_id exists
+
+  await checkDefinitionsExist(wordsData.existingWords, wordsData.wordsToAdd)
+
+  // const existingDefinitions - storyProcessor.getDefinitionsById()
+
   const dataToSend: BackendStory = {
     ...data,
     lemmasData,
@@ -163,24 +170,34 @@ const checkUserVocab = async (existingWords: DBWord[], userId: number) => {
   let usersNewWordIds: Id[] = []
   if (existingWords.length > 0) {
     const wordIds = existingWords.map((word) => word.id)
-    const ids: number[] = await storyProcessor.checkWordsInUserVocab(
+    const existingIds = await storyProcessor.checkWordsInUserVocab(
       wordIds,
       userId,
-    )
-    usersNewWordIds = ids.map((id: number) => {
+    ) //returning ids of words already in userVocab
+    console.log('ids: ', existingIds)
+    const existingIdsNumArr = existingIds.map((id) => id.word_id)
+    const idsToAdd = wordIds.filter((id) => !existingIdsNumArr.includes(id))
+    usersNewWordIds = idsToAdd.map((id: number) => {
       return { id: id }
     })
   }
-  // // remove existing word ids
-  // const existingWordStrings = existingWords.map((word) => word.word)
-  // const usersWordsToAdd = wordsToAddToVocabulary.filter(
-  //   (word) => !existingWordStrings.includes(word.word),
-  // )
+  console.log('usersNewWordIds', usersNewWordIds)
   return usersNewWordIds
 }
 
-// what is the word_id - existingWords
-// check if those word_id's already exist on the user
-// proficiency = 0
+const checkDefinitionsExist = async (
+  existingWords: DBWord[],
+  wordsToAdd: WordToAdd[],
+) => {
+  const definitions = await storyProcessor.getDefinitionsById(existingWords)
+  // check definitions.definition of each
+  const definitionsToAdd = definitions.filter((definition) => {
+    const thisWord = wordsToAdd.find((word) => definition.word === word.word)
+    if (thisWord && thisWord.definition !== definition.definition) {
+      return thisWord
+    }
+  })
+  return definitionsToAdd
+}
 
 export default router
