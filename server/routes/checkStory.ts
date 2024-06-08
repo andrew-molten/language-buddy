@@ -2,8 +2,10 @@ import express from 'express'
 import request from 'superagent'
 import 'dotenv/config'
 import type {
+  BackendCheckedStory,
   BackendStory,
   CheckedStory,
+  Lemma,
   NewWord,
   Stories,
 } from '../../models/stories'
@@ -90,7 +92,7 @@ const saveToDB = async (
   story_one: string,
   story_two: string,
 ) => {
-  const data: BackendStory = {
+  const data: BackendCheckedStory = {
     ...parsedContent,
     story_one,
     story_two,
@@ -98,11 +100,18 @@ const saveToDB = async (
     language_learning: 'German',
   }
   const lemmasData = await checkLemmas(data.wordsToAddToVocabulary)
-  data.lemmasData = lemmasData
-  const wordsData = await checkWords(data.wordsToAddToVocabulary)
-  data.wordsData = wordsData
+  const wordsData = await checkWords(
+    data.wordsToAddToVocabulary,
+    lemmasData.existingLemmas,
+  )
+  const dataToSend: BackendStory = {
+    ...data,
+    lemmasData: lemmasData,
+    wordsData: wordsData,
+  }
+
   console.log(data)
-  storyProcessor.saveStory(data)
+  storyProcessor.saveStory(dataToSend)
 }
 
 // match up words with lemma Id's to pass new words into DB
@@ -117,14 +126,30 @@ const checkLemmas = async (newWords: NewWord[]) => {
   return { lemmasToAdd, existingLemmas }
 }
 
-const checkWords = async (newWords: NewWord[]) => {
+const checkWords = async (newWords: NewWord[], existingLemmas: Lemma[]) => {
   const stringArr: string[] = newWords.map((newWord) => newWord.word)
   const existingWords = await storyProcessor.checkWords(stringArr)
   const existingWordStrings = existingWords.map((word) => word.word)
-  const wordsToAdd = newWords.filter(
+  const actualNewWords = newWords.filter(
     (newWord) => !existingWordStrings.includes(newWord.word),
   )
+  const wordsToAdd = giveWordsLemmaIDs(actualNewWords, existingLemmas)
+
   return { wordsToAdd, existingWords }
+}
+
+const giveWordsLemmaIDs = (wordsToAdd: NewWord[], existingLemmas: Lemma[]) => {
+  const formattedWordsToAdd = wordsToAdd.map((word) => {
+    const lemma = existingLemmas.find((lemma) => lemma.word === word.lemma)
+    const grammaticalForm =
+      word.word === lemma?.word ? 'lemma' : word.grammaticalForm
+    return {
+      ...word,
+      lemma_id: lemma && lemma.id ? lemma.id : null,
+      grammaticalForm: grammaticalForm,
+    }
+  })
+  return formattedWordsToAdd
 }
 
 export default router

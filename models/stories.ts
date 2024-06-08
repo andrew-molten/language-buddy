@@ -42,9 +42,13 @@ export interface LemmasData {
   existingLemmas: Lemma[]
 }
 
-export interface wordsData {
-  wordsToAdd: NewWord[]
+export interface WordsData {
+  wordsToAdd: WordToAdd[]
   existingWords: DBWord[]
+}
+
+export interface WordToAdd extends NewWord {
+  lemma_id?: number | null
 }
 
 export interface DBWord {
@@ -54,11 +58,15 @@ export interface DBWord {
   grammatical_form: string
 }
 
-export interface BackendStory extends CheckedStory {
+export interface BackendCheckedStory extends CheckedStory {
   story_one: string
   story_two: string
-  lemmasData?: LemmasData
-  wordsData?: wordsData
+
   language_native: string
   language_learning: string
+}
+
+export interface BackendStory extends BackendCheckedStory {
+  lemmasData: LemmasData
+  wordsData: WordsData
 }

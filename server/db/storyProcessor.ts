@@ -1,4 +1,9 @@
-import { BackendStory, NewWord } from '../../models/stories.ts'
+import {
+  BackendStory,
+  Lemma,
+  NewWord,
+  WordToAdd,
+} from '../../models/stories.ts'
 import connection from './connection.ts'
 
 const db = connection
@@ -20,19 +25,41 @@ export async function saveStory(data: BackendStory) {
         })
         .returning('id') //[{id:3}]
 
-      let lemmaIds
-      if (data.lemmasData && data.lemmasData.lemmasToAdd.length > 0) {
-        lemmaIds = await trx('lemmas')
+      let newLemmaIds: Lemma[]
+      if (data.lemmasData.lemmasToAdd.length > 0) {
+        newLemmaIds = await trx('lemmas')
           .insert(
             data.lemmasData.lemmasToAdd.map((word: NewWord) => ({
               word: word.lemma,
               language: data.language_learning,
             })),
           )
-          .returning('id') // [{id:3}, {id:4}]
+          .returning(['id', 'word', 'language']) // [{id:3}, {id:4}]
       }
+
+      // give words lemma id's
+      const wordsWithLemmaIds = data.wordsData.wordsToAdd.map((word) => {
+        if (word.lemma_id === null) {
+          const lemma = newLemmaIds.find((lemma) => lemma.word === word.word)
+          word.lemma_id = lemma?.id
+        }
+        return word
+      })
+
+      // insert words
+      const newWordIds = await trx('words')
+        .insert(
+          wordsWithLemmaIds.map((word: WordToAdd) => ({
+            lemma_id: word.lemma_id,
+            word: word.word,
+            grammatical_form: word.grammaticalForm,
+          })),
+        )
+        .returning('id')
+
       console.log('storyHistoryId: ', storyHistoryId)
-      console.log('lemmaIds: ', lemmaIds)
+      console.log('newWordIds: ', newWordIds)
+      // console.log('lemmaIds: ', newLemmaIds)
 
       await trx.commit()
     })
