@@ -5,11 +5,11 @@ import {
   Route,
 } from 'react-router-dom'
 import App from './components/App'
-import StoryChecker from './components/StoryChecker'
-import StoryDifference from './components/StoryDifference'
-import StoryHistory from './components/StoryHistory'
-import Vocabulary from './components/Vocabulary'
-import Dojo from './components/Dojo'
+import StoryChecker from './pages/StoryChecker'
+import StoryDifference from './pages/StoryDifference'
+import StoryHistory from './pages/StoryHistory'
+import Vocabulary from './pages/Vocabulary'
+import Dojo from './pages/Dojo'
 
 // give StoryDifference data
 

@@ -59,11 +59,15 @@ export interface WordToAdd extends NewWord {
   lemma_id?: number | null
 }
 
+export interface WordToAddWithDefinition extends NewWord {
+  word_id?: number
+}
+
 export interface DBWord {
   id: number
-  lemma_id: number
+  lemma_id?: number
   word: string
-  grammatical_form: string
+  grammatical_form?: string
 }
 
 export interface BackendCheckedStory extends CheckedStory {

@@ -1,9 +1,11 @@
 import {
   BackendStory,
   DBWord,
+  Id,
   Lemma,
   NewWord,
   WordToAdd,
+  WordToAddWithDefinition,
 } from '../../models/stories.ts'
 import connection from './connection.ts'
 
@@ -50,46 +52,61 @@ export async function saveStory(data: BackendStory) {
       })
 
       // INSERT TO WORDS
-      const newWordIds = await trx('words')
-        .insert(
-          wordsWithLemmaIds.map((word: WordToAdd) => ({
-            lemma_id: word.lemma_id,
-            word: word.word,
-            grammatical_form: word.grammaticalForm,
-          })),
-        )
-        .returning(['id', 'word']) // all new word ids - definitely add these definitions
+      let newWordIds: DBWord[] = []
+      if (wordsWithLemmaIds.length > 0) {
+        newWordIds = await trx('words')
+          .insert(
+            wordsWithLemmaIds.map((word: WordToAdd) => ({
+              lemma_id: word.lemma_id,
+              word: word.word,
+              grammatical_form: word.grammaticalForm,
+            })),
+          )
+          .returning(['id', 'word']) // all new word ids - definitely add these definitions
+      }
 
       // INSERT TO USERS VOCAB
       const usersWordIdsToInsert = [...newWordIds, ...data.usersNewWordIds]
-      const usersNewWordIds = await trx('user_vocabulary')
-        .insert(
-          usersWordIdsToInsert.map((id) => ({
-            user_id: data.user_id,
-            word_id: id.id,
-            proficiency: 0,
-          })),
-        )
-        .returning('id')
+      let usersNewWordIds
+      if (usersWordIdsToInsert.length > 0) {
+        usersNewWordIds = await trx('user_vocabulary')
+          .insert(
+            usersWordIdsToInsert.map((id) => ({
+              user_id: data.user_id,
+              word_id: id.id,
+              proficiency: 0,
+            })),
+          )
+          .returning('id')
+      }
 
-      const newWordsWithWordIds = wordsWithLemmaIds.map((word) => {
-        const thisWord = newWordIds.find(
-          (newWord) => newWord.word === word.word,
-        )
-        return { ...word, word_id: thisWord.id }
-      })
+      // Combine definitions with word_id's
+      let newWordsWithWordIds: WordToAddWithDefinition[] = []
+      if (wordsWithLemmaIds.length > 0) {
+        newWordsWithWordIds = wordsWithLemmaIds.map((word) => {
+          const thisWord = newWordIds.find(
+            (newWord) => newWord.word === word.word,
+          )
+          if (thisWord) {
+            return { ...word, word_id: thisWord.id }
+          } else return { ...word }
+        })
+      }
       // combine this with definitions to add
 
       // INSERT TO DEFINITIONS
-      const definitionIds = await trx('definitions')
-        .insert(
-          newWordsWithWordIds.map((word) => ({
-            word_id: word.word_id,
-            definition: word.definition,
-            definition_language: data.language_native,
-          })),
-        )
-        .returning('id')
+      let definitionIds: Id[] = []
+      if (newWordsWithWordIds.length > 0) {
+        definitionIds = await trx('definitions')
+          .insert(
+            newWordsWithWordIds.map((word) => ({
+              word_id: word.word_id,
+              definition: word.definition,
+              definition_language: data.language_native,
+            })),
+          )
+          .returning('id')
+      }
 
       console.log('storyHistoryId: ', storyHistoryId)
       console.log('newWordIds: ', newWordIds)
