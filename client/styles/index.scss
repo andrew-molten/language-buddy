@@ -37,7 +37,7 @@ li {
   // text-decoration: none;
   margin-left: 1em;
   font-weight: 600;
-  color: rgb(228, 252, 255);
+  color: rgb(251, 254, 255);
 }
 
 .story-snippet {
@@ -46,6 +46,7 @@ li {
   background-color: rgba(69, 167, 252, 0.267);
   border-width: 0;
   text-align: left;
+  border-radius: 15px;
   // width: 100%;
 }
 
@@ -58,9 +59,14 @@ li {
 }
 
 .page {
-  margin: 0 0 1em 1em;
+  margin: 0 1em 1em 1em;
 }
 
-// .check-stories-btn {
-//   margin-left: ;
-// }
+.check-stories-btn {
+  border-radius: 10px;
+  border: none;
+  padding: 1em;
+  background-color: rgb(255, 153, 0);
+  margin-left: 200px;
+  transform: translateX(-50%);
+}
