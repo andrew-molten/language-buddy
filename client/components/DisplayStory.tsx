@@ -33,8 +33,7 @@ function DisplayStory({ data }) {
               <strong>{newWord.word}</strong>({newWord.grammaticalForm}):{' '}
               {newWord.definition}
               <br />
-              Lemma: {newWord.lemma}
-              Lemma definition: {newWord.lemmaDefinition}
+              Lemma: {newWord.lemma} - {newWord.lemmaDefinition}
             </li>
           )
         })}

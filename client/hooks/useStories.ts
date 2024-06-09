@@ -30,3 +30,13 @@ export const useStoryHistory = (user_id: number) => {
     },
   })
 }
+
+export const useVocabulary = (user_id: number) => {
+  return useQuery({
+    queryKey: ['vocabulary'],
+    queryFn: async () => {
+      const res = await request.get(`${rootUrl}/vocabulary/${user_id}`)
+      return res.body
+    },
+  })
+}

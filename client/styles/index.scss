@@ -6,6 +6,10 @@ body {
   margin: 0px;
 }
 
+li {
+  margin-top: 0.5em;
+}
+
 .app {
   margin: 0;
 }
@@ -28,7 +32,7 @@ body {
   // text-decoration: none;
   margin-left: 1em;
   font-weight: 600;
-  color: rgb(43, 219, 175);
+  color: rgb(118, 239, 255);
 }
 
 .story-snippet {
@@ -42,4 +46,8 @@ body {
 
 .snippet-p {
   margin: 0.2em;
+}
+
+.data-word {
+  margin-top: 1em;
 }
