@@ -173,15 +173,13 @@ const checkUserVocab = async (existingWords: DBWord[], userId: number) => {
     const existingIds = await storyProcessor.checkWordsInUserVocab(
       wordIds,
       userId,
-    ) //returning ids of words already in userVocab
-    console.log('ids: ', existingIds)
+    )
     const existingIdsNumArr = existingIds.map((id) => id.word_id)
     const idsToAdd = wordIds.filter((id) => !existingIdsNumArr.includes(id))
     usersNewWordIds = idsToAdd.map((id: number) => {
       return { id: id }
     })
   }
-  console.log('usersNewWordIds', usersNewWordIds)
   return usersNewWordIds
 }
 

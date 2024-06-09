@@ -22,7 +22,7 @@ function StoryDifference() {
   const parsedContent = JSON.parse(messageContent)
   // add guards against corrections, words or translation not being available
   return (
-    <div>
+    <div className="story-difference">
       <h1>Differences</h1>
       <p>AI translation: {parsedContent.translatedGermanStory}</p>
       <h2>Corrections</h2>

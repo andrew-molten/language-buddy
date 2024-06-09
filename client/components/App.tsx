@@ -1,19 +1,15 @@
-// import { useFruits } from '../hooks/useFruits.ts'
-// import StoryChecker from './StoryChecker.tsx'
-
 import { Outlet } from 'react-router-dom'
+import NavBar from './NavBar'
 
 function App() {
-  // const { data } = useFruits()
-
   return (
     <>
       <div className="app">
-        <header>
+        <header className="header">
           <h1>Language buddy </h1>
-          {/* <StoryChecker /> */}
+          <NavBar />
         </header>
-        {/* <ul>{data && data.map((fruit) => <li key={fruit}>{fruit}</li>)}</ul> */}
+
         <main>
           <Outlet />
         </main>
