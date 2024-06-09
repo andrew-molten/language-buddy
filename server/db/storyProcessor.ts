@@ -5,6 +5,7 @@ import {
   Lemma,
   NewWord,
   WordToAdd,
+  DefinitionToAdd,
   WordToAddWithDefinition,
 } from '../../models/stories.ts'
 import connection from './connection.ts'
@@ -154,7 +155,7 @@ export async function checkWordsInUserVocab(
 //     .join('words', 'definitions.word_id', 'words.id')
 // }
 
-export async function checkDefinitionsExist(definitions) {
+export async function checkDefinitionsExist(definitions: DefinitionToAdd[]) {
   const query = db('definitions').select()
 
   definitions.forEach(({ id, definition }, index) => {
@@ -166,5 +167,3 @@ export async function checkDefinitionsExist(definitions) {
   })
   return query
 }
-
-// Need a db query that takes the word_id + definition and checks whether that combination exists in the db, if it does, then return the word_id/or the definition - so that we can make sure it is not added

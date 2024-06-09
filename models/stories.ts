@@ -59,6 +59,11 @@ export interface WordToAdd extends NewWord {
   lemma_id?: number | null
 }
 
+export interface WordToAddWithDefinition extends WordToAdd {
+  definition: string
+  word_id?: number
+}
+
 export interface DBWord {
   id: number
   lemma_id?: number
