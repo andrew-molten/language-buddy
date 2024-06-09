@@ -102,6 +102,7 @@ const saveToDB = async (
     language_native: 'English',
     language_learning: 'German',
     user_id: 1,
+    date: addDate(),
   }
   const lemmasData = await checkLemmas(data.wordsToAddToVocabulary)
   const wordsData = await checkWords(
@@ -115,15 +116,19 @@ const saveToDB = async (
 
   // check if same definition of word_id exists
 
-  await checkDefinitionsExist(wordsData.existingWords, wordsData.wordsToAdd)
+  const definitionsToAdd = await checkDefinitionsExist(
+    wordsData.existingWords,
+    data.wordsToAddToVocabulary,
+  )
 
-  // const existingDefinitions - storyProcessor.getDefinitionsById()
+  // add lemma definitions
 
   const dataToSend: BackendStory = {
     ...data,
     lemmasData,
     wordsData,
     usersNewWordIds,
+    definitionsToAdd,
   }
 
   console.log(dataToSend)
@@ -187,15 +192,28 @@ const checkDefinitionsExist = async (
   existingWords: DBWord[],
   wordsToAdd: WordToAdd[],
 ) => {
-  const definitions = await storyProcessor.getDefinitionsById(existingWords)
-  // check definitions.definition of each
-  const definitionsToAdd = definitions.filter((definition) => {
-    const thisWord = wordsToAdd.find((word) => definition.word === word.word)
-    if (thisWord && thisWord.definition !== definition.definition) {
-      return thisWord
+  const definitionsAndIds = existingWords.map((existing) => {
+    const sameWord = wordsToAdd.find((toAdd) => existing.word === toAdd.word)
+    return {
+      ...existing,
+      definition: sameWord.definition,
+      word_id: existing.id,
     }
   })
+  const existingDefinitions =
+    await storyProcessor.checkDefinitionsExist(definitionsAndIds)
+  const idsOfExistingDefinitions = existingDefinitions.map(
+    (word) => word.word_id,
+  )
+  const definitionsToAdd = definitionsAndIds.filter(
+    (obj) => !idsOfExistingDefinitions.includes(obj.id),
+  )
   return definitionsToAdd
+}
+function addDate() {
+  const today = new Date()
+  const todayString = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`
+  return todayString
 }
 
 export default router

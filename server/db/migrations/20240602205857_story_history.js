@@ -14,6 +14,7 @@ export async function up(knex) {
     table.text('corrections')
     table.text('new_words')
     table.text('well_used_words')
+    table.date('date_added')
   })
 }
 

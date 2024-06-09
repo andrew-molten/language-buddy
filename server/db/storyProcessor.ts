@@ -27,6 +27,7 @@ export async function saveStory(data: BackendStory) {
           corrections: JSON.stringify(data.corrections),
           new_words: JSON.stringify(data.wordsToAddToVocabulary),
           well_used_words: JSON.stringify(data.wellUsedWords),
+          date_added: data.date,
         })
         .returning('id') //[{id:3}]
 
@@ -95,12 +96,16 @@ export async function saveStory(data: BackendStory) {
       }
       // combine this with definitions to add
 
+      const definitionsToAdd = [
+        ...newWordsWithWordIds,
+        ...data.definitionsToAdd,
+      ]
       // INSERT TO DEFINITIONS
       let definitionIds: Id[] = []
-      if (newWordsWithWordIds.length > 0) {
+      if (definitionsToAdd.length > 0) {
         definitionIds = await trx('definitions')
           .insert(
-            newWordsWithWordIds.map((word) => ({
+            definitionsToAdd.map((word) => ({
               word_id: word.word_id,
               definition: word.definition,
               definition_language: data.language_native,
@@ -148,3 +153,18 @@ export async function getDefinitionsById(ids: DBWord[], trx = connection) {
     .whereIn('word_id', justIds)
     .join('words', 'definitions.word_id', 'words.id')
 }
+
+export async function checkDefinitionsExist(definitions) {
+  const query = db('definitions').select()
+
+  definitions.forEach(({ id, definition }, index) => {
+    if (index === 0) {
+      query.where({ word_id: id, definition })
+    } else {
+      query.orWhere({ word_id: id, definition })
+    }
+  })
+  return query
+}
+
+// Need a db query that takes the word_id + definition and checks whether that combination exists in the db, if it does, then return the word_id/or the definition - so that we can make sure it is not added

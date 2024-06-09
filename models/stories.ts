@@ -76,6 +76,7 @@ export interface BackendCheckedStory extends CheckedStory {
   language_native: string
   language_learning: string
   user_id: number
+  date: string
 }
 
 export interface BackendStory extends BackendCheckedStory {

@@ -16,6 +16,7 @@ export async function seed(knex) {
       language_native: 'English',
       corrections: 'Corrections',
       new_words: 'New Words',
+      date_added: '2024-05-06',
     },
     {
       id: 2,
@@ -27,6 +28,7 @@ export async function seed(knex) {
       language_native: 'English',
       corrections: 'Corrections',
       new_words: 'New Words',
+      date_added: '2024-04-05',
     },
   ])
 }
