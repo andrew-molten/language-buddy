@@ -1,4 +1,8 @@
-interface Props {}
+import type { VocabWord } from '../../models/stories'
+
+interface Props {
+  data: VocabWord
+}
 
 function VocabWord({ data }: Props) {
   return (
