@@ -23,15 +23,18 @@ function StoryDifference() {
   // add guards against corrections, words or translation not being available
   return (
     <div className="story-difference page">
-      <h1>Differences</h1>
-      <p>AI translation: {parsedContent.translatedGermanStory}</p>
+      <h1 className="page-heading">Differences</h1>
+      <p>
+        <strong>AI translation:</strong> {parsedContent.translatedGermanStory}
+      </p>
       <h2>Corrections</h2>
       <ul>
         {parsedContent.corrections.map(
           (correction: PhraseCorrection, index: number) => {
             return (
               <li key={correction.germanSentenceCorrection.slice(0, 3) + index}>
-                <strong>{correction.germanSentenceCorrection}</strong>{' '}
+                <strong>{correction.germanSentenceCorrection}</strong>
+                <br />
                 {correction.translation}
               </li>
             )
@@ -47,7 +50,8 @@ function StoryDifference() {
               {newWord.definition}
               <br />
               Lemma: {newWord.lemma}
-              Lemma definition: {newWord.lemmaDefinition}
+              {' - '}
+              {newWord.lemmaDefinition}
             </li>
           )
         })}

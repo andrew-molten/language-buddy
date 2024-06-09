@@ -15,7 +15,7 @@ function Vocabulary() {
 
   return (
     <div className=" page">
-      <h2>Vocabulary</h2>
+      <h2 className="page-heading">Vocabulary</h2>
       {vocab.data.map((data) => (
         <VocabWord key={data.word} data={data} />
       ))}

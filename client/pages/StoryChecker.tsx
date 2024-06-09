@@ -49,8 +49,8 @@ function StoryChecker() {
   // if (differentiate.data) console.log(differentiate.data)
 
   return (
-    <div className="story-checker page">
-      <h1>Story Checker</h1>
+    <div className="page">
+      <h1 className="page-heading">Story Checker</h1>
       <form>
         <label htmlFor="englishStory">English story</label>
         <br />
@@ -60,6 +60,7 @@ function StoryChecker() {
           // maxLength={}
           onChange={handleChange}
           style={{ width: '400px', height: '200px' }}
+          className="story-text-box"
         />
         <br />
         <label htmlFor="germanStory">German story</label>
@@ -70,6 +71,7 @@ function StoryChecker() {
           // maxLength={}
           onChange={handleChange}
           style={{ width: '400px', height: '200px' }}
+          className="story-text-box"
         />
         <br />
 
