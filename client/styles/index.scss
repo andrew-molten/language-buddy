@@ -30,3 +30,16 @@ body {
   font-weight: 600;
   color: rgb(43, 219, 175);
 }
+
+.story-snippet {
+  display: block;
+  margin-top: 1em;
+  background-color: rgba(69, 167, 252, 0.267);
+  border-width: 0;
+  text-align: left;
+  // width: 100%;
+}
+
+.snippet-p {
+  margin: 0.2em;
+}

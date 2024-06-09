@@ -2,11 +2,13 @@ import express from 'express'
 import * as Path from 'node:path'
 
 import checkStory from './routes/checkStory.ts'
+import storyHistory from './routes/storyHistory.ts'
 const server = express()
 
 server.use(express.json())
 
 server.use('/api/v1/check-story', checkStory)
+server.use('/api/v1/story-history', storyHistory)
 
 if (process.env.NODE_ENV === 'production') {
   server.use(express.static(Path.resolve('public')))
