@@ -8,6 +8,7 @@ export async function up(knex) {
     table.integer('user_id').references('users.id').notNullable()
     table.text('story_one')
     table.text('story_two')
+    table.text('story_translated')
     table.string('language_native')
     table.string('language_learning')
     table.text('corrections')

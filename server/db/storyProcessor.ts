@@ -21,6 +21,7 @@ export async function saveStory(data: BackendStory) {
           user_id: 1,
           story_one: data.story_one,
           story_two: data.story_two,
+          story_translated: data.translatedGermanStory,
           language_native: data.language_native,
           language_learning: data.language_learning,
           corrections: JSON.stringify(data.corrections),

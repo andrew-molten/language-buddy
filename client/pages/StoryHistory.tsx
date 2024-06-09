@@ -1,4 +1,3 @@
-import DisplayStory from '../components/DisplayStory'
 import StorySnippet from '../components/StorySnippet'
 import { useStoryHistory } from '../hooks/useStories'
 

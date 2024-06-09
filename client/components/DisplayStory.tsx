@@ -1,15 +1,20 @@
-function DisplayStory(data) {
-  console.log(data)
-  // const parsedContent = JSON.parse(data)
-  // add guards against corrections, words or translation not being available
-  console.log(data)
+import { NewWord, PhraseCorrection } from '../../models/stories'
+
+function DisplayStory({ data }) {
   return (
     <div className="story-difference">
-      <h1>Differences</h1>
-      {/* <p>AI translation: {parsedContent.translatedGermanStory}</p> */}
-      <h2>Corrections</h2>
+      <h3>Your stories</h3>
+      <p>
+        {data.language_native}: {data.story_one}
+      </p>
+      <p>
+        {data.language_learning}: {data.story_two}
+      </p>
+      <h3>AI translation</h3>
+      <p>{data.story_translated}</p>
+      <h4>Corrections</h4>
       <ul>
-        {/* {parsedContent.corrections.map(
+        {JSON.parse(data.corrections).map(
           (correction: PhraseCorrection, index: number) => {
             return (
               <li key={correction.germanSentenceCorrection.slice(0, 3) + index}>
@@ -18,11 +23,11 @@ function DisplayStory(data) {
               </li>
             )
           },
-        )} */}
+        )}
       </ul>
-      <h2>New words</h2>
+      <h4>Words learnt</h4>
       <ul>
-        {/* {parsedContent.wordsToAddToVocabulary.map((newWord: NewWord) => {
+        {JSON.parse(data.new_words).map((newWord: NewWord) => {
           return (
             <li key={newWord.word}>
               <strong>{newWord.word}</strong>({newWord.grammaticalForm}):{' '}
@@ -32,16 +37,8 @@ function DisplayStory(data) {
               Lemma definition: {newWord.lemmaDefinition}
             </li>
           )
-        })} */}
+        })}
       </ul>
-      <h2>Well used words</h2>
-      <ul>
-        {/* {parsedContent.wellUsedWords.map((word: Word) => {
-          return <li key={word.word}>{word.word}</li>
-        })} */}
-      </ul>
-      {/* <p>Corrections: {messageContent.corrections}</p> */}
-      {/* <p>New words: {messageContent.wordsToAddToVocabulary}</p> */}
     </div>
   )
 }
