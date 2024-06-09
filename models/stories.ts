@@ -100,3 +100,15 @@ export interface StoryData {
   date_added: string
   corrections: string
 }
+
+export interface VocabWord {
+  id: number
+  definition: string
+  definition_language: string
+  grammatical_form: string
+  lemma_id: number
+  proficiency: number
+  user_id: number
+  word: string
+  word_id: number
+}

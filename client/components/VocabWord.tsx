@@ -1,4 +1,6 @@
-function VocabWord({ data }) {
+interface Props {}
+
+function VocabWord({ data }: Props) {
   return (
     <div className="data-word">
       <p className="snippet-p">
