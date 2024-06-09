@@ -11,10 +11,10 @@ function StoryChecker() {
       'Heute morgen habe ich mit meine familie sein, und dann ich habe entwickeln gemacht. Ich hatte zum mittagessen ein burger gegessen, und heute abend gehen wir nach Ben und Annekes fur abendessen.',
   })
 
-  const [submittedStories, setSubmittedStories] = useState({
-    englishStory: '',
-    germanStory: '',
-  })
+  // const [submittedStories, setSubmittedStories] = useState({
+  //   englishStory: '',
+  //   germanStory: '',
+  // })
 
   // Have tabs to see the submitted english and german stories
 
@@ -32,13 +32,13 @@ function StoryChecker() {
     e.preventDefault()
     // add the same check to the server side?
     if (stories.englishStory.length > 10 && stories.germanStory.length > 10) {
-      setSubmittedStories({
-        englishStory: stories.englishStory,
-        germanStory: stories.germanStory,
-      })
+      // setSubmittedStories({
+      //   englishStory: stories.englishStory,
+      //   germanStory: stories.germanStory,
+      // })
       await differentiate.mutateAsync(stories)
     }
-    setStories({ englishStory: '', germanStory: '' })
+    // setStories({ englishStory: '', germanStory: '' })
   }
 
   function handleChange(e: React.ChangeEvent<HTMLTextAreaElement>) {

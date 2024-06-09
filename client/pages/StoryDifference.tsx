@@ -22,7 +22,7 @@ function StoryDifference() {
   const parsedContent = JSON.parse(messageContent)
   // add guards against corrections, words or translation not being available
   return (
-    <div>
+    <div className="story-difference">
       <h1>Differences</h1>
       <p>AI translation: {parsedContent.translatedGermanStory}</p>
       <h2>Corrections</h2>
@@ -30,9 +30,9 @@ function StoryDifference() {
         {parsedContent.corrections.map(
           (correction: PhraseCorrection, index: number) => {
             return (
-              <li key={correction.germanSentence.slice(0, 3) + index}>
-                {correction.germanSentence}:{' '}
-                <strong>{correction.translation}</strong>
+              <li key={correction.germanSentenceCorrection.slice(0, 3) + index}>
+                <strong>{correction.germanSentenceCorrection}</strong>{' '}
+                {correction.translation}
               </li>
             )
           },
@@ -43,7 +43,11 @@ function StoryDifference() {
         {parsedContent.wordsToAddToVocabulary.map((newWord: NewWord) => {
           return (
             <li key={newWord.word}>
-              {newWord.word}: <strong>{newWord.meaning}</strong>
+              <strong>{newWord.word}</strong>({newWord.grammaticalForm}):{' '}
+              {newWord.definition}
+              <br />
+              Lemma: {newWord.lemma}
+              Lemma definition: {newWord.lemmaDefinition}
             </li>
           )
         })}

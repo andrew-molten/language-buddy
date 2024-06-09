@@ -1,7 +1,18 @@
 import express from 'express'
 import request from 'superagent'
 import 'dotenv/config'
-import type { Stories } from '../../models/stories'
+import type {
+  BackendCheckedStory,
+  BackendStory,
+  CheckedStory,
+  DBWord,
+  Id,
+  Lemma,
+  NewWord,
+  Stories,
+  WordToAdd,
+} from '../../models/stories'
+import * as storyProcessor from '../db/storyProcessor'
 
 const router = express.Router()
 
@@ -35,20 +46,26 @@ router.post('/', async (req, res) => {
     Don't include any new line notation, the response MUST be JSON formatted like this so that it is easy to parse: '{translatedGermanStory: "string", corrections: PhraseCorrection[], wordsToAddToVocabulary: NewWord[], wellUsedWords: Word[]}'
 
     interface PhraseCorrection {
-      germanSentence: "string"
+      germanSentenceCorrection: "string"
       translation: "string",
       }
  
     interface NewWord {
     word: "string",
-    meaning: "string",
+    definition: "string",
+    grammaticalForm: "string",
+    lemma: "string",
+    lemmaDefinition: "string"
     }
 
     interface Word {
       word: "string"
+      lemma: "string"
     }
 
-    wellUsedWords has a max length of 5 & only returns words that were used perfectly in the german story, returning more complex words first.
+    grammaticalForm should indicate the grammatical form of a word if not a lemma, e.g. past participle, second person singular, plural etc.
+
+    wellUsedWords has a max length of 5 & only returns words that were used perfectly in the german story, return more complex words first, don't return names of people or places.
 
     English story:
     ${englishStory}
@@ -58,8 +75,10 @@ router.post('/', async (req, res) => {
         ],
         // max_tokens: 300, //having the max tokens can cause it to stop writing mid json.
       })
-    console.log(response.body)
+    const messageContent = response.body.choices[0].message.content
+    const parsedContent = JSON.parse(messageContent)
     res.json(response.body)
+    saveToDB(parsedContent, englishStory, germanStory)
   } catch (err) {
     if (err instanceof Error) {
       console.log('error: ', err)
@@ -71,24 +90,130 @@ router.post('/', async (req, res) => {
   }
 })
 
+const saveToDB = async (
+  parsedContent: CheckedStory,
+  story_one: string,
+  story_two: string,
+) => {
+  const data: BackendCheckedStory = {
+    ...parsedContent,
+    story_one,
+    story_two,
+    language_native: 'English',
+    language_learning: 'German',
+    user_id: 1,
+    date_added: addDate(),
+  }
+  const lemmasData = await checkLemmas(data.wordsToAddToVocabulary)
+  const wordsData = await checkWords(
+    data.wordsToAddToVocabulary,
+    lemmasData.existingLemmas,
+  )
+  const usersNewWordIds = await checkUserVocab(
+    wordsData.existingWords,
+    data.user_id,
+  )
+
+  // check if same definition of word_id exists
+
+  const definitionsToAdd = await checkDefinitionsExist(
+    wordsData.existingWords,
+    data.wordsToAddToVocabulary,
+  )
+
+  // add lemma definitions
+
+  const dataToSend: BackendStory = {
+    ...data,
+    lemmasData,
+    wordsData,
+    usersNewWordIds,
+    definitionsToAdd,
+  }
+
+  console.log(dataToSend)
+  storyProcessor.saveStory(dataToSend)
+}
+
+const checkLemmas = async (newWords: NewWord[]) => {
+  const lemmaArr: string[] = newWords.map((newWord) => newWord.lemma)
+  const existingLemmas = await storyProcessor.checkLemmas(lemmaArr)
+  const existingLemmaStrings = existingLemmas.map((word) => word.word)
+  const lemmasToAdd = newWords.filter(
+    (newWord) => !existingLemmaStrings.includes(newWord.lemma),
+  )
+  return { lemmasToAdd, existingLemmas }
+}
+
+const checkWords = async (newWords: NewWord[], existingLemmas: Lemma[]) => {
+  const stringArr: string[] = newWords.map((newWord) => newWord.word)
+  const existingWords = await storyProcessor.checkWords(stringArr)
+  const existingWordStrings = existingWords.map((word) => word.word)
+  const actualNewWords = newWords.filter(
+    (newWord) => !existingWordStrings.includes(newWord.word),
+  )
+  const wordsToAdd = giveWordsLemmaIDs(actualNewWords, existingLemmas)
+
+  return { wordsToAdd, existingWords }
+}
+
+const giveWordsLemmaIDs = (wordsToAdd: NewWord[], existingLemmas: Lemma[]) => {
+  const formattedWordsToAdd = wordsToAdd.map((word) => {
+    const lemma = existingLemmas.find((lemma) => lemma.word === word.lemma)
+    const grammaticalForm =
+      word.word === lemma?.word ? 'lemma' : word.grammaticalForm
+    return {
+      ...word,
+      lemma_id: lemma && lemma.id ? lemma.id : null,
+      grammaticalForm: grammaticalForm,
+    }
+  })
+  return formattedWordsToAdd
+}
+
+const checkUserVocab = async (existingWords: DBWord[], userId: number) => {
+  let usersNewWordIds: Id[] = []
+  if (existingWords.length > 0) {
+    const wordIds = existingWords.map((word) => word.id)
+    const existingIds = await storyProcessor.checkWordsInUserVocab(
+      wordIds,
+      userId,
+    )
+    const existingIdsNumArr = existingIds.map((id) => id.word_id)
+    const idsToAdd = wordIds.filter((id) => !existingIdsNumArr.includes(id))
+    usersNewWordIds = idsToAdd.map((id: number) => {
+      return { id: id }
+    })
+  }
+  return usersNewWordIds
+}
+
+const checkDefinitionsExist = async (
+  existingWords: DBWord[],
+  wordsToAdd: WordToAdd[],
+) => {
+  const definitionsAndIds = existingWords.map((existing) => {
+    const sameWord = wordsToAdd.find((toAdd) => existing.word === toAdd.word)
+    return {
+      ...existing,
+      definition: sameWord ? sameWord.definition : '',
+      word_id: existing.id,
+    }
+  })
+  const existingDefinitions =
+    await storyProcessor.checkDefinitionsExist(definitionsAndIds)
+  const idsOfExistingDefinitions = existingDefinitions.map(
+    (word) => word.word_id,
+  )
+  const definitionsToAdd = definitionsAndIds.filter(
+    (obj) => !idsOfExistingDefinitions.includes(obj.id),
+  )
+  return definitionsToAdd
+}
+function addDate() {
+  const today = new Date()
+  const todayString = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`
+  return todayString
+}
+
 export default router
-
-// const promptAttemptOne = `
-// I am going to give you 2 stories, one in English, and one in German, I'm not very good at speaking german so please can you tell me what I could improve in my German story so that it translates to the english story.
-
-// Don't include any new line notation, the response MUST be JSON formatted like this so that it is easy to parse: '{translatedGermanStory: "string", corrections: Correction[], wordsToAddToVocabulary: NewWord[]}'
-
-// interface Correction {
-// original: "string",
-// correction: "string"
-// }
-
-// interface NewWord {
-// word: "string",
-// meaning: "string",
-// }
-
-// English story:
-// ${englishStory}
-
-// German story: ${germanStory}`
