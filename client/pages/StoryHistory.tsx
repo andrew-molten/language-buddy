@@ -1,3 +1,4 @@
+import { StoryData } from '../../models/stories'
 import StorySnippet from '../components/StorySnippet'
 import { useStoryHistory } from '../hooks/useStories'
 
@@ -14,7 +15,7 @@ function StoryHistory() {
 
   console.log(storyHistory.data)
   const dataCopy = [...storyHistory.data]
-  const reversedData = dataCopy.reverse()
+  const reversedData: StoryData[] = dataCopy.reverse()
 
   return (
     <div>

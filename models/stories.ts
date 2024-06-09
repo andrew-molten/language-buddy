@@ -50,10 +50,6 @@ export interface WordsData {
   wordsToAdd: WordToAdd[]
   existingWords: DBWord[]
 }
-// export interface UsersVocabData {
-//   usersWordsToAdd: WordToAdd[]
-//   usersNewWordIds: number[]
-// }
 
 export interface WordToAdd extends NewWord {
   lemma_id?: number | null
@@ -81,7 +77,7 @@ export interface BackendCheckedStory extends CheckedStory {
   language_native: string
   language_learning: string
   user_id: number
-  date: string
+  date_added: string
 }
 
 export interface BackendStory extends BackendCheckedStory {
@@ -89,4 +85,18 @@ export interface BackendStory extends BackendCheckedStory {
   wordsData: WordsData
   usersNewWordIds: Id[]
   definitionsToAdd: DefinitionToAdd[]
+}
+
+export interface StoryData {
+  id: number
+  new_words: string
+  well_used_words: string
+  story_translated: string
+  story_one: string
+  story_two: string
+  language_native: string
+  language_learning: string
+  user_id: number
+  date_added: string
+  corrections: string
 }

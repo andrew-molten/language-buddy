@@ -1,6 +1,10 @@
-import { NewWord, PhraseCorrection } from '../../models/stories'
+import { NewWord, PhraseCorrection, StoryData } from '../../models/stories'
 
-function DisplayStory({ data }) {
+interface Props {
+  data: StoryData
+}
+
+function DisplayStory({ data }: Props) {
   return (
     <div className="story-difference">
       <h3>Your stories</h3>

@@ -102,7 +102,7 @@ const saveToDB = async (
     language_native: 'English',
     language_learning: 'German',
     user_id: 1,
-    date: addDate(),
+    date_added: addDate(),
   }
   const lemmasData = await checkLemmas(data.wordsToAddToVocabulary)
   const wordsData = await checkWords(
