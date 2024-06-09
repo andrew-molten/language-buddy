@@ -196,7 +196,7 @@ const checkDefinitionsExist = async (
     const sameWord = wordsToAdd.find((toAdd) => existing.word === toAdd.word)
     return {
       ...existing,
-      definition: sameWord.definition,
+      definition: sameWord ? sameWord.definition : '',
       word_id: existing.id,
     }
   })

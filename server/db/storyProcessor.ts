@@ -146,13 +146,13 @@ export async function checkWordsInUserVocab(
     .whereIn('word_id', ids)
 }
 
-export async function getDefinitionsById(ids: DBWord[], trx = connection) {
-  const justIds = ids.map((id) => id.id)
-  return trx('definitions')
-    .select()
-    .whereIn('word_id', justIds)
-    .join('words', 'definitions.word_id', 'words.id')
-}
+// export async function getDefinitionsById(ids: DBWord[], trx = connection) {
+//   const justIds = ids.map((id) => id.id)
+//   return trx('definitions')
+//     .select()
+//     .whereIn('word_id', justIds)
+//     .join('words', 'definitions.word_id', 'words.id')
+// }
 
 export async function checkDefinitionsExist(definitions) {
   const query = db('definitions').select()
