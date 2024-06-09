@@ -49,7 +49,7 @@ function StoryChecker() {
   // if (differentiate.data) console.log(differentiate.data)
 
   return (
-    <>
+    <div className="story-checker page">
       <h1>Story Checker</h1>
       <form>
         <label htmlFor="englishStory">English story</label>
@@ -73,12 +73,14 @@ function StoryChecker() {
         />
         <br />
 
-        <button onClick={handleSubmit}>Check Stories</button>
+        <button className="check-stories-btn" onClick={handleSubmit}>
+          Check Stories
+        </button>
       </form>
       {differentiate.isPending && <p>Loading...</p>}
       {differentiate.error && <p>Error: {differentiate.error.message}</p>}
       {/* {differentiate.data && <StoryDifference data={differentiate.data} />} */}
-    </>
+    </div>
   )
 }
 

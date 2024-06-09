@@ -18,7 +18,7 @@ function StoryHistory() {
   const reversedData: StoryData[] = dataCopy.reverse()
 
   return (
-    <div>
+    <div className=" page">
       <h2>History</h2>
       {reversedData.map((data) => (
         <StorySnippet key={data.id} data={data} />
