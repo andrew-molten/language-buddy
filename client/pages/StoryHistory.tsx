@@ -13,11 +13,13 @@ function StoryHistory() {
   }
 
   console.log(storyHistory.data)
+  const dataCopy = [...storyHistory.data]
+  const reversedData = dataCopy.reverse()
 
   return (
     <div>
       <h2>History</h2>
-      {storyHistory.data.map((data) => (
+      {reversedData.map((data) => (
         <StorySnippet key={data.id} data={data} />
       ))}
     </div>
