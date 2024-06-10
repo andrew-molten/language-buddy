@@ -228,4 +228,7 @@ function addDate() {
   return todayString
 }
 
+// check if phrase already exists
+// add phrase to db
+
 export default router
