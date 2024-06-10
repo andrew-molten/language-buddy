@@ -13,6 +13,7 @@ import type {
   WordToAdd,
 } from '../../models/stories'
 import * as storyProcessor from '../db/storyProcessor'
+import * as processingQueries from '../db/processingQueries'
 
 const router = express.Router()
 
@@ -148,7 +149,7 @@ const saveToDB = async (
 
 const checkLemmas = async (newWords: NewWord[]) => {
   const lemmaArr: string[] = newWords.map((newWord) => newWord.lemma)
-  const existingLemmas = await storyProcessor.checkLemmas(lemmaArr)
+  const existingLemmas = await processingQueries.checkLemmas(lemmaArr)
   const existingLemmaStrings = existingLemmas.map((word) => word.word)
   const lemmasToAdd = newWords.filter(
     (newWord) => !existingLemmaStrings.includes(newWord.lemma),
@@ -158,7 +159,7 @@ const checkLemmas = async (newWords: NewWord[]) => {
 
 const checkWords = async (newWords: NewWord[], existingLemmas: Lemma[]) => {
   const stringArr: string[] = newWords.map((newWord) => newWord.word)
-  const existingWords = await storyProcessor.checkWords(stringArr)
+  const existingWords = await processingQueries.checkWords(stringArr)
   const existingWordStrings = existingWords.map((word) => word.word)
   const actualNewWords = newWords.filter(
     (newWord) => !existingWordStrings.includes(newWord.word),
@@ -186,7 +187,7 @@ const checkUserVocab = async (existingWords: DBWord[], userId: number) => {
   let usersNewWordIds: Id[] = []
   if (existingWords.length > 0) {
     const wordIds = existingWords.map((word) => word.id)
-    const existingIds = await storyProcessor.checkWordsInUserVocab(
+    const existingIds = await processingQueries.checkWordsInUserVocab(
       wordIds,
       userId,
     )
@@ -212,7 +213,7 @@ const checkDefinitionsExist = async (
     }
   })
   const existingDefinitions =
-    await storyProcessor.checkDefinitionsExist(definitionsAndIds)
+    await processingQueries.checkDefinitionsExist(definitionsAndIds)
   const idsOfExistingDefinitions = existingDefinitions.map(
     (word) => word.word_id,
   )
