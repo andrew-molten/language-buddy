@@ -20,8 +20,7 @@ function StoryDifference() {
   const messageContent = data.choices[0].message.content
 
   const preprocessResponse = (response: string): string => {
-    // Remove any triple backticks and newlines associated with code blocks
-    // return response.replace(/```.*?```/gs, '').trim()
+    // Remove any triple backticks or jsons and newlines associated with code blocks
     return response.replace(/^```json\s*|\s*```$/g, '')
   }
 

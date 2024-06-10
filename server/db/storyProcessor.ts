@@ -42,13 +42,21 @@ export async function saveStory(data: BackendStory) {
               language: data.language_learning,
             })),
           )
-          .returning(['id', 'word', 'language']) // [{id:3}, {id:4}]
+          .returning(['id', 'word', 'language'])
+        // insertlemma definitions
+        await trx('lemma_definitions').insert(
+          newLemmaIds.map((lemmaId, index) => ({
+            lemma_id: lemmaId.id,
+            definition: data.lemmasData.lemmasToAdd[index].definition,
+            definition_language: data.language_native,
+          })),
+        )
       }
 
       // ADD LEMMA IDS BEFORE INSERT
       const wordsWithLemmaIds = data.wordsData.wordsToAdd.map((word) => {
-        if (word.lemma_id === null) {
-          const lemma = newLemmaIds.find((lemma) => lemma.word === word.word)
+        if (word.lemma_id === null || undefined) {
+          const lemma = newLemmaIds.find((lemma) => lemma.word === word.lemma)
           word.lemma_id = lemma?.id
         }
         return word

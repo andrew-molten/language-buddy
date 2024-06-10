@@ -78,9 +78,9 @@ router.post('/', async (req, res) => {
       })
 
     const messageContent = response.body.choices[0].message.content
-    console.log('message: ', messageContent)
+    // console.log('message: ', messageContent)
     const preprocessedResponse = preprocessResponse(messageContent)
-    console.log('preProcessed: ', preprocessedResponse)
+    // console.log('preProcessed: ', preprocessedResponse)
     const parsedContent = JSON.parse(preprocessedResponse)
     res.json(response.body)
     saveToDB(parsedContent, englishStory, germanStory)
