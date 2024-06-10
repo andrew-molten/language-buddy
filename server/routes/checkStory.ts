@@ -17,6 +17,7 @@ import * as storyProcessor from '../db/storyProcessor'
 const router = express.Router()
 
 const apiKey = process.env.API_KEY
+// Don't include any new line notation, t
 
 router.post('/', async (req, res) => {
   try {
@@ -43,7 +44,7 @@ router.post('/', async (req, res) => {
             content: `
     I'm going to give you 2 stories, one in English, and one in German. I'm learning german so please tell me how to improve my German story so that it translates to the english story.
 
-    Don't include any new line notation, the response MUST be JSON formatted like this so that it is easy to parse: '{translatedGermanStory: "string", corrections: PhraseCorrection[], wordsToAddToVocabulary: NewWord[], wellUsedWords: Word[]}'
+    The response MUST be JSON formatted like this so that it is easy to parse: '{translatedGermanStory: "string", corrections: PhraseCorrection[], wordsToAddToVocabulary: NewWord[], wellUsedWords: Word[]}'
 
     interface PhraseCorrection {
       germanSentenceCorrection: "string"
@@ -75,8 +76,12 @@ router.post('/', async (req, res) => {
         ],
         // max_tokens: 300, //having the max tokens can cause it to stop writing mid json.
       })
+
     const messageContent = response.body.choices[0].message.content
-    const parsedContent = JSON.parse(messageContent)
+    console.log('message: ', messageContent)
+    const preprocessedResponse = preprocessResponse(messageContent)
+    console.log('preProcessed: ', preprocessedResponse)
+    const parsedContent = JSON.parse(preprocessedResponse)
     res.json(response.body)
     saveToDB(parsedContent, englishStory, germanStory)
   } catch (err) {
@@ -89,6 +94,12 @@ router.post('/', async (req, res) => {
     }
   }
 })
+
+const preprocessResponse = (response: string): string => {
+  // Remove any triple backticks and newlines associated with code blocks
+  // return response.replace(/```.*?```/gs, '').trim()
+  return response.replace(/^```json\s*|\s*```$/g, '')
+}
 
 const saveToDB = async (
   parsedContent: CheckedStory,

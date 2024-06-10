@@ -19,7 +19,15 @@ function StoryDifference() {
   // also guard against index -1
   const messageContent = data.choices[0].message.content
 
-  const parsedContent = JSON.parse(messageContent)
+  const preprocessResponse = (response: string): string => {
+    // Remove any triple backticks and newlines associated with code blocks
+    // return response.replace(/```.*?```/gs, '').trim()
+    return response.replace(/^```json\s*|\s*```$/g, '')
+  }
+
+  const preprocessedResponse = preprocessResponse(messageContent)
+
+  const parsedContent = JSON.parse(preprocessedResponse)
   // add guards against corrections, words or translation not being available
   return (
     <div className="story-difference page">
