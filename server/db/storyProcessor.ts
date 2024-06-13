@@ -121,10 +121,25 @@ export async function saveStory(data: BackendStory) {
           .returning('id')
       }
 
+      // INSERT PHRASES
+      // this assumes that all the phrases don't exist already.
+      let correctionIds: Id[] = []
+      if (data.phraseData.phrasesToAdd.length > 0) {
+        correctionIds = await trx('phrases')
+          .insert(
+            data.phraseData.phrasesToAdd.map((correction) => ({
+              phrase: correction.sentenceCorrection,
+              language: data.language_learning,
+            })),
+          )
+          .returning('id')
+      }
+
       console.log('storyHistoryId: ', storyHistoryId)
       console.log('newWordIds: ', newWordIds)
       console.log('usersNewWordIds: ', usersNewWordIds)
       console.log('definitionIds: ', definitionIds)
+      console.log('correctionIds', correctionIds)
 
       await trx.commit()
     })

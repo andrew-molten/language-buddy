@@ -9,6 +9,7 @@ import type {
   Id,
   Lemma,
   NewWord,
+  PhraseCorrection,
   Stories,
   WordToAdd,
 } from '../../models/stories'
@@ -133,6 +134,7 @@ const saveToDB = async (
     wordsData.existingWords,
     data.wordsToAddToVocabulary,
   )
+  const phraseData = await checkPhrases(data.corrections)
 
   const dataToSend: BackendStory = {
     ...data,
@@ -140,10 +142,24 @@ const saveToDB = async (
     wordsData,
     usersNewWordIds,
     definitionsToAdd,
+    phraseData,
   }
 
   console.log(dataToSend)
   storyProcessor.saveStory(dataToSend)
+}
+
+const checkPhrases = async (phrases: PhraseCorrection[]) => {
+  const phraseStringArr = phrases.map(
+    (correction) => correction.sentenceCorrection,
+  )
+  const existingPhrases =
+    await processingQueries.checkPhrasesExists(phraseStringArr)
+  const existingPhraseStrings = existingPhrases.map((phrase) => phrase.phrase)
+  const phrasesToAdd = phrases.filter(
+    (phrase) => !existingPhraseStrings.includes(phrase.sentenceCorrection),
+  )
+  return {phrasesToAdd, existingPhrases}
 }
 
 const checkLemmas = async (newWords: NewWord[]) => {

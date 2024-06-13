@@ -20,14 +20,6 @@ export const checkWordsInUserVocab = async (
     .whereIn('word_id', ids)
 }
 
-// export async function getDefinitionsById(ids: DBWord[], trx = connection) {
-//   const justIds = ids.map((id) => id.id)
-//   return trx('definitions')
-//     .select()
-//     .whereIn('word_id', justIds)
-//     .join('words', 'definitions.word_id', 'words.id')
-// }
-
 export const checkDefinitionsExist = async (
   definitions: DefinitionToAdd[],
   trx = connection,
@@ -44,7 +36,9 @@ export const checkDefinitionsExist = async (
   return query
 }
 
-// export const checkPhraseExists = async (
-//   phrases: Phrase[],
-//   trx = connection,
-// ) => {}
+export const checkPhrasesExists = async (
+  phrases: string[],
+  trx = connection,
+) => {
+  return trx('phrases').select().whereIn('phrase', phrases)
+}

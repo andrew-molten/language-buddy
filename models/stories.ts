@@ -50,6 +50,16 @@ export interface WordsData {
   wordsToAdd: WordToAdd[]
   existingWords: DBWord[]
 }
+export interface PhraseData {
+  phrasesToAdd: PhraseCorrection[]
+  existingPhrases: DBPhrase[]
+}
+
+export interface DBPhrase {
+  id: number
+  phrase: string
+  language: string
+}
 
 export interface WordToAdd extends NewWord {
   lemma_id?: number | null
@@ -85,6 +95,7 @@ export interface BackendStory extends BackendCheckedStory {
   wordsData: WordsData
   usersNewWordIds: Id[]
   definitionsToAdd: DefinitionToAdd[]
+  phraseData: PhraseData
 }
 
 export interface StoryData {
