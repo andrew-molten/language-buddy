@@ -34,6 +34,7 @@ router.post('/', async (req, res) => {
     // create a preference for spelling accuracy
 
     const { englishStory, germanStory }: Stories = req.body
+    const languageLearning = 'german'
     const response = await request
       .post('https://api.openai.com/v1/chat/completions')
       .set('Authorization', `Bearer ${apiKey}`)
@@ -48,7 +49,7 @@ router.post('/', async (req, res) => {
     The response MUST be JSON formatted like this so that it is easy to parse: '{translatedGermanStory: "string", corrections: PhraseCorrection[], wordsToAddToVocabulary: NewWord[], wellUsedWords: Word[]}'
 
     interface PhraseCorrection {
-      germanSentenceCorrection: "string"
+      sentenceCorrection: "string"
       translation: "string",
       }
  
@@ -64,6 +65,8 @@ router.post('/', async (req, res) => {
       word: "string"
       lemma: "string"
     }
+
+    sentenceCorrections are in ${languageLearning}
 
     grammaticalForm should indicate the grammatical form of a word if not a lemma, e.g. past participle, second person singular, plural etc.
 
@@ -126,14 +129,10 @@ const saveToDB = async (
     data.user_id,
   )
 
-  // check if same definition of word_id exists
-
   const definitionsToAdd = await checkDefinitionsExist(
     wordsData.existingWords,
     data.wordsToAddToVocabulary,
   )
-
-  // add lemma definitions
 
   const dataToSend: BackendStory = {
     ...data,
@@ -150,7 +149,7 @@ const saveToDB = async (
 const checkLemmas = async (newWords: NewWord[]) => {
   const lemmaArr: string[] = newWords.map((newWord) => newWord.lemma)
   const existingLemmas = await processingQueries.checkLemmas(lemmaArr)
-  const existingLemmaStrings = existingLemmas.map((word) => word.word)
+  const existingLemmaStrings = existingLemmas.map((lemma) => lemma.word)
   const lemmasToAdd = newWords.filter(
     (newWord) => !existingLemmaStrings.includes(newWord.lemma),
   )
@@ -187,11 +186,11 @@ const checkUserVocab = async (existingWords: DBWord[], userId: number) => {
   let usersNewWordIds: Id[] = []
   if (existingWords.length > 0) {
     const wordIds = existingWords.map((word) => word.id)
-    const existingIds = await processingQueries.checkWordsInUserVocab(
+    const usersExistingWordIds = await processingQueries.checkWordsInUserVocab(
       wordIds,
       userId,
     )
-    const existingIdsNumArr = existingIds.map((id) => id.word_id)
+    const existingIdsNumArr = usersExistingWordIds.map((id) => id.word_id)
     const idsToAdd = wordIds.filter((id) => !existingIdsNumArr.includes(id))
     usersNewWordIds = idsToAdd.map((id: number) => {
       return { id: id }
@@ -222,6 +221,7 @@ const checkDefinitionsExist = async (
   )
   return definitionsToAdd
 }
+
 function addDate() {
   const today = new Date()
   const todayString = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`

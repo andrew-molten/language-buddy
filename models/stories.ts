@@ -6,7 +6,7 @@ export interface CheckedStory {
 }
 
 export interface PhraseCorrection {
-  germanSentenceCorrection: 'string'
+  sentenceCorrection: 'string'
   translation: 'string'
 }
 

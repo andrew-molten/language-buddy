@@ -1,20 +1,19 @@
 import { DefinitionToAdd } from '../../models/stories.ts'
 import connection from './connection.ts'
-const db = connection
 
 // QUERY FUNCTIONS
-export async function checkLemmas(words: string[], trx = connection) {
+export const checkLemmas = async (words: string[], trx = connection) => {
   return trx('lemmas').select().whereIn('word', words)
 }
-export async function checkWords(words: string[], trx = connection) {
+export const checkWords = async (words: string[], trx = connection) => {
   return trx('words').select().whereIn('word', words)
 }
 
-export async function checkWordsInUserVocab(
+export const checkWordsInUserVocab = async (
   ids: number[],
   user_id: number,
   trx = connection,
-) {
+) => {
   return trx('user_vocabulary')
     .select()
     .where({ user_id })
@@ -29,8 +28,11 @@ export async function checkWordsInUserVocab(
 //     .join('words', 'definitions.word_id', 'words.id')
 // }
 
-export async function checkDefinitionsExist(definitions: DefinitionToAdd[]) {
-  const query = db('definitions').select()
+export const checkDefinitionsExist = async (
+  definitions: DefinitionToAdd[],
+  trx = connection,
+) => {
+  const query = trx('definitions').select()
 
   definitions.forEach(({ id, definition }, index) => {
     if (index === 0) {
@@ -41,3 +43,8 @@ export async function checkDefinitionsExist(definitions: DefinitionToAdd[]) {
   })
   return query
 }
+
+// export const checkPhraseExists = async (
+//   phrases: Phrase[],
+//   trx = connection,
+// ) => {}
