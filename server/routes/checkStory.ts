@@ -5,6 +5,7 @@ import type {
   BackendCheckedStory,
   BackendStory,
   CheckedStory,
+  DBPhrase,
   DBWord,
   Id,
   Lemma,
@@ -136,7 +137,10 @@ const saveToDB = async (
   )
   const phraseData = await checkPhrases(data.corrections)
 
-  // const usersNewPhraseIds = await
+  const usersNewPhraseIds = await checkUsersPhrases(
+    phraseData.existingPhrases,
+    data.user_id,
+  )
 
   const dataToSend: BackendStory = {
     ...data,
@@ -145,10 +149,29 @@ const saveToDB = async (
     usersNewWordIds,
     definitionsToAdd,
     phraseData,
+    usersNewPhraseIds,
   }
 
   console.log(dataToSend)
   storyProcessor.saveStory(dataToSend)
+}
+
+const checkUsersPhrases = async (
+  existingPhrases: DBPhrase[],
+  userId: number,
+) => {
+  const existingPhraseIds = existingPhrases.map((phrase) => phrase.id)
+  const usersExistingPhrases = await processingQueries.checkUserPhrases(
+    existingPhraseIds,
+    userId,
+  )
+  const usersExistingNumArr = usersExistingPhrases.map(
+    (phrase) => phrase.phrase_id,
+  )
+  const usersNewExistingPhrase = existingPhrases.filter(
+    (phrase) => !usersExistingNumArr.includes(phrase.id),
+  )
+  return usersNewExistingPhrase
 }
 
 const checkPhrases = async (phrases: PhraseCorrection[]) => {

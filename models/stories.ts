@@ -96,6 +96,7 @@ export interface BackendStory extends BackendCheckedStory {
   usersNewWordIds: Id[]
   definitionsToAdd: DefinitionToAdd[]
   phraseData: PhraseData
+  usersNewPhraseIds: DBPhrase[]
 }
 
 export interface StoryData {

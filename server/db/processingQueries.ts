@@ -42,3 +42,14 @@ export const checkPhrasesExists = async (
 ) => {
   return trx('phrases').select().whereIn('phrase', phrases)
 }
+
+export const checkUserPhrases = async (
+  existingIds: number[],
+  user_id: number,
+  trx = connection,
+) => {
+  return trx('user_phrases')
+    .select()
+    .where({ user_id })
+    .whereIn('phrase_id', existingIds)
+}
