@@ -136,6 +136,8 @@ const saveToDB = async (
   )
   const phraseData = await checkPhrases(data.corrections)
 
+  // const usersNewPhraseIds = await
+
   const dataToSend: BackendStory = {
     ...data,
     lemmasData,
@@ -159,7 +161,7 @@ const checkPhrases = async (phrases: PhraseCorrection[]) => {
   const phrasesToAdd = phrases.filter(
     (phrase) => !existingPhraseStrings.includes(phrase.sentenceCorrection),
   )
-  return {phrasesToAdd, existingPhrases}
+  return { phrasesToAdd, existingPhrases }
 }
 
 const checkLemmas = async (newWords: NewWord[]) => {

@@ -122,7 +122,6 @@ export async function saveStory(data: BackendStory) {
       }
 
       // INSERT PHRASES
-      // this assumes that all the phrases don't exist already.
       let correctionIds: Id[] = []
       if (data.phraseData.phrasesToAdd.length > 0) {
         correctionIds = await trx('phrases')
@@ -133,7 +132,18 @@ export async function saveStory(data: BackendStory) {
             })),
           )
           .returning('id')
+
+        // INSERT PHRASE TRANSLATIONS
+        await trx('phrase_translation').insert(
+          data.phraseData.phrasesToAdd.map((phrase, index) => ({
+            phrase_id: correctionIds[index].id,
+            translation: phrase.translation,
+            translation_language: data.language_native,
+          })),
+        )
       }
+
+      // USERS NEW PHRASES
 
       console.log('storyHistoryId: ', storyHistoryId)
       console.log('newWordIds: ', newWordIds)
