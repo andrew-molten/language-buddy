@@ -145,7 +145,6 @@ export async function saveStory(data: BackendStory) {
 
       // USERS NEW PHRASES
       const usersNewPhrases = [...correctionIds, ...data.usersNewPhraseIds]
-      // if a phrase is being added above then it is new to the user
       if (usersNewPhrases.length > 0) {
         await trx('user_phrases').insert(
           usersNewPhrases.map((phrase) => ({
@@ -155,8 +154,6 @@ export async function saveStory(data: BackendStory) {
           })),
         )
       }
-
-      // check if a users new phrase already exists in the db
 
       console.log('storyHistoryId: ', storyHistoryId)
       console.log('newWordIds: ', newWordIds)

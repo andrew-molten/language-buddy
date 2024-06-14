@@ -53,3 +53,7 @@ export const checkUserPhrases = async (
     .where({ user_id })
     .whereIn('phrase_id', existingIds)
 }
+
+export const checkWordInPhrases = async (word: string, trx = connection) => {
+  return trx('phrases').select().where('phrase', 'like', `%${word}%`)
+}

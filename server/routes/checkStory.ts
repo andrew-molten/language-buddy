@@ -36,7 +36,8 @@ router.post('/', async (req, res) => {
     // create a preference for spelling accuracy
 
     const { englishStory, germanStory }: Stories = req.body
-    const languageLearning = 'german'
+    const languageLearning = 'German'
+    const languageNative = 'English'
     const response = await request
       .post('https://api.openai.com/v1/chat/completions')
       .set('Authorization', `Bearer ${apiKey}`)
@@ -51,7 +52,7 @@ router.post('/', async (req, res) => {
     The response MUST be JSON formatted like this so that it is easy to parse: '{translatedGermanStory: "string", corrections: PhraseCorrection[], wordsToAddToVocabulary: NewWord[], wellUsedWords: Word[]}'
 
     interface PhraseCorrection {
-      sentenceCorrection: "string"
+      sentenceCorrection: "string",
       translation: "string",
       }
  
@@ -68,7 +69,8 @@ router.post('/', async (req, res) => {
       lemma: "string"
     }
 
-    sentenceCorrections are in ${languageLearning}
+    sentenceCorrection is in ${languageLearning}
+    translation is in ${languageNative}
 
     grammaticalForm should indicate the grammatical form of a word if not a lemma, e.g. past participle, second person singular, plural etc.
 
@@ -84,9 +86,7 @@ router.post('/', async (req, res) => {
       })
 
     const messageContent = response.body.choices[0].message.content
-    // console.log('message: ', messageContent)
     const preprocessedResponse = preprocessResponse(messageContent)
-    // console.log('preProcessed: ', preprocessedResponse)
     const parsedContent = JSON.parse(preprocessedResponse)
     res.json(response.body)
     saveToDB(parsedContent, englishStory, germanStory)
@@ -103,7 +103,6 @@ router.post('/', async (req, res) => {
 
 const preprocessResponse = (response: string): string => {
   // Remove any triple backticks and newlines associated with code blocks
-  // return response.replace(/```.*?```/gs, '').trim()
   return response.replace(/^```json\s*|\s*```$/g, '')
 }
 
@@ -153,8 +152,19 @@ const saveToDB = async (
   }
 
   console.log(dataToSend)
-  storyProcessor.saveStory(dataToSend)
+  await storyProcessor.saveStory(dataToSend)
+  // run getWordPhraseAssociations etc. here
+  // getWordPhraseAssociations(data.wordsToAddToVocabulary)
 }
+
+// CHECK IF PHRASE CONTAINS WORD
+// run after storyProcessor, to make code easier.
+// const getWordPhraseAssociations = async (words) => {
+//   // get the id's of all the wordsToaddToVocabulary
+//   // if a word exists in a phrase it will return an array of those phrases
+//   // check if that word phrase combo already exists
+//   // add association
+// }
 
 const checkUsersPhrases = async (
   existingPhrases: DBPhrase[],
@@ -196,6 +206,10 @@ const checkLemmas = async (newWords: NewWord[]) => {
   )
   return { lemmasToAdd, existingLemmas }
 }
+
+// function getArrayOfWordsFromObjects(wordObjArray: NewWord[] ) {
+//   return wordObjArray.map((wordObj) => wordObj.word)
+// }
 
 const checkWords = async (newWords: NewWord[], existingLemmas: Lemma[]) => {
   const stringArr: string[] = newWords.map((newWord) => newWord.word)
@@ -268,8 +282,5 @@ function addDate() {
   const todayString = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`
   return todayString
 }
-
-// check if phrase already exists
-// add phrase to db
 
 export default router
