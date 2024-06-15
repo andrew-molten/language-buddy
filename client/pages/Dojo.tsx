@@ -1,10 +1,13 @@
 import { useDojoPhrases } from '../hooks/useDojo'
+import WordChunks from '../components/phraseLessons/WordChunks'
+import { useState } from 'react'
 
 function Dojo() {
   // get 10 phrases, with all of the definitions of the word
   const languageLearning = 'German'
   const languageNative = 'English'
   const dojoPhrases = useDojoPhrases(1, languageLearning, languageNative)
+  const [currentWord, setCurrentWord] = useState(1)
 
   if (dojoPhrases.isPending) {
     return <p>Loading..</p>
@@ -23,6 +26,7 @@ function Dojo() {
   return (
     <div>
       <h2>Dojo</h2>
+      <WordChunks phrase={dojoPhrases.data[currentWord]} />
     </div>
   )
 }

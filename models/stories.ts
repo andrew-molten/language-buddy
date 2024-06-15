@@ -138,3 +138,12 @@ export interface DBVocabWord {
 export interface VocabWordWithDefinitions extends DBVocabWord {
   definitions: string[]
 }
+
+export interface PracticePhrase {
+  userPhraseId: number
+  translation: string
+  proficiency: number
+  phrase: string
+  phraseId: number
+  userId: number
+}
