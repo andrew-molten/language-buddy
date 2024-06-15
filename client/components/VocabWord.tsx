@@ -1,7 +1,7 @@
-import type { VocabWord } from '../../models/stories'
+import type { VocabWordWithDefinitions } from '../../models/stories'
 
 interface Props {
-  data: VocabWord
+  data: VocabWordWithDefinitions
 }
 
 function VocabWord({ data }: Props) {

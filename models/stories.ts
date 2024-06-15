@@ -134,3 +134,7 @@ export interface DBVocabWord {
   word: string
   word_id: number
 }
+
+export interface VocabWordWithDefinitions extends DBVocabWord {
+  definitions: string[]
+}
