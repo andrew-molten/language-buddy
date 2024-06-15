@@ -7,8 +7,8 @@ import {
   WordPhraseAssociation,
   WordToAdd,
   WordToAddWithDefinition,
-} from '../../models/stories.ts'
-import connection from './connection.ts'
+} from '../../../models/stories.ts'
+import connection from '../connection.ts'
 
 const db = connection
 // collect the original stories from the request, to add with the data we get back (fs.writefile maybe?)

@@ -1,5 +1,8 @@
-import { DefinitionToAdd, WordPhraseAssociation } from '../../models/stories.ts'
-import connection from './connection.ts'
+import {
+  DefinitionToAdd,
+  WordPhraseAssociation,
+} from '../../../models/stories.ts'
+import connection from '../connection.ts'
 
 // QUERY FUNCTIONS
 export const checkLemmas = async (words: string[], trx = connection) => {

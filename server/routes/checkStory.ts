@@ -15,8 +15,8 @@ import type {
   Stories,
   WordToAdd,
 } from '../../models/stories'
-import * as storyProcessor from '../db/storyProcessor'
-import * as processingQueries from '../db/processingQueries'
+import * as storyProcessor from '../db/functions/storyProcessor'
+import * as processingQueries from '../db/functions/processingQueries'
 
 const router = express.Router()
 

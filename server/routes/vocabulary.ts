@@ -1,5 +1,5 @@
 import express from 'express'
-import * as queries from '../db/queries.ts'
+import * as queries from '../db/functions/queries.ts'
 
 const router = express.Router()
 
