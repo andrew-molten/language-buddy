@@ -1,11 +1,11 @@
-import { DefinitionToAdd } from '../../models/stories.ts'
+import { DefinitionToAdd, WordPhraseAssociation } from '../../models/stories.ts'
 import connection from './connection.ts'
 
 // QUERY FUNCTIONS
 export const checkLemmas = async (words: string[], trx = connection) => {
   return trx('lemmas').select().whereIn('word', words)
 }
-export const checkWords = async (words: string[], trx = connection) => {
+export const getMatchingWords = async (words: string[], trx = connection) => {
   return trx('words').select().whereIn('word', words)
 }
 
@@ -56,4 +56,14 @@ export const checkUserPhrases = async (
 
 export const checkWordInPhrases = async (word: string, trx = connection) => {
   return trx('phrases').select().where('phrase', 'like', `%${word}%`)
+}
+
+export const checkWordPhraseAssociations = async (
+  wordPhraseObj: WordPhraseAssociation,
+  trx = connection,
+) => {
+  return trx('word_phrase_association')
+    .select()
+    .where({ word_id: wordPhraseObj.wordId })
+    .whereIn('phrase_id', wordPhraseObj.phraseIdArr)
 }

@@ -4,6 +4,7 @@ import {
   Id,
   Lemma,
   NewWord,
+  WordPhraseAssociation,
   WordToAdd,
   WordToAddWithDefinition,
 } from '../../models/stories.ts'
@@ -167,4 +168,16 @@ export async function saveStory(data: BackendStory) {
   } catch (error) {
     console.error('Error inserting data', error)
   }
+}
+
+export const insertWordPhraseAssociations = async (
+  wordPhraseObj: WordPhraseAssociation,
+  trx = connection,
+) => {
+  await trx('word_phrase_association').insert(
+    wordPhraseObj.phraseIdArr.map((phraseId) => ({
+      word_id: wordPhraseObj.wordId,
+      phrase_id: phraseId,
+    })),
+  )
 }

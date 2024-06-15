@@ -7,6 +7,7 @@ import type {
   CheckedStory,
   DBPhrase,
   DBWord,
+  DBWordPhraseAssociation,
   Id,
   Lemma,
   NewWord,
@@ -154,17 +155,47 @@ const saveToDB = async (
   console.log(dataToSend)
   await storyProcessor.saveStory(dataToSend)
   // run getWordPhraseAssociations etc. here
-  // getWordPhraseAssociations(data.wordsToAddToVocabulary)
+  getWordPhraseAssociations(data.wordsToAddToVocabulary)
 }
 
 // CHECK IF PHRASE CONTAINS WORD
 // run after storyProcessor, to make code easier.
-// const getWordPhraseAssociations = async (words) => {
-//   // get the id's of all the wordsToaddToVocabulary
-//   // if a word exists in a phrase it will return an array of those phrases
-//   // check if that word phrase combo already exists
-//   // add association
-// }
+const getWordPhraseAssociations = async (words: NewWord[]) => {
+  const wordsArr = getStringArray(words, 'word')
+  // get the id's of all the wordsToaddToVocabulary
+  const wordsWithIds = await processingQueries.getMatchingWords(wordsArr)
+
+  // const wordPhraseAssociations: WordPhraseAssociation[] = []
+  // const existingWordPhraseAssociations = []
+
+  wordsWithIds.forEach(async (wordObj) => {
+    const phrases = await processingQueries.checkWordInPhrases(wordObj.word)
+    const phraseIdArr = phrases.map((phrase) => phrase.id)
+    const wordId = wordObj.id
+    const wordPhraseAssociations = { wordId, phraseIdArr }
+    const existingAssociations: DBWordPhraseAssociation[] =
+      await processingQueries.checkWordPhraseAssociations(
+        wordPhraseAssociations,
+      )
+    // filter existingAssociations out of wordPhraseAssociations
+    const associationPhrasesToAdd = wordPhraseAssociations.phraseIdArr.filter(
+      (phraseId) =>
+        !existingAssociations.find(
+          (existing) => existing.phrase_id === phraseId,
+        ),
+    )
+
+    if (associationPhrasesToAdd.length > 0) {
+      storyProcessor.insertWordPhraseAssociations({
+        wordId,
+        phraseIdArr: associationPhrasesToAdd,
+      })
+    }
+    console.log('existingAssociations', existingAssociations)
+  })
+
+  // add associations
+}
 
 const checkUsersPhrases = async (
   existingPhrases: DBPhrase[],
@@ -198,23 +229,23 @@ const checkPhrases = async (phrases: PhraseCorrection[]) => {
 }
 
 const checkLemmas = async (newWords: NewWord[]) => {
-  const lemmaArr: string[] = newWords.map((newWord) => newWord.lemma)
+  const lemmaArr: string[] = getStringArray(newWords, 'lemma')
   const existingLemmas = await processingQueries.checkLemmas(lemmaArr)
-  const existingLemmaStrings = existingLemmas.map((lemma) => lemma.word)
+  const existingLemmaStrings = getStringArray(existingLemmas, 'word')
   const lemmasToAdd = newWords.filter(
     (newWord) => !existingLemmaStrings.includes(newWord.lemma),
   )
   return { lemmasToAdd, existingLemmas }
 }
 
-// function getArrayOfWordsFromObjects(wordObjArray: NewWord[] ) {
-//   return wordObjArray.map((wordObj) => wordObj.word)
-// }
+function getStringArray(wordObjArray: NewWord[], property: keyof NewWord) {
+  return wordObjArray.map((wordObj) => wordObj[property])
+}
 
 const checkWords = async (newWords: NewWord[], existingLemmas: Lemma[]) => {
-  const stringArr: string[] = newWords.map((newWord) => newWord.word)
-  const existingWords = await processingQueries.checkWords(stringArr)
-  const existingWordStrings = existingWords.map((word) => word.word)
+  const stringArr: string[] = getStringArray(newWords, 'word')
+  const existingWords = await processingQueries.getMatchingWords(stringArr)
+  const existingWordStrings = getStringArray(existingWords, 'word')
   const actualNewWords = newWords.filter(
     (newWord) => !existingWordStrings.includes(newWord.word),
   )

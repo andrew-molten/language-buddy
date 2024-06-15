@@ -81,6 +81,16 @@ export interface DefinitionToAdd extends DBWord {
   word_id?: number
 }
 
+export interface WordPhraseAssociation {
+  wordId: number
+  phraseIdArr: number[]
+}
+export interface DBWordPhraseAssociation {
+  id: number
+  word_id: number
+  phrase_id: number
+}
+
 export interface BackendCheckedStory extends CheckedStory {
   story_one: string
   story_two: string
@@ -113,7 +123,7 @@ export interface StoryData {
   corrections: string
 }
 
-export interface VocabWord {
+export interface DBVocabWord {
   id: number
   definition: string
   definition_language: string

@@ -1,3 +1,4 @@
+import { DBVocabWord } from '../../models/stories'
 import VocabWord from '../components/VocabWord'
 import { useVocabulary } from '../hooks/useStories'
 
@@ -16,8 +17,8 @@ function Vocabulary() {
   return (
     <div className=" page">
       <h2 className="page-heading">Vocabulary</h2>
-      {vocab.data.map((data) => (
-        <VocabWord key={data.word} data={data} />
+      {vocab.data.map((data: DBVocabWord, index: number) => (
+        <VocabWord key={data.word + index} data={data} />
       ))}
     </div>
   )
