@@ -3,14 +3,25 @@ import { PracticePhrase } from '../../../models/stories'
 
 interface Props {
   phrase: PracticePhrase
+  setProgress: (newprogress: {
+    currentWord: number
+    proficiencyChange: number[]
+  }) => void
+  progress: {
+    currentWord: number
+    proficiencyChange: number[]
+  }
 }
 
-function WordChunks({ phrase }: Props) {
-  const options = phrase.translation.split(' ')
+function WordChunks({ phrase, setProgress, progress }: Props) {
+  const options = phrase.phrase.split(' ')
   shuffleArr(options)
   const [phraseOptions, setPhraseOptions] = useState(options)
-  // need to randomize after the split
   const [guessSentence, setGuessSentence] = useState<string[]>([])
+  const [lessonOutcome, setLessonOutcome] = useState({
+    proficiencyPoint: 0,
+    message: '',
+  })
 
   /* Randomize array in-place using Durstenfeld shuffle algorithm */
   function shuffleArr(arr: string[]) {
@@ -41,11 +52,32 @@ function WordChunks({ phrase }: Props) {
     setGuessSentence(newGuessSentence)
   }
 
-  // add button to check if the guess was correct
+  function handleSubmit() {
+    const guess = guessSentence.join(' ')
+    if (guess === phrase.phrase) {
+      setLessonOutcome({ proficiencyPoint: 1, message: 'Well done!' })
+    } else {
+      setLessonOutcome({ proficiencyPoint: -1, message: 'Oops' })
+    }
+  }
+
+  function handleNext() {
+    const newProficiencyArr = [...progress.proficiencyChange]
+    newProficiencyArr[progress.currentWord] = lessonOutcome.proficiencyPoint
+    const newProgress = {
+      currentWord: progress.currentWord + 1,
+      proficiencyChange: [...newProficiencyArr],
+    }
+    newProgress.proficiencyChange[progress.currentWord]
+    setLessonOutcome({ proficiencyPoint: 0, message: '' })
+    setPhraseOptions([])
+    setGuessSentence([])
+    setProgress({ ...newProgress })
+  }
 
   return (
     <div>
-      <p>{phrase.phrase}</p>
+      <p>{phrase.translation}</p>
       <div className="guess-div">
         {guessSentence.map((word, i) => (
           <button key={word + i + 'guess'} onClick={handleGuessClick}>
@@ -60,6 +92,17 @@ function WordChunks({ phrase }: Props) {
           </button>
         ))}
       </div>
+      <button className="go-btn" onClick={handleSubmit}>
+        Go
+      </button>
+      {lessonOutcome.message.length > 0 ? (
+        <div>
+          <p>{lessonOutcome.message}</p>{' '}
+          <button onClick={handleNext}>Next</button>
+        </div>
+      ) : (
+        ''
+      )}
     </div>
   )
 }
