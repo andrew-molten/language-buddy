@@ -6,12 +6,21 @@ interface Props {
 }
 
 function WordChunks({ phrase }: Props) {
-  const [phraseOptions, setPhraseOptions] = useState(
-    phrase.translation.split(' '),
-  )
+  const options = phrase.translation.split(' ')
+  shuffleArr(options)
+  const [phraseOptions, setPhraseOptions] = useState(options)
+  // need to randomize after the split
   const [guessSentence, setGuessSentence] = useState<string[]>([])
 
-  // const splitWords = phrase.translation.split(' ')
+  /* Randomize array in-place using Durstenfeld shuffle algorithm */
+  function shuffleArr(arr: string[]) {
+    for (let i = arr.length - 1; i > 0; i--) {
+      const r = Math.floor(Math.random() * (i + 1))
+      const temp = arr[i]
+      arr[i] = arr[r]
+      arr[r] = temp
+    }
+  }
 
   function handleOptionClick(e: React.MouseEvent<HTMLButtonElement>) {
     const clicked = (e.nativeEvent.target as HTMLElement)?.textContent
@@ -20,7 +29,6 @@ function WordChunks({ phrase }: Props) {
     const indexOf = newPhraseOptions.indexOf(clicked!)
     newPhraseOptions.splice(indexOf, 1)
     setPhraseOptions(newPhraseOptions)
-    // console.log(currentSentenceGuess)
   }
 
   function handleGuessClick(e: React.MouseEvent<HTMLButtonElement>) {
@@ -31,10 +39,9 @@ function WordChunks({ phrase }: Props) {
     const indexOf = newGuessSentence.indexOf(clicked!)
     newGuessSentence.splice(indexOf, 1)
     setGuessSentence(newGuessSentence)
-    // console.log(currentSentenceGuess)
   }
-  console.log('guessSentence', guessSentence)
-  console.log('phraseOptions', phraseOptions)
+
+  // add button to check if the guess was correct
 
   return (
     <div>
