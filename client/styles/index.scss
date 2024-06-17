@@ -39,6 +39,7 @@ li {
   border-radius: 20px 20px 0px 0px;
   padding: 0.5em 0 0.3em 1em;
   background-color: var(--primary-color);
+  position: relative;
 }
 
 .header h1 {
@@ -111,4 +112,11 @@ li {
 
 .go-btn {
   background-color: #86ed00;
+}
+
+.auth {
+  position: absolute;
+  right: 0.5em;
+  text-align: right;
+  top: 0.5em;
 }
