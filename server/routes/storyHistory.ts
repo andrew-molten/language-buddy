@@ -1,18 +1,12 @@
 import express from 'express'
-import * as queries from '../db/queries.ts'
+import * as queries from '../db/functions/queries.ts'
 
 const router = express.Router()
 
-// router.get('/')
-
 router.get('/:id', async (req, res) => {
-  console.log('storyHistory')
   try {
     const id = Number(req.params.id)
-    // const id = 1
-    console.log('id: ', id)
     const result = await queries.getAllStoriesByUserId(id)
-    console.log(result)
     res.json(result)
   } catch (err) {
     if (err instanceof Error) {

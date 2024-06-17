@@ -29,7 +29,7 @@ function StoryChecker() {
   const handleSubmit = async function (e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault()
     // add the same check to the server side?
-    if (stories.englishStory.length > 10 && stories.germanStory.length > 10) {
+    if (stories.englishStory.length > 5 && stories.germanStory.length > 5) {
       // setSubmittedStories({
       //   englishStory: stories.englishStory,
       //   germanStory: stories.germanStory,

@@ -21,8 +21,8 @@ function DisplayStory({ data }: Props) {
         {JSON.parse(data.corrections).map(
           (correction: PhraseCorrection, index: number) => {
             return (
-              <li key={correction.germanSentenceCorrection.slice(0, 3) + index}>
-                <strong>{correction.germanSentenceCorrection}</strong>{' '}
+              <li key={correction.sentenceCorrection.slice(0, 3) + index}>
+                <strong>{correction.sentenceCorrection}</strong>{' '}
                 {correction.translation}
               </li>
             )

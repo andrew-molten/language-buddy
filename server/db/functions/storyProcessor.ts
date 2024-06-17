@@ -4,16 +4,15 @@ import {
   Id,
   Lemma,
   NewWord,
+  WordPhraseAssociation,
   WordToAdd,
-  DefinitionToAdd,
   WordToAddWithDefinition,
-} from '../../models/stories.ts'
-import connection from './connection.ts'
+} from '../../../models/stories.ts'
+import connection from '../connection.ts'
 
 const db = connection
 // collect the original stories from the request, to add with the data we get back (fs.writefile maybe?)
 export async function saveStory(data: BackendStory) {
-  console.log('language_learning: ', data.language_learning)
   try {
     await db.transaction(async (trx) => {
       // INSERT TO STORY HISTORY
@@ -42,13 +41,21 @@ export async function saveStory(data: BackendStory) {
               language: data.language_learning,
             })),
           )
-          .returning(['id', 'word', 'language']) // [{id:3}, {id:4}]
+          .returning(['id', 'word', 'language'])
+        // insertlemma definitions
+        await trx('lemma_definitions').insert(
+          newLemmaIds.map((lemmaId, index) => ({
+            lemma_id: lemmaId.id,
+            definition: data.lemmasData.lemmasToAdd[index].definition,
+            definition_language: data.language_native,
+          })),
+        )
       }
 
       // ADD LEMMA IDS BEFORE INSERT
       const wordsWithLemmaIds = data.wordsData.wordsToAdd.map((word) => {
-        if (word.lemma_id === null) {
-          const lemma = newLemmaIds.find((lemma) => lemma.word === word.word)
+        if (word.lemma_id === null || undefined) {
+          const lemma = newLemmaIds.find((lemma) => lemma.word === word.lemma)
           word.lemma_id = lemma?.id
         }
         return word
@@ -115,10 +122,45 @@ export async function saveStory(data: BackendStory) {
           .returning('id')
       }
 
+      // INSERT PHRASES
+      let correctionIds: Id[] = []
+      if (data.phraseData.phrasesToAdd.length > 0) {
+        correctionIds = await trx('phrases')
+          .insert(
+            data.phraseData.phrasesToAdd.map((correction) => ({
+              phrase: correction.sentenceCorrection,
+              language: data.language_learning,
+            })),
+          )
+          .returning('id')
+
+        // INSERT PHRASE TRANSLATIONS
+        await trx('phrase_translation').insert(
+          data.phraseData.phrasesToAdd.map((phrase, index) => ({
+            phrase_id: correctionIds[index].id,
+            translation: phrase.translation,
+            translation_language: data.language_native,
+          })),
+        )
+      }
+
+      // USERS NEW PHRASES
+      const usersNewPhrases = [...correctionIds, ...data.usersNewPhraseIds]
+      if (usersNewPhrases.length > 0) {
+        await trx('user_phrases').insert(
+          usersNewPhrases.map((phrase) => ({
+            user_id: data.user_id,
+            phrase_id: phrase.id,
+            proficiency: 0,
+          })),
+        )
+      }
+
       console.log('storyHistoryId: ', storyHistoryId)
       console.log('newWordIds: ', newWordIds)
       console.log('usersNewWordIds: ', usersNewWordIds)
       console.log('definitionIds: ', definitionIds)
+      console.log('correctionIds', correctionIds)
 
       await trx.commit()
     })
@@ -128,42 +170,14 @@ export async function saveStory(data: BackendStory) {
   }
 }
 
-// QUERY FUNCTIONS
-export async function checkLemmas(words: string[], trx = connection) {
-  return trx('lemmas').select().whereIn('word', words)
-}
-export async function checkWords(words: string[], trx = connection) {
-  return trx('words').select().whereIn('word', words)
-}
-
-export async function checkWordsInUserVocab(
-  ids: number[],
-  user_id: number,
+export const insertWordPhraseAssociations = async (
+  wordPhraseObj: WordPhraseAssociation,
   trx = connection,
-) {
-  return trx('user_vocabulary')
-    .select()
-    .where({ user_id })
-    .whereIn('word_id', ids)
-}
-
-// export async function getDefinitionsById(ids: DBWord[], trx = connection) {
-//   const justIds = ids.map((id) => id.id)
-//   return trx('definitions')
-//     .select()
-//     .whereIn('word_id', justIds)
-//     .join('words', 'definitions.word_id', 'words.id')
-// }
-
-export async function checkDefinitionsExist(definitions: DefinitionToAdd[]) {
-  const query = db('definitions').select()
-
-  definitions.forEach(({ id, definition }, index) => {
-    if (index === 0) {
-      query.where({ word_id: id, definition })
-    } else {
-      query.orWhere({ word_id: id, definition })
-    }
-  })
-  return query
+) => {
+  await trx('word_phrase_association').insert(
+    wordPhraseObj.phraseIdArr.map((phraseId) => ({
+      word_id: wordPhraseObj.wordId,
+      phrase_id: phraseId,
+    })),
+  )
 }

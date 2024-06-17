@@ -5,18 +5,23 @@ import type {
   BackendCheckedStory,
   BackendStory,
   CheckedStory,
+  DBPhrase,
   DBWord,
+  DBWordPhraseAssociation,
   Id,
   Lemma,
   NewWord,
+  PhraseCorrection,
   Stories,
   WordToAdd,
 } from '../../models/stories'
-import * as storyProcessor from '../db/storyProcessor'
+import * as storyProcessor from '../db/functions/storyProcessor'
+import * as processingQueries from '../db/functions/processingQueries'
 
 const router = express.Router()
 
 const apiKey = process.env.API_KEY
+// Don't include any new line notation, t
 
 router.post('/', async (req, res) => {
   try {
@@ -32,6 +37,8 @@ router.post('/', async (req, res) => {
     // create a preference for spelling accuracy
 
     const { englishStory, germanStory }: Stories = req.body
+    const languageLearning = 'German'
+    const languageNative = 'English'
     const response = await request
       .post('https://api.openai.com/v1/chat/completions')
       .set('Authorization', `Bearer ${apiKey}`)
@@ -43,10 +50,10 @@ router.post('/', async (req, res) => {
             content: `
     I'm going to give you 2 stories, one in English, and one in German. I'm learning german so please tell me how to improve my German story so that it translates to the english story.
 
-    Don't include any new line notation, the response MUST be JSON formatted like this so that it is easy to parse: '{translatedGermanStory: "string", corrections: PhraseCorrection[], wordsToAddToVocabulary: NewWord[], wellUsedWords: Word[]}'
+    The response MUST be JSON formatted like this so that it is easy to parse: '{translatedGermanStory: "string", corrections: PhraseCorrection[], wordsToAddToVocabulary: NewWord[], wellUsedWords: Word[]}'
 
     interface PhraseCorrection {
-      germanSentenceCorrection: "string"
+      sentenceCorrection: "string",
       translation: "string",
       }
  
@@ -63,6 +70,9 @@ router.post('/', async (req, res) => {
       lemma: "string"
     }
 
+    sentenceCorrection is in ${languageLearning}
+    translation is in ${languageNative}
+
     grammaticalForm should indicate the grammatical form of a word if not a lemma, e.g. past participle, second person singular, plural etc.
 
     wellUsedWords has a max length of 5 & only returns words that were used perfectly in the german story, return more complex words first, don't return names of people or places.
@@ -75,8 +85,10 @@ router.post('/', async (req, res) => {
         ],
         // max_tokens: 300, //having the max tokens can cause it to stop writing mid json.
       })
+
     const messageContent = response.body.choices[0].message.content
-    const parsedContent = JSON.parse(messageContent)
+    const preprocessedResponse = preprocessResponse(messageContent)
+    const parsedContent = JSON.parse(preprocessedResponse)
     res.json(response.body)
     saveToDB(parsedContent, englishStory, germanStory)
   } catch (err) {
@@ -89,6 +101,11 @@ router.post('/', async (req, res) => {
     }
   }
 })
+
+const preprocessResponse = (response: string): string => {
+  // Remove any triple backticks and newlines associated with code blocks
+  return response.replace(/^```json\s*|\s*```$/g, '')
+}
 
 const saveToDB = async (
   parsedContent: CheckedStory,
@@ -114,14 +131,16 @@ const saveToDB = async (
     data.user_id,
   )
 
-  // check if same definition of word_id exists
-
   const definitionsToAdd = await checkDefinitionsExist(
     wordsData.existingWords,
     data.wordsToAddToVocabulary,
   )
+  const phraseData = await checkPhrases(data.corrections)
 
-  // add lemma definitions
+  const usersNewPhraseIds = await checkUsersPhrases(
+    phraseData.existingPhrases,
+    data.user_id,
+  )
 
   const dataToSend: BackendStory = {
     ...data,
@@ -129,26 +148,104 @@ const saveToDB = async (
     wordsData,
     usersNewWordIds,
     definitionsToAdd,
+    phraseData,
+    usersNewPhraseIds,
   }
 
   console.log(dataToSend)
-  storyProcessor.saveStory(dataToSend)
+  await storyProcessor.saveStory(dataToSend)
+  // run getWordPhraseAssociations etc. here
+  getWordPhraseAssociations(data.wordsToAddToVocabulary)
+}
+
+// CHECK IF PHRASE CONTAINS WORD
+// run after storyProcessor, to make code easier.
+const getWordPhraseAssociations = async (words: NewWord[]) => {
+  const wordsArr = getStringArray(words, 'word')
+  // get the id's of all the wordsToaddToVocabulary
+  const wordsWithIds = await processingQueries.getMatchingWords(wordsArr)
+
+  // const wordPhraseAssociations: WordPhraseAssociation[] = []
+  // const existingWordPhraseAssociations = []
+
+  wordsWithIds.forEach(async (wordObj) => {
+    const phrases = await processingQueries.checkWordInPhrases(wordObj.word)
+    const phraseIdArr = phrases.map((phrase) => phrase.id)
+    const wordId = wordObj.id
+    const wordPhraseAssociations = { wordId, phraseIdArr }
+    const existingAssociations: DBWordPhraseAssociation[] =
+      await processingQueries.checkWordPhraseAssociations(
+        wordPhraseAssociations,
+      )
+    // filter existingAssociations out of wordPhraseAssociations
+    const associationPhrasesToAdd = wordPhraseAssociations.phraseIdArr.filter(
+      (phraseId) =>
+        !existingAssociations.find(
+          (existing) => existing.phrase_id === phraseId,
+        ),
+    )
+
+    if (associationPhrasesToAdd.length > 0) {
+      storyProcessor.insertWordPhraseAssociations({
+        wordId,
+        phraseIdArr: associationPhrasesToAdd,
+      })
+    }
+    console.log('existingAssociations', existingAssociations)
+  })
+
+  // add associations
+}
+
+const checkUsersPhrases = async (
+  existingPhrases: DBPhrase[],
+  userId: number,
+) => {
+  const existingPhraseIds = existingPhrases.map((phrase) => phrase.id)
+  const usersExistingPhrases = await processingQueries.checkUserPhrases(
+    existingPhraseIds,
+    userId,
+  )
+  const usersExistingNumArr = usersExistingPhrases.map(
+    (phrase) => phrase.phrase_id,
+  )
+  const usersNewExistingPhrase = existingPhrases.filter(
+    (phrase) => !usersExistingNumArr.includes(phrase.id),
+  )
+  return usersNewExistingPhrase
+}
+
+const checkPhrases = async (phrases: PhraseCorrection[]) => {
+  const phraseStringArr = phrases.map(
+    (correction) => correction.sentenceCorrection,
+  )
+  const existingPhrases =
+    await processingQueries.checkPhrasesExists(phraseStringArr)
+  const existingPhraseStrings = existingPhrases.map((phrase) => phrase.phrase)
+  const phrasesToAdd = phrases.filter(
+    (phrase) => !existingPhraseStrings.includes(phrase.sentenceCorrection),
+  )
+  return { phrasesToAdd, existingPhrases }
 }
 
 const checkLemmas = async (newWords: NewWord[]) => {
-  const lemmaArr: string[] = newWords.map((newWord) => newWord.lemma)
-  const existingLemmas = await storyProcessor.checkLemmas(lemmaArr)
-  const existingLemmaStrings = existingLemmas.map((word) => word.word)
+  const lemmaArr: string[] = getStringArray(newWords, 'lemma')
+  const existingLemmas = await processingQueries.checkLemmas(lemmaArr)
+  const existingLemmaStrings = getStringArray(existingLemmas, 'word')
   const lemmasToAdd = newWords.filter(
     (newWord) => !existingLemmaStrings.includes(newWord.lemma),
   )
   return { lemmasToAdd, existingLemmas }
 }
 
+function getStringArray(wordObjArray: NewWord[], property: keyof NewWord) {
+  return wordObjArray.map((wordObj) => wordObj[property])
+}
+
 const checkWords = async (newWords: NewWord[], existingLemmas: Lemma[]) => {
-  const stringArr: string[] = newWords.map((newWord) => newWord.word)
-  const existingWords = await storyProcessor.checkWords(stringArr)
-  const existingWordStrings = existingWords.map((word) => word.word)
+  const stringArr: string[] = getStringArray(newWords, 'word')
+  const existingWords = await processingQueries.getMatchingWords(stringArr)
+  const existingWordStrings = getStringArray(existingWords, 'word')
   const actualNewWords = newWords.filter(
     (newWord) => !existingWordStrings.includes(newWord.word),
   )
@@ -175,11 +272,11 @@ const checkUserVocab = async (existingWords: DBWord[], userId: number) => {
   let usersNewWordIds: Id[] = []
   if (existingWords.length > 0) {
     const wordIds = existingWords.map((word) => word.id)
-    const existingIds = await storyProcessor.checkWordsInUserVocab(
+    const usersExistingWordIds = await processingQueries.checkWordsInUserVocab(
       wordIds,
       userId,
     )
-    const existingIdsNumArr = existingIds.map((id) => id.word_id)
+    const existingIdsNumArr = usersExistingWordIds.map((id) => id.word_id)
     const idsToAdd = wordIds.filter((id) => !existingIdsNumArr.includes(id))
     usersNewWordIds = idsToAdd.map((id: number) => {
       return { id: id }
@@ -201,7 +298,7 @@ const checkDefinitionsExist = async (
     }
   })
   const existingDefinitions =
-    await storyProcessor.checkDefinitionsExist(definitionsAndIds)
+    await processingQueries.checkDefinitionsExist(definitionsAndIds)
   const idsOfExistingDefinitions = existingDefinitions.map(
     (word) => word.word_id,
   )
@@ -210,6 +307,7 @@ const checkDefinitionsExist = async (
   )
   return definitionsToAdd
 }
+
 function addDate() {
   const today = new Date()
   const todayString = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`

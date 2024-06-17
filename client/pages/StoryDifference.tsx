@@ -19,21 +19,28 @@ function StoryDifference() {
   // also guard against index -1
   const messageContent = data.choices[0].message.content
 
-  const parsedContent = JSON.parse(messageContent)
+  const preprocessResponse = (response: string): string => {
+    // Remove any triple backticks or jsons and newlines associated with code blocks
+    return response.replace(/^```json\s*|\s*```$/g, '')
+  }
+
+  const preprocessedResponse = preprocessResponse(messageContent)
+
+  const parsedContent = JSON.parse(preprocessedResponse)
   // add guards against corrections, words or translation not being available
   return (
     <div className="story-difference page">
       <h1 className="page-heading">Differences</h1>
       <p>
-        <strong>AI translation:</strong> {parsedContent.translatedGermanStory}
+        <strong>Translation:</strong> {parsedContent.translatedGermanStory}
       </p>
       <h2>Corrections</h2>
       <ul>
         {parsedContent.corrections.map(
           (correction: PhraseCorrection, index: number) => {
             return (
-              <li key={correction.germanSentenceCorrection.slice(0, 3) + index}>
-                <strong>{correction.germanSentenceCorrection}</strong>
+              <li key={correction.sentenceCorrection.slice(0, 3) + index}>
+                <strong>{correction.sentenceCorrection}</strong>
                 <br />
                 {correction.translation}
               </li>

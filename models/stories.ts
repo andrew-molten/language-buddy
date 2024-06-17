@@ -6,7 +6,7 @@ export interface CheckedStory {
 }
 
 export interface PhraseCorrection {
-  germanSentenceCorrection: 'string'
+  sentenceCorrection: 'string'
   translation: 'string'
 }
 
@@ -50,6 +50,16 @@ export interface WordsData {
   wordsToAdd: WordToAdd[]
   existingWords: DBWord[]
 }
+export interface PhraseData {
+  phrasesToAdd: PhraseCorrection[]
+  existingPhrases: DBPhrase[]
+}
+
+export interface DBPhrase {
+  id: number
+  phrase: string
+  language: string
+}
 
 export interface WordToAdd extends NewWord {
   lemma_id?: number | null
@@ -71,6 +81,16 @@ export interface DefinitionToAdd extends DBWord {
   word_id?: number
 }
 
+export interface WordPhraseAssociation {
+  wordId: number
+  phraseIdArr: number[]
+}
+export interface DBWordPhraseAssociation {
+  id: number
+  word_id: number
+  phrase_id: number
+}
+
 export interface BackendCheckedStory extends CheckedStory {
   story_one: string
   story_two: string
@@ -85,6 +105,8 @@ export interface BackendStory extends BackendCheckedStory {
   wordsData: WordsData
   usersNewWordIds: Id[]
   definitionsToAdd: DefinitionToAdd[]
+  phraseData: PhraseData
+  usersNewPhraseIds: DBPhrase[]
 }
 
 export interface StoryData {
@@ -101,7 +123,7 @@ export interface StoryData {
   corrections: string
 }
 
-export interface VocabWord {
+export interface DBVocabWord {
   id: number
   definition: string
   definition_language: string
@@ -111,4 +133,17 @@ export interface VocabWord {
   user_id: number
   word: string
   word_id: number
+}
+
+export interface VocabWordWithDefinitions extends DBVocabWord {
+  definitions: string[]
+}
+
+export interface PracticePhrase {
+  userPhraseId: number
+  translation: string
+  proficiency: number
+  phrase: string
+  phraseId: number
+  userId: number
 }
