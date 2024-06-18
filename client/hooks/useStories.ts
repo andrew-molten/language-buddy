@@ -2,11 +2,13 @@ import { useMutation, useQuery } from '@tanstack/react-query'
 import request from 'superagent'
 import type { Stories } from '../../models/stories'
 import { useNavigate } from 'react-router-dom'
+import { useAuth0 } from '@auth0/auth0-react'
 
 const rootUrl = '/api/v1'
 
 export const useChatGPT = () => {
   const navigate = useNavigate()
+
   return useMutation({
     mutationKey: ['compareStories'],
     mutationFn: async ({ englishStory, germanStory }: Stories) => {
@@ -22,10 +24,16 @@ export const useChatGPT = () => {
 }
 
 export const useStoryHistory = (user_id: number) => {
+  const { getAccessTokenSilently, isAuthenticated } = useAuth0()
   return useQuery({
+    enabled: isAuthenticated,
     queryKey: ['storyHistory'],
     queryFn: async () => {
-      const res = await request.get(`${rootUrl}/story-history/${user_id}`)
+      const token = await getAccessTokenSilently()
+      console.log(token)
+      const res = await request
+        .get(`${rootUrl}/story-history/${user_id}`)
+        .set('Authorization', `Bearer ${token}`)
       return res.body
     },
   })

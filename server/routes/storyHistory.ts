@@ -1,11 +1,20 @@
 import express from 'express'
 import * as queries from '../db/functions/queries.ts'
+import { JwtRequest } from '../auth0.ts'
+import checkJwt from '../auth0.ts'
 
 const router = express.Router()
 
-router.get('/:id', async (req, res) => {
+router.get('/:id', checkJwt, async (req: JwtRequest, res) => {
+  const id = Number(req.params.id)
+  const auth0Id = req.auth?.sub
+
+  if (!auth0Id) {
+    console.log('No auth0Id')
+    return res.status(401).send('unauthorized')
+  }
+
   try {
-    const id = Number(req.params.id)
     const result = await queries.getAllStoriesByUserId(id)
     res.json(result)
   } catch (err) {

@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
       clientId="uP5YLX5lLn6aTi251qbXTu8C50nlrYtB"
       authorizationParams={{
         redirect_uri: window.location.origin,
+        audience: 'https://language-buddy/api',
       }}
     >
       <QueryClientProvider client={queryClient}>
@@ -24,7 +25,3 @@ document.addEventListener('DOMContentLoaded', () => {
     </Auth0Provider>,
   )
 })
-
-// ClientId: uP5YLX5lLn6aTi251qbXTu8C50nlrYtB
-// domain: whai-2024-andrew.au.auth0.com
-// audience: https://language-buddy/api
