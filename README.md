@@ -16,7 +16,7 @@ Dojo - Practice your sentences
 Adjust Database processing - at the moment phrases are automatically added to the DB where everyone can see, I want to give more control to users, so that any phrases containing sensitive information won't be accessible to other users.
 Add payment processing so that I can afford to keep it deployed.
 
-## Long-term plans
+### Long-term plans
 Users can easily add a word in english/german that they don't know or want to practice.
 Type in just an english phrase to get the translation and add to Dojo.
 Improve styling.
@@ -32,6 +32,7 @@ Allow users to create their own prompts & favourite others.
 git clone git@github.com:andrew-molten/language-buddy.git
 cd language-buddy
 npm install # to install dependencies
+npm run knex migrate:latest # to build database tables
 npm run dev # to start the dev server
 ```
 
