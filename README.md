@@ -1,9 +1,5 @@
 # Language Buddy
 
-## Setup
-
-You will need to create an openAI API key and place it in a .env file at the root like: API_KEY='uhver...'
-
 ## Why I'm building this app
 My wife is half German & speaks mostly German to my daughter. So I've been learning German too. Apps that I have been using are great or vocabulary, but it's still difficult to express myself in German.
 
@@ -31,6 +27,7 @@ Allow users to create their own prompts & favourite others.
 ```
 git clone git@github.com:andrew-molten/language-buddy.git
 cd language-buddy
+Create an openAI API key and place it in a .env file at the root like this: API_KEY='uhver...'
 npm install # to install dependencies
 npm run knex migrate:latest # to build database tables
 npm run dev # to start the dev server
