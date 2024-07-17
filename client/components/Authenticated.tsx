@@ -3,6 +3,7 @@ import React from 'react'
 
 const useIsAuthenticated = () => {
   const { isAuthenticated } = useAuth0()
+
   return isAuthenticated
 }
 
