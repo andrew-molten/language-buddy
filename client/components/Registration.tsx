@@ -1,10 +1,13 @@
 import { useAuth0 } from '@auth0/auth0-react'
 import { useState } from 'react'
+import FormField from './FormField'
 
 function Registration() {
   const { user } = useAuth0()
   const [formState, setFormState] = useState({
     username: user?.nickname ? user.nickname : '',
+    givenName: user?.given_name ? user?.given_name : '',
+    familyName: user?.family_name ? user?.family_name : '',
     birthdate: '',
   })
 
@@ -13,32 +16,76 @@ function Registration() {
     console.log(event.target.value)
   }
 
+  function checkStateValues() {
+    if (
+      formState.username.length > 0 &&
+      formState.givenName.length > 0 &&
+      formState.familyName.length > 0 &&
+      formState.birthdate.length > 0
+    ) {
+      return true
+    } else {
+      return false
+    }
+  }
+
+  function handleSubmit(event: React.MouseEvent<HTMLButtonElement>) {
+    event.preventDefault()
+    if (!checkStateValues()) return alert('Plese fill in all values')
+    // create user object
+
+    const newUser = {
+      email: user?.email,
+      givenName: formState.givenName,
+      familyName: formState.familyName,
+      username: formState.username,
+      birthdate: formState.birthdate,
+    }
+
+    // send to backend
+
+    // add to database
+
+    //
+  }
+
   console.log(user)
   return (
     <div className=" page">
       <h2 className="page-heading">Registration</h2>
       <form>
-        <label htmlFor="username">Username: </label>
-        <input
+        <FormField
+          fieldName="givenName"
+          labelName="Given Name"
           type="text"
-          name="username"
-          id="username"
-          value={formState.username}
-          onChange={handleChange}
-        ></input>{' '}
-        <br />
-        <span className="mt-3">
-          <label className="text-sky-400/100" htmlFor="birthdate">
-            Birthdate:{' '}
-          </label>
-          <input
-            name="birthdate"
-            id="birthdate"
-            type="date"
-            value={formState.birthdate}
-            onChange={handleChange}
-          />
-        </span>
+          formState={formState}
+          handleChange={handleChange}
+        />
+        <FormField
+          fieldName="familyName"
+          labelName="Family Name"
+          type="text"
+          formState={formState}
+          handleChange={handleChange}
+        />
+        <FormField
+          fieldName="username"
+          labelName="Username"
+          type="text"
+          formState={formState}
+          handleChange={handleChange}
+        />
+        <FormField
+          fieldName="birthdate"
+          labelName="Birthdate"
+          type="date"
+          formState={formState}
+          handleChange={handleChange}
+        />
+        <button
+          className="primary-btn py-2 px-4 mt-4"
+          onClick={handleSubmit}
+        >{`Let's go`}</button>
       </form>
     </div>
   )
