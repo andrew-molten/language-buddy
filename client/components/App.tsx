@@ -4,12 +4,6 @@ import { useGetUser } from '../hooks/useUser'
 import Registration from './Registration'
 import { useAuth0 } from '@auth0/auth0-react'
 
-// if a user exists with this Auth Id then set the user id
-
-// If signed in then display NavBar
-
-// Otherwise display registration
-
 function App() {
   const { isAuthenticated } = useAuth0()
   const user = useGetUser()
@@ -23,8 +17,7 @@ function App() {
       </div>
     )
   }
-
-  if (isAuthenticated && !user.data.id)
+  if (isAuthenticated && !user.data[0]) {
     // for new user
     return (
       <div className="app">
@@ -34,6 +27,7 @@ function App() {
         <Registration />
       </div>
     )
+  }
 
   return (
     <>

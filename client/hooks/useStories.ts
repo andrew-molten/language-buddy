@@ -30,7 +30,6 @@ export const useStoryHistory = (user_id: number) => {
     queryKey: ['storyHistory'],
     queryFn: async () => {
       const token = await getAccessTokenSilently()
-      console.log(token)
       const res = await request
         .get(`${rootUrl}/story-history/${user_id}`)
         .set('Authorization', `Bearer ${token}`)

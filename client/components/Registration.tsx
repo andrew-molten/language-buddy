@@ -1,9 +1,12 @@
 import { useAuth0 } from '@auth0/auth0-react'
 import { useState } from 'react'
 import FormField from './FormField'
+import { ConflictError, NewUser } from '../../models/admin'
+import { useCreateUser } from '../hooks/useUser'
 
 function Registration() {
   const { user } = useAuth0()
+  const createUser = useCreateUser()
   const [formState, setFormState] = useState({
     username: user?.nickname ? user.nickname : '',
     givenName: user?.given_name ? user?.given_name : '',
@@ -13,7 +16,7 @@ function Registration() {
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     setFormState({ ...formState, [event.target.name]: event.target.value })
-    console.log(event.target.value)
+    // console.log(event.target.value)
   }
 
   function checkStateValues() {
@@ -33,23 +36,17 @@ function Registration() {
     event.preventDefault()
     if (!checkStateValues()) return alert('Plese fill in all values')
     // create user object
-
-    const newUser = {
-      email: user?.email,
+    const newUser: NewUser = {
+      email: user!.email!,
       givenName: formState.givenName,
       familyName: formState.familyName,
       username: formState.username,
       birthdate: formState.birthdate,
     }
 
-    // send to backend
-
-    // add to database
-
-    //
+    createUser.mutateAsync(newUser)
   }
 
-  console.log(user)
   return (
     <div className=" page">
       <h2 className="page-heading">Registration</h2>
@@ -75,6 +72,12 @@ function Registration() {
           formState={formState}
           handleChange={handleChange}
         />
+        {createUser.error &&
+        (createUser.error as ConflictError).status === 409 ? (
+          <p className="text-sm text-red-600">{`Sorry, that username already exists.`}</p>
+        ) : (
+          ''
+        )}
         <FormField
           fieldName="birthdate"
           labelName="Birthdate"

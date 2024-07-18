@@ -12,7 +12,6 @@ function NavBar() {
   const handleSignIn = () => {
     loginWithRedirect()
   }
-  console.log(user)
 
   return (
     <div>

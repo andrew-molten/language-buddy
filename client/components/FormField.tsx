@@ -1,16 +1,11 @@
+import { RegistrationForm } from '../../models/admin'
+
 interface Props {
   fieldName: string
   labelName: string
   formState: RegistrationForm
   type: string
   handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void
-}
-
-interface RegistrationForm {
-  username: string
-  givenName: string
-  familyName: string
-  birthdate: string
 }
 
 function FormField({

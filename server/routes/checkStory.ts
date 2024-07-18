@@ -48,7 +48,7 @@ router.post('/', async (req, res) => {
           {
             role: 'user',
             content: `
-    I'm going to give you 2 stories, one in English, and one in German. I'm learning german so please tell me how to improve my German story so that it translates to the english story.
+    I'm going to give you 2 stories, one in ${languageNative}, and one in ${languageLearning}. I'm learning ${languageLearning} so please tell me how to improve my ${languageLearning} story so that it translates to the ${languageNative} story.
 
     The response MUST be JSON formatted like this so that it is easy to parse: '{translatedGermanStory: "string", corrections: PhraseCorrection[], wordsToAddToVocabulary: NewWord[], wellUsedWords: Word[]}'
 
@@ -75,12 +75,12 @@ router.post('/', async (req, res) => {
 
     grammaticalForm should indicate the grammatical form of a word if not a lemma, e.g. past participle, second person singular, plural etc.
 
-    wellUsedWords has a max length of 5 & only returns words that were used perfectly in the german story, return more complex words first, don't return names of people or places.
+    wellUsedWords has a max length of 5 & only returns words that were used perfectly in the ${languageLearning} story, return more complex words first, don't return names of people or places.
 
-    English story:
+    ${languageNative} story:
     ${englishStory}
 
-    German story: ${germanStory}`,
+    ${languageLearning} story: ${germanStory}`,
           },
         ],
         // max_tokens: 300, //having the max tokens can cause it to stop writing mid json.

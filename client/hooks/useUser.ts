@@ -1,6 +1,7 @@
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import request from 'superagent'
 import { useAuth0 } from '@auth0/auth0-react'
+import { NewUser } from '../../models/admin'
 
 const rootUrl = '/api/v1'
 
@@ -15,6 +16,25 @@ export const useGetUser = () => {
         .get(`${rootUrl}/user`)
         .set('Authorization', `Bearer ${token}`)
       return res.body
+    },
+  })
+}
+
+export const useCreateUser = () => {
+  const { getAccessTokenSilently } = useAuth0()
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationKey: ['createUser'],
+    mutationFn: async (newUser: NewUser) => {
+      const token = await getAccessTokenSilently()
+      return await request
+        .post(`${rootUrl}/user`)
+        .send(newUser)
+        .set('Authorization', `Bearer ${token}`)
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['user'] })
     },
   })
 }
