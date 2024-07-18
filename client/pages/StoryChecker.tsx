@@ -73,7 +73,10 @@ function StoryChecker() {
         />
         <br />
 
-        <button className="check-stories-btn" onClick={handleSubmit}>
+        <button
+          className="check-stories-btn primary-btn"
+          onClick={handleSubmit}
+        >
           Check Stories
         </button>
       </form>
