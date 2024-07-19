@@ -7,6 +7,8 @@ import { useAuth0 } from '@auth0/auth0-react'
 function App() {
   const { isAuthenticated } = useAuth0()
   const user = useGetUser()
+
+  // Loading
   if (isAuthenticated && user.isPending) {
     return (
       <div className="app">
@@ -17,8 +19,9 @@ function App() {
       </div>
     )
   }
+
+  // New user
   if (isAuthenticated && !user.data[0]) {
-    // for new user
     return (
       <div className="app">
         <header className="header">
@@ -29,6 +32,25 @@ function App() {
     )
   }
 
+  // Logged in
+  if (isAuthenticated && user.data[0]) {
+    return (
+      <>
+        <div className="app">
+          <header className="header">
+            <h1>Language buddy </h1>
+            <NavBar />
+          </header>
+
+          <main>
+            <Outlet />
+          </main>
+        </div>
+      </>
+    )
+  }
+
+  // Sign in please
   return (
     <>
       <div className="app">
@@ -38,7 +60,7 @@ function App() {
         </header>
 
         <main>
-          <Outlet />
+          <p className="text-center">Please Sign In</p>
         </main>
       </div>
     </>

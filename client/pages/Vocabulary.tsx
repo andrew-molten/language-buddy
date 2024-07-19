@@ -25,8 +25,6 @@ function Vocabulary() {
     }
   })
 
-  console.log(vocab.data)
-
   return (
     <div className=" page">
       <h2 className="page-heading">Vocabulary</h2>
