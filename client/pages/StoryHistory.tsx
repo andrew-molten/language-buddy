@@ -17,7 +17,7 @@ function StoryHistory() {
   //   const fetchToken = async () => {
   // const token = await getAccessTokenSilently()
   //     // setToken(token);
-  const storyHistory = useStoryHistory(1)
+  const storyHistory = useStoryHistory()
   //     // const storyHistory = useStoryHistory(1, token)
   //     setStoryHistory(storyHistory)
   //   }

@@ -50,23 +50,25 @@ function StoryDifference() {
       </ul>
       <h2>New words</h2>
       <ul>
-        {parsedContent.wordsToAddToVocabulary.map((newWord: NewWord) => {
-          return (
-            <li key={newWord.word}>
-              <strong>{newWord.word}</strong>({newWord.grammaticalForm}):{' '}
-              {newWord.definition}
-              <br />
-              Lemma: {newWord.lemma}
-              {' - '}
-              {newWord.lemmaDefinition}
-            </li>
-          )
-        })}
+        {parsedContent.wordsToAddToVocabulary.map(
+          (newWord: NewWord, i: number) => {
+            return (
+              <li key={`${newWord.word}+${i}`}>
+                <strong>{newWord.word}</strong>({newWord.grammaticalForm}):{' '}
+                {newWord.definition}
+                <br />
+                Lemma: {newWord.lemma}
+                {' - '}
+                {newWord.lemmaDefinition}
+              </li>
+            )
+          },
+        )}
       </ul>
       <h2>Well used words</h2>
       <ul>
-        {parsedContent.wellUsedWords.map((word: Word) => {
-          return <li key={word.word}>{word.word}</li>
+        {parsedContent.wellUsedWords.map((word: Word, i: number) => {
+          return <li key={`${word.word}+${i}`}>{word.word}</li>
         })}
       </ul>
       {/* <p>Corrections: {messageContent.corrections}</p> */}

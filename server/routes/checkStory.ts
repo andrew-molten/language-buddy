@@ -1,5 +1,7 @@
 import express from 'express'
 import request from 'superagent'
+import { JwtRequest } from '../auth0.ts'
+import checkJwt from '../auth0.ts'
 import 'dotenv/config'
 import type {
   BackendCheckedStory,
@@ -17,16 +19,23 @@ import type {
 } from '../../models/stories'
 import * as storyProcessor from '../db/functions/storyProcessor'
 import * as processingQueries from '../db/functions/processingQueries'
+import { getUserIdByAuthId } from '../db/functions/user'
 
 const router = express.Router()
 
 const apiKey = process.env.API_KEY
 // Don't include any new line notation, t
 
-router.post('/', async (req, res) => {
+router.post('/', checkJwt, async (req: JwtRequest, res) => {
+  const authId = req.auth?.sub
   try {
     if (apiKey === undefined) {
       throw new Error('missing apiKey from environment variables..')
+    }
+
+    if (!authId) {
+      console.log('No auth0Id')
+      return res.status(401).send('unauthorized')
     }
 
     const gptModels = {
@@ -90,7 +99,7 @@ router.post('/', async (req, res) => {
     const preprocessedResponse = preprocessResponse(messageContent)
     const parsedContent = JSON.parse(preprocessedResponse)
     res.json(response.body)
-    saveToDB(parsedContent, englishStory, germanStory)
+    saveToDB(parsedContent, englishStory, germanStory, authId)
   } catch (err) {
     if (err instanceof Error) {
       console.log('error: ', err)
@@ -111,14 +120,17 @@ const saveToDB = async (
   parsedContent: CheckedStory,
   story_one: string,
   story_two: string,
+  authId: string,
 ) => {
+  const userId = await getUserIdByAuthId(authId)
+  console.log('userId: ', userId)
   const data: BackendCheckedStory = {
     ...parsedContent,
     story_one,
     story_two,
     language_native: 'English',
     language_learning: 'German',
-    user_id: 1,
+    user_id: userId,
     date_added: addDate(),
   }
   const lemmasData = await checkLemmas(data.wordsToAddToVocabulary)

@@ -18,7 +18,7 @@ export async function saveStory(data: BackendStory) {
       // INSERT TO STORY HISTORY
       const storyHistoryId = await trx('story_history')
         .insert({
-          user_id: 1,
+          user_id: data.user_id,
           story_one: data.story_one,
           story_two: data.story_two,
           story_translated: data.translatedGermanStory,

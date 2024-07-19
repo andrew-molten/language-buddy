@@ -7,6 +7,11 @@ export async function getUserByAuthId(authId: string) {
   return db('users').select().where('auth_id', authId)
 }
 
+export async function getUserIdByAuthId(authId: string) {
+  const id = await db('users').select('id').where('auth_id', authId).first()
+  return id.id
+}
+
 export async function createUser(newUser: NewUser, authId: string) {
   return db('users').insert({
     first_name: newUser.givenName,
