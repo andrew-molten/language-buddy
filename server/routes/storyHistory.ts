@@ -7,7 +7,6 @@ import { getUserIdByAuthId } from '../db/functions/user.ts'
 const router = express.Router()
 
 router.get('/', checkJwt, async (req: JwtRequest, res) => {
-  // const id = Number(req.params.id)
   const authId = req.auth?.sub
 
   if (!authId) {

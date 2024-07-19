@@ -42,11 +42,18 @@ export const useStoryHistory = () => {
   })
 }
 
-export const useVocabulary = (user_id: number) => {
+export const useVocabulary = () => {
+  const { getAccessTokenSilently, isAuthenticated } = useAuth0()
+
   return useQuery({
+    enabled: isAuthenticated,
     queryKey: ['vocabulary'],
     queryFn: async () => {
-      const res = await request.get(`${rootUrl}/vocabulary/${user_id}`)
+      const token = await getAccessTokenSilently()
+      const res = await request
+        .get(`${rootUrl}/vocabulary`)
+        .set('Authorization', `Bearer ${token}`)
+
       return res.body
     },
   })

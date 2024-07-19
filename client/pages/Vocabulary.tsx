@@ -3,7 +3,7 @@ import VocabWord from '../components/VocabWord.tsx'
 import { useVocabulary } from '../hooks/useStories'
 
 function Vocabulary() {
-  const vocab = useVocabulary(1)
+  const vocab = useVocabulary()
 
   if (vocab.isPending) {
     return <p>Loading..</p>
