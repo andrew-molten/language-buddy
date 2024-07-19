@@ -32,7 +32,7 @@ function StoryDifference() {
     <div className="story-difference page">
       <h1 className="page-heading">Differences</h1>
       <p>
-        <strong>Translation:</strong> {parsedContent.translatedGermanStory}
+        <strong>Translation:</strong> {parsedContent.correctTranslatedStory}
       </p>
       <h2>Corrections</h2>
       <ul>

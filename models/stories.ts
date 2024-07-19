@@ -1,5 +1,5 @@
 export interface CheckedStory {
-  translatedGermanStory: string
+  correctTranslatedStory: string
   corrections: PhraseCorrection[]
   wordsToAddToVocabulary: NewWord[]
   wellUsedWords: Word[]

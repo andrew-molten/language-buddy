@@ -59,7 +59,7 @@ router.post('/', checkJwt, async (req: JwtRequest, res) => {
             content: `
     I'm going to give you 2 stories, one in ${languageNative}, and one in ${languageLearning}. I'm learning ${languageLearning} so please tell me how to improve my ${languageLearning} story so that it translates to the ${languageNative} story.
 
-    The response MUST be JSON formatted like this so that it is easy to parse: '{translatedGermanStory: "string", corrections: PhraseCorrection[], wordsToAddToVocabulary: NewWord[], wellUsedWords: Word[]}'
+    The response MUST be JSON formatted like this so that it is easy to parse: '{correctTranslatedStory: "string", corrections: PhraseCorrection[], wordsToAddToVocabulary: NewWord[], wellUsedWords: Word[]}'
 
     interface PhraseCorrection {
       sentenceCorrection: "string",
@@ -84,7 +84,7 @@ router.post('/', checkJwt, async (req: JwtRequest, res) => {
 
     grammaticalForm should indicate the grammatical form of a word if not a lemma, e.g. past participle, second person singular, plural etc.
 
-    wellUsedWords has a max length of 5 & only returns words that were used perfectly in the ${languageLearning} story, return more complex words first, don't return names of people or places.
+    wellUsedWords has a max length of 5 & only returns words that I used perfectly in my ${languageLearning} story, return more complex words first, don't return names of people or places.
 
     ${languageNative} story:
     ${englishStory}
@@ -164,7 +164,6 @@ const saveToDB = async (
     usersNewPhraseIds,
   }
 
-  console.log(dataToSend)
   await storyProcessor.saveStory(dataToSend)
   // run getWordPhraseAssociations etc. here
   getWordPhraseAssociations(data.wordsToAddToVocabulary)
