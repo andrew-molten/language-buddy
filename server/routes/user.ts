@@ -14,7 +14,6 @@ router.get('/', checkJwt, async (req: JwtRequest, res) => {
   const authId = req.auth?.sub
 
   if (!authId) {
-    console.log('No auth0Id')
     return res.status(401).send('unauthorized')
   }
 
@@ -39,7 +38,6 @@ router.post('/', checkJwt, async (req: JwtRequest, res) => {
   // TODO: double check that all of the newUser fields have length
 
   if (!authId) {
-    console.log('No auth0Id')
     return res.status(401).send('unauthorized')
   }
 

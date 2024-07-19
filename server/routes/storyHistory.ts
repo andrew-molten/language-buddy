@@ -10,7 +10,6 @@ router.get('/', checkJwt, async (req: JwtRequest, res) => {
   const authId = req.auth?.sub
 
   if (!authId) {
-    console.log('No auth0Id')
     return res.status(401).send('unauthorized')
   }
 

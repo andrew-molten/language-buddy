@@ -6,7 +6,7 @@ function Dojo() {
   // get 10 phrases, with all of the definitions of the word
   const languageLearning = 'German'
   const languageNative = 'English'
-  const dojoPhrases = useDojoPhrases(1, languageLearning, languageNative)
+  const dojoPhrases = useDojoPhrases(languageLearning, languageNative)
   const [progress, setProgress] = useState({
     currentWord: 0,
     proficiencyChange: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
