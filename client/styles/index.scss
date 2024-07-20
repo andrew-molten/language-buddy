@@ -142,17 +142,14 @@ h2 {
   @apply outline outline-1 rounded-lg p-2 my-3;
 }
 
-.card-container p,
-li {
-  color: whitesmoke;
-}
-
 .black-card-container {
   @apply outline outline-1 rounded-lg p-2 my-3  outline-black;
 }
 
-.black-card-container p,
-li {
+.black-card-container p {
+  @apply text-black text-lg/6;
+}
+.black-card-container li {
   @apply text-black text-lg/6;
 }
 
