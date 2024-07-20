@@ -36,7 +36,7 @@ function StoryDifference() {
         <p>{parsedContent.correctTranslatedStory}</p>
       </div>
       <div className="card-container">
-        <h2 className="secondary-color">Corrections</h2>
+        <h2 className="secondary-color">Sentences learnt</h2>
         <ul>
           {parsedContent.corrections.map(
             (correction: PhraseCorrection, index: number) => {

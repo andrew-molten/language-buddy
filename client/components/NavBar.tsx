@@ -27,15 +27,15 @@ function NavBar() {
       <Link to={'/dojo'} className="nav-link">
         Dojo
       </Link>
-      <span className="auth">
+      <div className="auth">
         <IfAuthenticated>
-          <button onClick={handleSignOut}>Sign out</button>
           {user && <p>Hi {user?.given_name}</p>}
+          <button onClick={handleSignOut}>Sign out</button>
         </IfAuthenticated>
         <IfNotAuthenticated>
           <button onClick={handleSignIn}>Sign in</button>
         </IfNotAuthenticated>
-      </span>
+      </div>
     </div>
   )
 }

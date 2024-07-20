@@ -117,6 +117,8 @@ h2 {
 .story-text-box {
   background-color: rgb(21, 21, 21);
   color: whitesmoke;
+  width: 400px;
+  height: 200px;
   @apply outline outline-1;
 }
 
@@ -160,4 +162,20 @@ h2 {
 .story-snippet p {
   color: var(--secondary-dark-accent);
   color: black;
+}
+
+@media only screen and (max-width: 600px) {
+  html,
+  body {
+    margin: 0;
+  }
+  .story-text-box {
+    width: 90vw;
+  }
+  .auth {
+    top: 0.1em;
+  }
+  .header h1 {
+    @apply pb-2;
+  }
 }

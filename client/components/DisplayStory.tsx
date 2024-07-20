@@ -21,7 +21,7 @@ function DisplayStory({ data }: Props) {
         <p>{data.story_translated}</p>
       </div>
       <div className="black-card-container">
-        <h2>Corrections</h2>
+        <h2>Sentences learnt</h2>
         <ul>
           {JSON.parse(data.corrections).map(
             (correction: PhraseCorrection, index: number) => {

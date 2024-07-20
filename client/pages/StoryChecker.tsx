@@ -57,7 +57,7 @@ function StoryChecker() {
           name="englishStory"
           // maxLength={}
           onChange={handleChange}
-          style={{ width: '400px', height: '200px' }}
+          // style={{ width: '400px', height: '200px' }}
           className="story-text-box"
         />
         <br />
@@ -68,7 +68,7 @@ function StoryChecker() {
           name="germanStory"
           // maxLength={}
           onChange={handleChange}
-          style={{ width: '400px', height: '200px' }}
+          // style={{ width: '400px', height: '200px' }}
           className="story-text-box"
         />
         <br />
