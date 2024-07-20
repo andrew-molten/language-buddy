@@ -57,8 +57,16 @@ export const checkUserPhrases = async (
     .whereIn('phrase_id', existingIds)
 }
 
-export const checkWordInPhrases = async (word: string, trx = connection) => {
-  return trx('phrases').select().where('phrase', 'like', `%${word}%`)
+export const checkWordInPhrases = async (
+  word: string,
+  user_id: number,
+  trx = connection,
+) => {
+  return trx('phrases')
+    .join('user_phrases', 'phrases.id', 'user_phrases.phrase_id')
+    .select('phrases.id', 'phrases.phrase', 'phrases.language')
+    .where('phrase', 'like', `%${word}%`)
+    .where({ user_id })
 }
 
 export const checkWordPhraseAssociations = async (

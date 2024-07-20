@@ -17,7 +17,7 @@ function StoryHistory() {
 
   return (
     <div className=" page">
-      <h2 className="page-heading">History</h2>
+      <h1 className="page-heading">History</h1>
       {reversedData.map((data) => (
         <StorySnippet key={data.id} data={data} />
       ))}

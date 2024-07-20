@@ -165,13 +165,13 @@ const saveToDB = async (
   }
 
   await storyProcessor.saveStory(dataToSend)
-  // run getWordPhraseAssociations etc. here
-  getWordPhraseAssociations(data.wordsToAddToVocabulary)
+  // run getWordPhraseAssociations here
+  getWordPhraseAssociations(data.wordsToAddToVocabulary, data.user_id)
 }
 
 // CHECK IF PHRASE CONTAINS WORD
 // run after storyProcessor, to make code easier.
-const getWordPhraseAssociations = async (words: NewWord[]) => {
+const getWordPhraseAssociations = async (words: NewWord[], userId: number) => {
   const wordsArr = getStringArray(words, 'word')
   // get the id's of all the wordsToaddToVocabulary
   const wordsWithIds = await processingQueries.getMatchingWords(wordsArr)
@@ -180,7 +180,10 @@ const getWordPhraseAssociations = async (words: NewWord[]) => {
   // const existingWordPhraseAssociations = []
 
   wordsWithIds.forEach(async (wordObj) => {
-    const phrases = await processingQueries.checkWordInPhrases(wordObj.word)
+    const phrases = await processingQueries.checkWordInPhrases(
+      wordObj.word,
+      userId,
+    )
     const phraseIdArr = phrases.map((phrase) => phrase.id)
     const wordId = wordObj.id
     const wordPhraseAssociations = { wordId, phraseIdArr }
@@ -196,6 +199,7 @@ const getWordPhraseAssociations = async (words: NewWord[]) => {
         ),
     )
 
+    // add associations
     if (associationPhrasesToAdd.length > 0) {
       storyProcessor.insertWordPhraseAssociations({
         wordId,
@@ -204,8 +208,6 @@ const getWordPhraseAssociations = async (words: NewWord[]) => {
     }
     console.log('existingAssociations', existingAssociations)
   })
-
-  // add associations
 }
 
 const checkUsersPhrases = async (

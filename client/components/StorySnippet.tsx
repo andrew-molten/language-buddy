@@ -25,9 +25,9 @@ function StorySnippet({ data }: Props) {
     <button className="story-snippet" onClick={handleClick}>
       {clicked === false ? (
         <>
-          <p className="date-col">{data.date_added}</p>
-          <p className="snippet-p">{storyOneSnippet}</p>
-          <p className="snippet-p">{storyTwoSnippet}</p>
+          <p className="">{data.date_added}</p>
+          <p className="ml-2">{storyOneSnippet}</p>
+          <p className="ml-2">{storyTwoSnippet}</p>
         </>
       ) : (
         <DisplayStory data={data} />

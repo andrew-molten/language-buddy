@@ -5,11 +5,11 @@
 
 :root {
   --primary-color: #cc00ff;
-  --primary-light: #e372ff;
+  --primary-light: #d83eff;
   --secondary-color: #ff006b;
   --secondary-light: #fe2a83;
   --secondary-light-accent: #ff7948;
-  --secondary-dark-accent: #b6004d;
+  --secondary-dark-accent: #feb89e;
   --tertiary-color: #90ff00;
   --tertiary-light-accent: #86ed00;
   --tertiary-dark-accent: #6ec300;
@@ -77,12 +77,13 @@ h2 {
   border-width: 0;
   text-align: left;
   border-radius: 15px;
-  // width: 100%;
+  // width: 100%;;
+  @apply p-2;
 }
 
-.snippet-p {
+/* .snippet-p {
   margin: 0.2em;
-}
+} */
 
 .data-word {
   margin-top: 1em;
@@ -93,7 +94,10 @@ h2 {
 }
 
 .page-heading {
-  // color: rgb(128, 219, 255);
+  color: var(--secondary-light-accent);
+}
+
+.secondary-color {
   color: var(--secondary-light-accent);
 }
 
@@ -132,4 +136,26 @@ h2 {
   right: 0.5em;
   text-align: right;
   top: 0.5em;
+}
+
+.card-container {
+  @apply outline outline-1 rounded-lg p-2 my-3;
+}
+
+.black-card-container {
+  @apply outline outline-1 rounded-lg p-2 my-3  outline-black;
+}
+
+.black-card-container p,
+li {
+  @apply text-black text-lg/6;
+}
+
+.black-card-container h2 {
+  color: var(--secondary-dark-accent);
+}
+
+.story-snippet p {
+  color: var(--secondary-dark-accent);
+  color: black;
 }

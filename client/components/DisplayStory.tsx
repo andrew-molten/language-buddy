@@ -6,43 +6,51 @@ interface Props {
 
 function DisplayStory({ data }: Props) {
   return (
-    <div className="story-difference">
-      <h3>Your stories</h3>
-      <p>
-        {data.language_native}: {data.story_one}
-      </p>
-      <p>
-        {data.language_learning}: {data.story_two}
-      </p>
-      <h3>AI translation</h3>
-      <p>{data.story_translated}</p>
-      <h4>Corrections</h4>
-      <ul>
-        {JSON.parse(data.corrections).map(
-          (correction: PhraseCorrection, index: number) => {
+    <>
+      <div className="black-card-container">
+        <h2 className="secondary-color">Your stories</h2>
+        <p>
+          <strong>{data.language_native}:</strong> {data.story_one}
+        </p>
+        <p className="mt-2">
+          <strong>{data.language_learning}:</strong> {data.story_two}
+        </p>
+      </div>
+      <div className="black-card-container">
+        <h2>AI translation</h2>
+        <p>{data.story_translated}</p>
+      </div>
+      <div className="black-card-container">
+        <h2>Corrections</h2>
+        <ul>
+          {JSON.parse(data.corrections).map(
+            (correction: PhraseCorrection, index: number) => {
+              return (
+                <li key={correction.sentenceCorrection.slice(0, 3) + index}>
+                  <strong>{correction.sentenceCorrection}</strong>{' '}
+                  {correction.translation}
+                </li>
+              )
+            },
+          )}
+        </ul>
+      </div>
+      <div className="black-card-container">
+        <h2>Words learnt</h2>
+        <ul>
+          {JSON.parse(data.new_words).map((newWord: NewWord) => {
             return (
-              <li key={correction.sentenceCorrection.slice(0, 3) + index}>
-                <strong>{correction.sentenceCorrection}</strong>{' '}
-                {correction.translation}
+              <li key={newWord.word}>
+                <strong>{newWord.word}</strong>({newWord.grammaticalForm}):{' '}
+                {newWord.definition}
+                <br />
+                Lemma: {newWord.lemma} - {newWord.lemmaDefinition}
               </li>
             )
-          },
-        )}
-      </ul>
-      <h4>Words learnt</h4>
-      <ul>
-        {JSON.parse(data.new_words).map((newWord: NewWord) => {
-          return (
-            <li key={newWord.word}>
-              <strong>{newWord.word}</strong>({newWord.grammaticalForm}):{' '}
-              {newWord.definition}
-              <br />
-              Lemma: {newWord.lemma} - {newWord.lemmaDefinition}
-            </li>
-          )
-        })}
-      </ul>
-    </div>
+          })}
+        </ul>
+      </div>
+    </>
   )
 }
 
