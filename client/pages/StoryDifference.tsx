@@ -28,20 +28,43 @@ function StoryDifference() {
 
   const parsedContent = JSON.parse(preprocessedResponse)
   // add guards against corrections, words or translation not being available
+  console.log(parsedContent)
   return (
     <div className="story-difference page">
       <h1 className="page-heading">{`Here's how you did`}</h1>
+      <p>{parsedContent.shortSummary}</p>
       <div className="card-container">
-        <h2 className="secondary-color">Translation:</h2>{' '}
-        <p>{parsedContent.correctTranslatedStory}</p>
+        <h2 className="secondary-color">Words for your Vocabulary</h2>
+        <ul>
+          {parsedContent.wordsToAddToVocabulary.map(
+            (newWord: NewWord, i: number) => {
+              return (
+                <li key={`${newWord.word}+${i}`}>
+                  <strong>{newWord.word}</strong>
+                  {newWord.grammaticalForm &&
+                    `(${newWord.grammaticalForm})`}: {newWord.definition}
+                  <br />
+                  {newWord.lemma === newWord.word
+                    ? ''
+                    : `${newWord.lemma}
+                  ${' - '}
+                  ${newWord.lemmaDefinition}`}
+                </li>
+              )
+            },
+          )}
+        </ul>
       </div>
       <div className="card-container">
-        <h2 className="secondary-color">Sentences learnt</h2>
+        <h2 className="secondary-color">Sentence corrections</h2>
         <ul>
           {parsedContent.corrections.map(
             (correction: PhraseCorrection, index: number) => {
               return (
-                <li key={correction.sentenceCorrection.slice(0, 3) + index}>
+                <li
+                  key={correction.sentenceCorrection.slice(0, 3) + index}
+                  className="sentence-correction"
+                >
                   <strong>{correction.sentenceCorrection}</strong>
                   <br />
                   {correction.translation}
@@ -51,24 +74,10 @@ function StoryDifference() {
           )}
         </ul>
       </div>
+
       <div className="card-container">
-        <h2 className="secondary-color">Words for your Vocabulary</h2>
-        <ul>
-          {parsedContent.wordsToAddToVocabulary.map(
-            (newWord: NewWord, i: number) => {
-              return (
-                <li key={`${newWord.word}+${i}`}>
-                  <strong>{newWord.word}</strong>({newWord.grammaticalForm}):{' '}
-                  {newWord.definition}
-                  <br />
-                  Lemma: {newWord.lemma}
-                  {' - '}
-                  {newWord.lemmaDefinition}
-                </li>
-              )
-            },
-          )}
-        </ul>
+        <h2 className="secondary-color">The full translation:</h2>{' '}
+        <p>{parsedContent.correctTranslatedStory}</p>
       </div>
       {/* <h2>Well used words</h2>
       <ul>

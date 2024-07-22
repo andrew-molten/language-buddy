@@ -59,15 +59,17 @@ router.post('/', checkJwt, async (req: JwtRequest, res) => {
             content: `
     I'm going to give you 2 stories, one in ${languageNative}, and one in ${languageLearning}. I'm learning ${languageLearning} so please tell me how to improve my ${languageLearning} story so that it translates to the ${languageNative} story.
 
-    The response MUST be JSON formatted like this so that it is easy to parse: '{correctTranslatedStory: "string", corrections: PhraseCorrection[], wordsToAddToVocabulary: NewWord[], wellUsedWords: Word[]}'
+    The response MUST be JSON formatted like this so that it is easy to parse: '{correctTranslatedStory: "string", corrections: PhraseCorrection[], wordsToAddToVocabulary: NewWord[], wellUsedWords: Word[], shortSummary: string}'
 
     interface PhraseCorrection {
       sentenceCorrection: "string",
       translation: "string",
+      explanations: "string[]"
       }
  
     interface NewWord {
     word: "string",
+    gender: "string",
     definition: "string",
     grammaticalForm: "string",
     lemma: "string",
@@ -81,8 +83,12 @@ router.post('/', checkJwt, async (req: JwtRequest, res) => {
 
     sentenceCorrection is in ${languageLearning}
     translation is in ${languageNative}
-
+    
+    shortSummary is a shortSummary of how well I did.
+    explanations is an array of explanations about why I was wrong, and why the translation is correct, including any grammar lessons.
+    wordsToAddToVocabulary should only include words that I didn't use. 
     grammaticalForm should indicate the grammatical form of a word if not a lemma, e.g. past participle, second person singular, plural etc.
+    gender is only for nouns, otherwise value should be "".
 
     wellUsedWords has a max length of 5 & only returns words that I used perfectly in my ${languageLearning} story, return more complex words first, don't return names of people or places.
 

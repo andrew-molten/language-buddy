@@ -1,1 +1,1 @@
-{ "files.associations": { "*.scss": "postcss" } }
+{ "scss.lint.unknownAtRules": "ignore" }

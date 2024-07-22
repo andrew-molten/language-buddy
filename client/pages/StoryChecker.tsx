@@ -55,6 +55,7 @@ function StoryChecker() {
         <textarea
           value={stories.englishStory}
           name="englishStory"
+          placeholder="Write about anything you like here! What happened today, what do you wish you could say in German..."
           // maxLength={}
           onChange={handleChange}
           // style={{ width: '400px', height: '200px' }}
@@ -66,6 +67,7 @@ function StoryChecker() {
         <textarea
           value={stories.germanStory}
           name="germanStory"
+          placeholder="Try to express yourself with the exact same story from above, but in German, and I'll help you improve!"
           // maxLength={}
           onChange={handleChange}
           // style={{ width: '400px', height: '200px' }}
