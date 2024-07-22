@@ -35,6 +35,7 @@
     "express-jwt-authz": "^2.4.1",
     "jwks-rsa": "^3.1.0",
     "knex": "^2.5.1",
+    "react-select": "^5.8.0",
     "sqlite3": "^5.1.6",
     "superagent": "^8.1.2"
   },

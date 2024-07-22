@@ -67,7 +67,7 @@ function StoryChecker() {
         <textarea
           value={stories.germanStory}
           name="germanStory"
-          placeholder="Try to express yourself with the exact same story from above, but in German, and I'll help you improve!"
+          placeholder="Try to write same story in German, & I'll help you improve!"
           // maxLength={}
           onChange={handleChange}
           // style={{ width: '400px', height: '200px' }}

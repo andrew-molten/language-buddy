@@ -1,8 +1,10 @@
 import { useAuth0 } from '@auth0/auth0-react'
 import { useState } from 'react'
+import Select from 'react-select'
 import FormField from './FormField'
 import { ConflictError, NewUser } from '../../models/admin'
 import { useCreateUser } from '../hooks/useUser'
+import { learningLanguages } from '../data/languages'
 
 function Registration() {
   const { user } = useAuth0()
@@ -13,6 +15,10 @@ function Registration() {
     familyName: user?.family_name ? user?.family_name : '',
     birthdate: '',
   })
+  const [languageLearning, setLanguageLearning] = useState<{
+    value: string
+    label: string
+  } | null>(null)
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     setFormState({ ...formState, [event.target.name]: event.target.value })
@@ -24,7 +30,8 @@ function Registration() {
       formState.username.length > 0 &&
       formState.givenName.length > 0 &&
       formState.familyName.length > 0 &&
-      formState.birthdate.length > 0
+      formState.birthdate.length > 0 &&
+      languageLearning !== null
     ) {
       return true
     } else {
@@ -35,6 +42,7 @@ function Registration() {
   function handleSubmit(event: React.MouseEvent<HTMLButtonElement>) {
     event.preventDefault()
     if (!checkStateValues()) return alert('Plese fill in all values')
+
     // create user object
     const newUser: NewUser = {
       email: user!.email!,
@@ -42,6 +50,7 @@ function Registration() {
       familyName: formState.familyName,
       username: formState.username,
       birthdate: formState.birthdate,
+      languageLearning: languageLearning!.value,
     }
 
     createUser.mutateAsync(newUser)
@@ -84,6 +93,15 @@ function Registration() {
           type="date"
           formState={formState}
           handleChange={handleChange}
+        />
+        <label htmlFor="languageLearning">
+          What language are you learning?
+        </label>
+        <Select
+          name="languageLearning"
+          defaultValue={languageLearning}
+          onChange={setLanguageLearning}
+          options={learningLanguages}
         />
         <button
           className="primary-btn py-2 px-4 mt-4"

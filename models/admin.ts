@@ -4,6 +4,7 @@ export interface NewUser {
   familyName: string
   username: string
   birthdate: string
+  languageLearning: string
 }
 
 export interface RegistrationForm {
