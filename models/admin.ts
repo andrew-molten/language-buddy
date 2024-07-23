@@ -5,6 +5,7 @@ export interface NewUser {
   username: string
   birthdate: string
   languageLearning: string
+  languageNative: string
 }
 
 export interface RegistrationForm {

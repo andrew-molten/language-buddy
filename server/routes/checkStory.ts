@@ -45,9 +45,14 @@ router.post('/', checkJwt, async (req: JwtRequest, res) => {
 
     // create a preference for spelling accuracy
 
-    const { englishStory, germanStory }: Stories = req.body
-    const languageLearning = 'German'
-    const languageNative = 'English'
+    const {
+      nativeStory,
+      learningLanguageStory,
+      nativeLanguage,
+      learningLanguage,
+    }: Stories = req.body
+    // const learningLanguage = 'German'
+    // const nativeLanguage = 'English'
     const response = await request
       .post('https://api.openai.com/v1/chat/completions')
       .set('Authorization', `Bearer ${apiKey}`)
@@ -57,7 +62,7 @@ router.post('/', checkJwt, async (req: JwtRequest, res) => {
           {
             role: 'user',
             content: `
-    I'm going to give you 2 stories, one in ${languageNative}, and one in ${languageLearning}. I'm learning ${languageLearning} so please tell me how to improve my ${languageLearning} story so that it translates to the ${languageNative} story.
+    I'm going to give you 2 stories, one in ${nativeLanguage}, and one in ${learningLanguage}. I'm learning ${learningLanguage} so please tell me how to improve my ${learningLanguage} story so that it translates to the ${nativeLanguage} story.
 
     The response MUST be JSON formatted like this so that it is easy to parse: '{correctTranslatedStory: "string", corrections: PhraseCorrection[], wordsToAddToVocabulary: NewWord[], wellUsedWords: Word[], shortSummary: string}'
 
@@ -81,8 +86,8 @@ router.post('/', checkJwt, async (req: JwtRequest, res) => {
       lemma: "string"
     }
 
-    sentenceCorrection is in ${languageLearning}
-    translation is in ${languageNative}
+    sentenceCorrection is in ${learningLanguage}
+    translation is in ${nativeLanguage}
     
     shortSummary is a shortSummary of how well I did.
     explanations is an array of explanations about why I was wrong, and why the translation is correct, including any grammar lessons.
@@ -90,12 +95,12 @@ router.post('/', checkJwt, async (req: JwtRequest, res) => {
     grammaticalForm should indicate the grammatical form of a word if not a lemma, e.g. past participle, second person singular, plural etc.
     gender is only for nouns, otherwise value should be "".
 
-    wellUsedWords has a max length of 5 & only returns words that I used perfectly in my ${languageLearning} story, return more complex words first, don't return names of people or places.
+    wellUsedWords has a max length of 5 & only returns words that I used perfectly in my ${learningLanguage} story, return more complex words first, don't return names of people or places.
 
-    ${languageNative} story:
-    ${englishStory}
+    ${nativeLanguage} story:
+    ${nativeStory}
 
-    ${languageLearning} story: ${germanStory}`,
+    ${learningLanguage} story: ${learningLanguageStory}`,
           },
         ],
         // max_tokens: 300, //having the max tokens can cause it to stop writing mid json.
@@ -105,7 +110,7 @@ router.post('/', checkJwt, async (req: JwtRequest, res) => {
     const preprocessedResponse = preprocessResponse(messageContent)
     const parsedContent = JSON.parse(preprocessedResponse)
     res.json(response.body)
-    saveToDB(parsedContent, englishStory, germanStory, authId)
+    saveToDB(parsedContent, nativeStory, learningLanguageStory, authId)
   } catch (err) {
     if (err instanceof Error) {
       console.log('error: ', err)

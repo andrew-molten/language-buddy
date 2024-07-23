@@ -19,6 +19,10 @@ function Registration() {
     value: string
     label: string
   } | null>(null)
+  const [languageNative, setLanguageNative] = useState<{
+    value: string
+    label: string
+  } | null>(null)
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     setFormState({ ...formState, [event.target.name]: event.target.value })
@@ -31,7 +35,8 @@ function Registration() {
       formState.givenName.length > 0 &&
       formState.familyName.length > 0 &&
       formState.birthdate.length > 0 &&
-      languageLearning !== null
+      languageLearning !== null &&
+      languageNative !== null
     ) {
       return true
     } else {
@@ -51,6 +56,7 @@ function Registration() {
       username: formState.username,
       birthdate: formState.birthdate,
       languageLearning: languageLearning!.value,
+      languageNative: languageNative!.value,
     }
 
     createUser.mutateAsync(newUser)
@@ -94,7 +100,7 @@ function Registration() {
           formState={formState}
           handleChange={handleChange}
         />
-        <label htmlFor="languageLearning">
+        <label htmlFor="languageLearning" className="mt-4 inline-block">
           What language are you learning?
         </label>
         <Select
@@ -102,6 +108,18 @@ function Registration() {
           defaultValue={languageLearning}
           onChange={setLanguageLearning}
           options={learningLanguages}
+          className="text-black"
+        />
+        <label
+          htmlFor="languageNative"
+          className="mt-4 inline-block"
+        >{`What's your native language?`}</label>
+        <Select
+          name="languageNative"
+          defaultValue={languageNative}
+          onChange={setLanguageNative}
+          options={learningLanguages}
+          className="text-black"
         />
         <button
           className="primary-btn py-2 px-4 mt-4"

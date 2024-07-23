@@ -27,8 +27,10 @@ export interface Id {
 }
 
 export interface Stories {
-  englishStory: string
-  germanStory: string
+  nativeStory: string
+  learningLanguageStory: string
+  nativeLanguage: string
+  learningLanguage: string
 }
 
 export interface Message {

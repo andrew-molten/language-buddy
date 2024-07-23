@@ -4,7 +4,20 @@ import connection from '../connection.ts'
 const db = connection
 
 export async function getUserByAuthId(authId: string) {
-  return db('users').select().where('auth_id', authId)
+  return db('users')
+    .select(
+      'auth_id as authId',
+      'date_of_birth as dateOfBirth',
+      'email',
+      'first_name as firstName',
+      'id',
+      'is_premium as isPremium',
+      'last_name as lastName',
+      'learning_language as learningLanguage',
+      'native_language as nativeLanguage',
+      'username',
+    )
+    .where('auth_id', authId)
 }
 
 export async function getUserIdByAuthId(authId: string) {
@@ -21,6 +34,8 @@ export async function createUser(newUser: NewUser, authId: string) {
     date_of_birth: newUser.birthdate,
     auth_id: authId,
     is_premium: 0,
+    learning_language: newUser.languageLearning,
+    native_language: newUser.languageNative,
   })
 }
 

@@ -12,11 +12,21 @@ export const useChatGPT = () => {
 
   return useMutation({
     mutationKey: ['compareStories'],
-    mutationFn: async ({ englishStory, germanStory }: Stories) => {
+    mutationFn: async ({
+      nativeStory,
+      learningLanguageStory,
+      nativeLanguage,
+      learningLanguage,
+    }: Stories) => {
       const token = await getAccessTokenSilently()
       const res = await request
         .post(`${rootUrl}/check-story`)
-        .send({ englishStory, germanStory })
+        .send({
+          nativeStory,
+          learningLanguageStory,
+          nativeLanguage,
+          learningLanguage,
+        })
         .set('Authorization', `Bearer ${token}`)
 
       // console.log('useMutatation: ', res.body)

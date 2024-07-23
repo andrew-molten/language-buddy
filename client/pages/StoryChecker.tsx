@@ -1,18 +1,16 @@
 import { useState } from 'react'
 import { useChatGPT } from '../hooks/useStories.ts'
+import { useGetUser } from '../hooks/useUser.ts'
 // import StoryDifference from './StoryDifference'
 
 function StoryChecker() {
   const differentiate = useChatGPT()
-  const [stories, setStories] = useState({
-    englishStory: '',
-    germanStory: '',
-  })
+  const user = useGetUser()
 
-  // const [submittedStories, setSubmittedStories] = useState({
-  //   englishStory: '',
-  //   germanStory: '',
-  // })
+  const [stories, setStories] = useState({
+    nativeStory: '',
+    learningLanguageStory: '',
+  })
 
   // Have tabs to see the submitted english and german stories
 
@@ -26,17 +24,29 @@ function StoryChecker() {
 
   // go through the translation and highlight the parts that came back in the corrections
 
+  if (user.isPending) {
+    return (
+      <div className="page">
+        <h1 className="page-heading">Story Checker</h1>
+        <p>Loading...</p>
+      </div>
+    )
+  }
+
   const handleSubmit = async function (e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault()
     // add the same check to the server side?
-    if (stories.englishStory.length > 5 && stories.germanStory.length > 5) {
-      // setSubmittedStories({
-      //   englishStory: stories.englishStory,
-      //   germanStory: stories.germanStory,
-      // })
-      await differentiate.mutateAsync(stories)
+    if (
+      stories.nativeStory.length > 5 &&
+      stories.learningLanguageStory.length > 5
+    ) {
+      const storiesToSend = {
+        ...stories,
+        nativeLanguage: user.data[0].nativeLanguage,
+        learningLanguage: user.data[0].learningLanguage,
+      }
+      await differentiate.mutateAsync(storiesToSend)
     }
-    // setStories({ englishStory: '', germanStory: '' })
   }
 
   function handleChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
@@ -50,11 +60,11 @@ function StoryChecker() {
     <div className="page">
       <h1 className="page-heading">Story Checker</h1>
       <form>
-        <label htmlFor="englishStory">English story</label>
+        <label htmlFor="nativeStory">{user.data[0].nativeLanguage} story</label>
         <br />
         <textarea
-          value={stories.englishStory}
-          name="englishStory"
+          value={stories.nativeStory}
+          name="nativeStory"
           placeholder="Write about anything you like here! What happened today, what do you wish you could say in German..."
           // maxLength={}
           onChange={handleChange}
@@ -62,11 +72,13 @@ function StoryChecker() {
           className="story-text-box"
         />
         <br />
-        <label htmlFor="germanStory">German story</label>
+        <label htmlFor="learningLanguageStory">
+          {user.data[0].learningLanguage} story
+        </label>
         <br />
         <textarea
-          value={stories.germanStory}
-          name="germanStory"
+          value={stories.learningLanguageStory}
+          name="learningLanguageStory"
           placeholder="Try to write same story in German, & I'll help you improve!"
           // maxLength={}
           onChange={handleChange}

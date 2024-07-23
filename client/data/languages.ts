@@ -3,7 +3,7 @@ export const learningLanguages = [
   { value: 'Spanish', label: 'Spanish' },
   { value: 'Japanese', label: 'Japanese' },
   { value: 'French', label: 'French' },
-  { value: 'Italien', label: 'Italien' },
+  { value: 'Italian', label: 'Italian' },
   { value: 'Chinese', label: 'Chinese' },
   { value: 'Korean', label: 'German' },
   { value: 'Russian', label: 'Russian' },
