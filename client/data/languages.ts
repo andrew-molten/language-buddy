@@ -1,4 +1,5 @@
 export const learningLanguages = [
+  { value: 'English', label: 'English' },
   { value: 'German', label: 'German' },
   { value: 'Spanish', label: 'Spanish' },
   { value: 'Japanese', label: 'Japanese' },
@@ -7,8 +8,9 @@ export const learningLanguages = [
   { value: 'Chinese', label: 'Chinese' },
   { value: 'Korean', label: 'German' },
   { value: 'Russian', label: 'Russian' },
-  { value: 'Protuguese', label: 'Protuguese' },
+  { value: 'Portuguese', label: 'Portuguese' },
   { value: 'Arabic', label: 'Arabic' },
   { value: 'Dutch', label: 'Dutch' },
   { value: 'Hindi', label: 'Hindi' },
+  { value: 'Maori', label: 'Maori' },
 ]

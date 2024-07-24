@@ -18,3 +18,8 @@ export interface RegistrationForm {
 export interface ConflictError extends Error {
   status: number
 }
+
+export interface UpdatedUser {
+  learningLanguage: string
+  nativeLanguage: string
+}

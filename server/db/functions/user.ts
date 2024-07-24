@@ -1,4 +1,4 @@
-import { NewUser } from '../../../models/admin.ts'
+import { NewUser, UpdatedUser } from '../../../models/admin.ts'
 import connection from '../connection.ts'
 
 const db = connection
@@ -43,4 +43,11 @@ export async function checkUserName(username: string) {
   const result = await db('users').count('id as count').where({ username })
   const count = Number(result[0].count)
   return count > 0
+}
+
+export async function updateUser(updatedUser: UpdatedUser, authId: string) {
+  return db('users').where({ auth_id: authId }).update({
+    learning_language: updatedUser.learningLanguage,
+    native_language: updatedUser.nativeLanguage,
+  })
 }
