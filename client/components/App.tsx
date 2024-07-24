@@ -7,7 +7,6 @@ import { useAuth0 } from '@auth0/auth0-react'
 function App() {
   const { isAuthenticated } = useAuth0()
   const user = useGetUser()
-  console.log(user.data)
 
   // Loading
   if (isAuthenticated && user.isPending) {

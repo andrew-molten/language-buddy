@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { IfAuthenticated, IfNotAuthenticated } from './Authenticated'
 import { useAuth0 } from '@auth0/auth0-react'
+import settingsIcon from '../icons/settings.svg'
 
 function NavBar() {
   const { user, logout, loginWithRedirect } = useAuth0()
@@ -26,6 +27,9 @@ function NavBar() {
       </Link>
       <Link to={'/dojo'} className="nav-link">
         Dojo
+      </Link>
+      <Link to={'/settings'} className="nav-link">
+        <img src={settingsIcon} alt="settings icon" className="inline-block" />
       </Link>
       <div className="auth">
         <IfAuthenticated>

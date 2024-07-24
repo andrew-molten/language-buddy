@@ -10,6 +10,7 @@ import StoryDifference from './pages/StoryDifference'
 import StoryHistory from './pages/StoryHistory'
 import Vocabulary from './pages/Vocabulary'
 import Dojo from './pages/Dojo'
+import Settings from './pages/Settings'
 
 // give StoryDifference data
 
@@ -21,6 +22,7 @@ const router = createBrowserRouter(
       <Route path="story-history" element={<StoryHistory />} />
       <Route path="vocabulary" element={<Vocabulary />} />
       <Route path="dojo" element={<Dojo />} />
+      <Route path="settings" element={<Settings />} />
     </Route>,
   ),
 )
