@@ -9,7 +9,10 @@ interface Props {
 function StorySnippet({ data }: Props) {
   const [clicked, setClicked] = useState(false)
   const storyOneSnippet = data.story_one.split(' ').slice(0, 12).join(' ')
-  const storyTwoSnippet = data.story_two.split(' ').slice(0, 10).join(' ')
+  const storyTranslated = data.story_translated
+    .split(' ')
+    .slice(0, 10)
+    .join(' ')
 
   function handleClick() {
     setClicked(!clicked)
@@ -25,9 +28,11 @@ function StorySnippet({ data }: Props) {
     <button className="story-snippet" onClick={handleClick}>
       {clicked === false ? (
         <>
-          <p className="">{data.date_added}</p>
-          <p className="ml-2">{storyOneSnippet}</p>
-          <p className="ml-2">{storyTwoSnippet}</p>
+          <div className="card-container history-card">
+            <p className="">{data.date_added}</p>
+            <p className="ml-2">{storyOneSnippet}</p>
+            <p className="ml-2">{storyTranslated}</p>
+          </div>
         </>
       ) : (
         <DisplayStory data={data} />

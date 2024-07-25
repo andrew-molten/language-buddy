@@ -63,7 +63,6 @@ h2 {
 }
 
 .nav-link {
-  // text-decoration: none;
   margin-left: 1em;
   font-weight: 600;
   color: rgb(251, 254, 255);
@@ -73,12 +72,15 @@ h2 {
   display: block;
   margin-top: 1em;
   // background-color: rgba(69, 167, 252, 0.267);
-  background-color: var(--primary-light);
+  // background-color: var(--primary-light);
   border-width: 0;
   text-align: left;
-  border-radius: 15px;
+  // border-radius: 15px;
   // width: 100%;;
-  @apply p-2;
+  // @apply p-2;
+  // padding: 2px;
+  outline-color: var(--primary-light);
+  @apply rounded-lg  outline outline-2;
 }
 
 /* .snippet-p {
@@ -97,9 +99,9 @@ h2 {
   color: var(--secondary-light-accent);
 }
 
-.secondary-color {
-  color: var(--secondary-light-accent);
-}
+// .secondary-color {
+//   color: var(--secondary-light-accent);
+// }
 
 .primary-btn {
   border-radius: 10px;
@@ -140,35 +142,48 @@ h2 {
   top: 0.5em;
 }
 
+.story-snippet p {
+  color: var(--secondary-dark-accent);
+  color: black;
+}
+
 .card-container {
   outline-color: #2b2b2b;
   background-color: #1a1a1a;
   @apply outline outline-1 rounded-lg p-2 my-3;
 }
 
-.black-card-container {
-  @apply outline outline-1 rounded-lg p-2 my-3  outline-black;
+.card-container p {
+  color: whitesmoke;
 }
 
-.black-card-container p {
-  @apply text-black text-lg/6;
-}
-.black-card-container li {
-  @apply text-black text-lg/6;
+.card-container h2 {
+  color: var(--secondary-light-accent);
 }
 
-.black-card-container h2 {
-  color: var(--secondary-dark-accent);
-}
+// .black-card-container {
+//   @apply outline outline-1 rounded-lg p-2 my-3  outline-black;
+// }
 
-.story-snippet p {
-  color: var(--secondary-dark-accent);
-  color: black;
-}
+// .black-card-container p {
+//   @apply text-black text-lg/6;
+// }
+// .black-card-container li {
+//   @apply text-black text-lg/6;
+// }
+
+// .black-card-container h2 {
+//   color: var(--secondary-dark-accent);
+// }
 
 .sentence-correction {
   background-color: rgb(31, 31, 31);
   @apply p-2  rounded-lg;
+}
+
+.history-card {
+  margin-top: 0.2em;
+  margin-bottom: 0.1em;
 }
 
 @media only screen and (max-width: 600px) {
@@ -184,5 +199,8 @@ h2 {
   }
   .header h1 {
     @apply pb-2;
+  }
+  .nav-link {
+    margin-left: 0.5em;
   }
 }

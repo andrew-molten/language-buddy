@@ -7,8 +7,9 @@ export interface CheckedStory {
 }
 
 export interface PhraseCorrection {
-  sentenceCorrection: 'string'
-  translation: 'string'
+  sentenceCorrection: string
+  translation: string
+  explanations: string[]
 }
 
 export interface NewWord {
@@ -125,6 +126,7 @@ export interface StoryData {
   user_id: number
   date_added: string
   corrections: string
+  short_summary: string
 }
 
 export interface DBVocabWord {

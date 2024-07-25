@@ -34,7 +34,7 @@ function StoryDifference() {
       <h1 className="page-heading">{`Here's how you did`}</h1>
       <p>{parsedContent.shortSummary}</p>
       <div className="card-container">
-        <h2 className="secondary-color">Words for your Vocabulary</h2>
+        <h2>Words for your Vocabulary</h2>
         <ul>
           {parsedContent.wordsToAddToVocabulary.map(
             (newWord: NewWord, i: number) => {
@@ -56,7 +56,7 @@ function StoryDifference() {
         </ul>
       </div>
       <div className="card-container">
-        <h2 className="secondary-color">Sentence corrections</h2>
+        <h2>Sentence corrections</h2>
         <ul>
           {parsedContent.corrections.map(
             (correction: PhraseCorrection, index: number) => {
@@ -67,7 +67,12 @@ function StoryDifference() {
                 >
                   <strong>{correction.sentenceCorrection}</strong>
                   <br />
-                  {correction.translation}
+                  {correction.translation} <br />
+                  {correction.explanations.map((explanation) => (
+                    <p key={explanation} className="ml-3">
+                      ‣<em>{explanation}</em>
+                    </p>
+                  ))}
                 </li>
               )
             },
@@ -76,7 +81,7 @@ function StoryDifference() {
       </div>
 
       <div className="card-container">
-        <h2 className="secondary-color">The full translation:</h2>{' '}
+        <h2>The full translation:</h2>{' '}
         <p>{parsedContent.correctTranslatedStory}</p>
       </div>
       {/* <h2>Well used words</h2>
