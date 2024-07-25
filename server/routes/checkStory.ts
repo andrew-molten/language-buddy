@@ -86,8 +86,9 @@ router.post('/', checkJwt, async (req: JwtRequest, res) => {
       lemma: "string"
     }
 
-    sentenceCorrection is in ${learningLanguage}
-    translation is in ${nativeLanguage}
+    sentenceCorrection, correctTranslatedStory, lemma & word is in ${learningLanguage}
+    grammaticalForm is in English
+    everything else including definition & translation is in ${nativeLanguage}
     
     shortSummary is a shortSummary of how well I did.
     explanations is an array of explanations about why I was wrong, and why the translation is correct, including any grammar lessons.
@@ -110,7 +111,14 @@ router.post('/', checkJwt, async (req: JwtRequest, res) => {
     const preprocessedResponse = preprocessResponse(messageContent)
     const parsedContent = JSON.parse(preprocessedResponse)
     res.json(response.body)
-    saveToDB(parsedContent, nativeStory, learningLanguageStory, authId)
+    saveToDB(
+      parsedContent,
+      nativeStory,
+      learningLanguageStory,
+      nativeLanguage,
+      learningLanguage,
+      authId,
+    )
   } catch (err) {
     if (err instanceof Error) {
       console.log('error: ', err)
@@ -131,6 +139,8 @@ const saveToDB = async (
   parsedContent: CheckedStory,
   story_one: string,
   story_two: string,
+  nativeLanguage: string,
+  learningLanguage: string,
   authId: string,
 ) => {
   const userId = await getUserIdByAuthId(authId)
@@ -139,8 +149,8 @@ const saveToDB = async (
     ...parsedContent,
     story_one,
     story_two,
-    language_native: 'English',
-    language_learning: 'German',
+    language_native: nativeLanguage,
+    language_learning: learningLanguage,
     user_id: userId,
     date_added: addDate(),
   }

@@ -70,6 +70,8 @@ export async function saveStory(data: BackendStory) {
               lemma_id: word.lemma_id,
               word: word.word,
               grammatical_form: word.grammaticalForm,
+              language: data.language_learning,
+              gender: word.gender,
             })),
           )
           .returning(['id', 'word']) // all new word ids - definitely add these definitions

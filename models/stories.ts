@@ -16,6 +16,7 @@ export interface NewWord {
   grammaticalForm: string
   lemma: string
   lemmaDefinition: string
+  gender: string
 }
 
 export interface Word {
