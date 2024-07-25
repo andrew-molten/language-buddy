@@ -49,11 +49,12 @@ function DisplayStory({ data }: Props) {
                 >
                   <strong>{correction.sentenceCorrection}</strong>{' '}
                   {correction.translation} <br />
-                  {correction.explanations.map((explanation) => (
-                    <p key={explanation} className="ml-3">
-                      ‣<em>{explanation}</em>
-                    </p>
-                  ))}
+                  {correction.explanations &&
+                    correction.explanations.map((explanation) => (
+                      <p key={explanation} className="ml-3">
+                        ‣<em>{explanation}</em>
+                      </p>
+                    ))}
                 </li>
               )
             },
