@@ -28,6 +28,7 @@ export async function saveStory(data: BackendStory) {
           new_words: JSON.stringify(data.wordsToAddToVocabulary),
           well_used_words: JSON.stringify(data.wellUsedWords),
           date_added: data.date_added,
+          short_summary: data.shortSummary,
         })
         .returning('id') //[{id:3}]
 
