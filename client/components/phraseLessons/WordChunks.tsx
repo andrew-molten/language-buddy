@@ -21,6 +21,7 @@ function WordChunks({ phrase, setProgress, progress }: Props) {
   const [lessonOutcome, setLessonOutcome] = useState({
     proficiencyPoint: 0,
     message: '',
+    class: '',
   })
 
   /* Randomize array in-place using Durstenfeld shuffle algorithm */
@@ -55,9 +56,17 @@ function WordChunks({ phrase, setProgress, progress }: Props) {
   function handleSubmit() {
     const guess = guessSentence.join(' ')
     if (guess === phrase.phrase) {
-      setLessonOutcome({ proficiencyPoint: 1, message: 'Well done!' })
+      setLessonOutcome({
+        proficiencyPoint: 1,
+        message: 'Well done!',
+        class: 'pass',
+      })
     } else {
-      setLessonOutcome({ proficiencyPoint: -1, message: 'Oops' })
+      setLessonOutcome({
+        proficiencyPoint: -1,
+        message: `Oops, correct answer is: ${phrase.phrase}`,
+        class: 'fail',
+      })
     }
   }
 
@@ -69,7 +78,7 @@ function WordChunks({ phrase, setProgress, progress }: Props) {
       proficiencyChange: [...newProficiencyArr],
     }
     newProgress.proficiencyChange[progress.currentWord]
-    setLessonOutcome({ proficiencyPoint: 0, message: '' })
+    setLessonOutcome({ proficiencyPoint: 0, message: '', class: '' })
     setPhraseOptions([])
     setGuessSentence([])
     setProgress({ ...newProgress })
@@ -80,25 +89,39 @@ function WordChunks({ phrase, setProgress, progress }: Props) {
       <p>{phrase.translation}</p>
       <div className="guess-div">
         {guessSentence.map((word, i) => (
-          <button key={word + i + 'guess'} onClick={handleGuessClick}>
+          <button
+            className="word-btn"
+            key={word + i + 'guess'}
+            onClick={handleGuessClick}
+          >
             {word}
           </button>
         ))}
       </div>
       <div className="options-div">
         {phraseOptions.map((word, i) => (
-          <button key={word + i + 'option'} onClick={handleOptionClick}>
+          <button
+            className="word-btn"
+            key={word + i + 'option'}
+            onClick={handleOptionClick}
+          >
             {word}
           </button>
         ))}
       </div>
-      <button className="go-btn" onClick={handleSubmit}>
-        Go
-      </button>
+      {!lessonOutcome.message && (
+        <button className="go-btn btn" onClick={handleSubmit}>
+          Go
+        </button>
+      )}
       {lessonOutcome.message.length > 0 ? (
         <div>
-          <p>{lessonOutcome.message}</p>{' '}
-          <button onClick={handleNext}>Next</button>
+          <p className={`${lessonOutcome.class} message`}>
+            {lessonOutcome.message}
+          </p>{' '}
+          <button className={`${lessonOutcome.class} btn`} onClick={handleNext}>
+            Next
+          </button>
         </div>
       ) : (
         ''

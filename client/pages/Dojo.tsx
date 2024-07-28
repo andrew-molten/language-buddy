@@ -32,7 +32,7 @@ function Dojo() {
   // Once they have all passed finish lesson and update the proficiency in the database
 
   return (
-    <div>
+    <div className="dojo-container">
       <h2>Dojo</h2>
       {dojoPhrases.data.length > 0 ? (
         <WordChunks

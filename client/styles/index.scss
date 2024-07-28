@@ -129,10 +129,44 @@ h2 {
 }
 .options-div {
   height: 5em;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-evenly;
+  @apply mb-4;
 }
 
 .go-btn {
   background-color: #86ed00;
+}
+
+.word-btn {
+  background-color: #1e1e1e;
+  outline-color: #343434;
+  @apply outline outline-1 rounded-lg py-1 px-3 mx-1 my-2;
+}
+
+.btn {
+  position: relative;
+  left: 50%;
+  -ms-transform: translateX(-50%);
+  transform: translateX(-50%);
+  @apply rounded-lg py-1 px-5 mb-3 mt-6;
+}
+
+.fail {
+  background-color: red;
+}
+
+.pass {
+  background-color: #396204;
+}
+
+.message {
+  @apply p-2 rounded-lg;
+}
+
+.dojo-container {
+  @apply p-3;
 }
 
 .auth {
