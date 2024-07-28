@@ -34,12 +34,16 @@ function Dojo() {
   return (
     <div>
       <h2>Dojo</h2>
-      <WordChunks
-        key={progress.currentWord}
-        phrase={dojoPhrases.data[progress.currentWord]}
-        setProgress={setProgress}
-        progress={progress}
-      />
+      {dojoPhrases.data.length > 0 ? (
+        <WordChunks
+          key={progress.currentWord}
+          phrase={dojoPhrases.data[progress.currentWord]}
+          setProgress={setProgress}
+          progress={progress}
+        />
+      ) : (
+        <p>{'Try out the story checker first.'}</p>
+      )}
     </div>
   )
 }
