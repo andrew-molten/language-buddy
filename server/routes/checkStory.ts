@@ -250,15 +250,19 @@ const checkUsersPhrases = async (
 }
 
 const checkPhrases = async (phrases: PhraseCorrection[]) => {
-  const phraseStringArr = phrases.map(
-    (correction) => correction.sentenceCorrection,
+  const phraseStringArr = phrases.map((correction) =>
+    correction.sentenceCorrection.trim(),
   )
   const existingPhrases =
     await processingQueries.checkPhrasesExists(phraseStringArr)
   const existingPhraseStrings = existingPhrases.map((phrase) => phrase.phrase)
-  const phrasesToAdd = phrases.filter(
-    (phrase) => !existingPhraseStrings.includes(phrase.sentenceCorrection),
-  )
+  const phrasesToAdd = phrases
+    .filter(
+      (phrase) => !existingPhraseStrings.includes(phrase.sentenceCorrection),
+    )
+    .map((phrase) => {
+      return { ...phrase, sentenceCorrection: phrase.sentenceCorrection.trim() }
+    })
   return { phrasesToAdd, existingPhrases }
 }
 
