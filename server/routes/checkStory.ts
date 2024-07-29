@@ -255,10 +255,13 @@ const checkPhrases = async (phrases: PhraseCorrection[]) => {
   )
   const existingPhrases =
     await processingQueries.checkPhrasesExists(phraseStringArr)
-  const existingPhraseStrings = existingPhrases.map((phrase) => phrase.phrase)
+  const existingPhraseStrings = existingPhrases.map((phrase) =>
+    phrase.phrase.trim(),
+  )
   const phrasesToAdd = phrases
     .filter(
-      (phrase) => !existingPhraseStrings.includes(phrase.sentenceCorrection),
+      (phrase) =>
+        !existingPhraseStrings.includes(phrase.sentenceCorrection.trim()),
     )
     .map((phrase) => {
       return { ...phrase, sentenceCorrection: phrase.sentenceCorrection.trim() }
