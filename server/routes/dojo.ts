@@ -17,6 +17,7 @@ router.get(
     }
 
     try {
+      await dojoQueries.trimAllPhrases()
       const userId = await getUserIdByAuthId(authId)
       const languageLearning = req.params.languageLearning
       const languageNative = req.params.languageNative

@@ -1,4 +1,5 @@
 import connection from '../connection.ts'
+const db = connection
 
 export const getLowestProficiencyPhrasesToTrain = async (
   user_id: number,
@@ -9,9 +10,9 @@ export const getLowestProficiencyPhrasesToTrain = async (
   return await trx('user_phrases')
     .where({
       user_id,
-      language: languageLearning,
-      translation_language: languageNative,
     })
+    .andWhere({ language: languageLearning })
+    .andWhere({ translation_language: languageNative })
     .orderBy('proficiency', 'desc')
     .limit(10)
     .join('phrases', 'user_phrases.phrase_id', 'phrases.id')
@@ -28,4 +29,17 @@ export const getLowestProficiencyPhrasesToTrain = async (
       'phrases.phrase',
       'phrase_translation.translation',
     )
+}
+
+export const trimAllPhrases = async () => {
+  return await db('phrases')
+    .update({
+      phrase: db.raw('TRIM(phrase)'),
+    })
+    .then(() => {
+      console.log('Phrases updated successfully')
+    })
+    .catch((err) => {
+      console.error('Error updating phrases:', err)
+    })
 }
