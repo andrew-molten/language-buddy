@@ -1,15 +1,16 @@
 import { useState } from 'react'
 import { PracticePhrase } from '../../../models/stories'
+import { PhraseProficiency } from '../../../models/dojo'
 
 interface Props {
   phrase: PracticePhrase
   setProgress: (newprogress: {
     currentWord: number
-    proficiencyChange: number[]
+    proficiencyChange: PhraseProficiency[]
   }) => void
   progress: {
     currentWord: number
-    proficiencyChange: number[]
+    proficiencyChange: PhraseProficiency[]
   }
 }
 
@@ -22,6 +23,7 @@ function WordChunks({ phrase, setProgress, progress }: Props) {
     proficiencyPoint: 0,
     message: '',
     class: '',
+    passed: false,
   })
 
   /* Randomize array in-place using Durstenfeld shuffle algorithm */
@@ -60,25 +62,43 @@ function WordChunks({ phrase, setProgress, progress }: Props) {
         proficiencyPoint: 1,
         message: 'Well done!',
         class: 'pass',
+        passed: true,
       })
     } else {
       setLessonOutcome({
         proficiencyPoint: -1,
         message: `Oops, correct answer is: ${phrase.phrase}`,
         class: 'fail',
+        passed: false,
       })
     }
   }
 
+  // Next step is to check if this is the last lesson, and go back through any lessons that need to be repeated.
+
   function handleNext() {
+    updateStates()
+  }
+
+  function updateStates() {
     const newProficiencyArr = [...progress.proficiencyChange]
-    newProficiencyArr[progress.currentWord] = lessonOutcome.proficiencyPoint
+    newProficiencyArr[progress.currentWord] = {
+      points:
+        newProficiencyArr[progress.currentWord].points +
+        lessonOutcome.proficiencyPoint,
+      passed: lessonOutcome.passed,
+    }
     const newProgress = {
       currentWord: progress.currentWord + 1,
       proficiencyChange: [...newProficiencyArr],
     }
     newProgress.proficiencyChange[progress.currentWord]
-    setLessonOutcome({ proficiencyPoint: 0, message: '', class: '' })
+    setLessonOutcome({
+      proficiencyPoint: 0,
+      message: '',
+      class: '',
+      passed: false,
+    })
     setPhraseOptions([])
     setGuessSentence([])
     setProgress({ ...newProgress })

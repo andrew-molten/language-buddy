@@ -9,7 +9,18 @@ function Dojo() {
   const dojoPhrases = useDojoPhrases(languageLearning, languageNative)
   const [progress, setProgress] = useState({
     currentWord: 0,
-    proficiencyChange: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    proficiencyChange: [
+      { points: 0, passed: false },
+      { points: 0, passed: false },
+      { points: 0, passed: false },
+      { points: 0, passed: false },
+      { points: 0, passed: false },
+      { points: 0, passed: false },
+      { points: 0, passed: false },
+      { points: 0, passed: false },
+      { points: 0, passed: false },
+      { points: 0, passed: false },
+    ],
   })
 
   if (dojoPhrases.isPending) {
@@ -20,10 +31,9 @@ function Dojo() {
   }
 
   console.log(dojoPhrases.data)
+  console.log(progress)
 
   // remove fullstops etc from words to test
-
-  // add a property to progress to check which sentences have passed
 
   // add an option to skip & delete a sentence if you don't like it. (Are you sure)
 
@@ -34,7 +44,7 @@ function Dojo() {
   return (
     <div className="dojo-container">
       <h2>Dojo</h2>
-      {dojoPhrases.data.length > 0 ? (
+      {dojoPhrases.data.length > 9 ? (
         <WordChunks
           key={progress.currentWord}
           phrase={dojoPhrases.data[progress.currentWord]}
@@ -42,7 +52,7 @@ function Dojo() {
           progress={progress}
         />
       ) : (
-        <p>{'Try out the story checker first.'}</p>
+        <p>{'Use the story checker some more first.'}</p>
       )}
     </div>
   )
