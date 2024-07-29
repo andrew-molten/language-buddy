@@ -52,7 +52,7 @@ function Dojo() {
           progress={progress}
         />
       ) : (
-        <p>{'Use the story checker some more first.'}</p>
+        <p>{`Use the story checker some more first. You need ${10 - dojoPhrases.data.length} more sentences corrected to use the dojo.`}</p>
       )}
     </div>
   )
