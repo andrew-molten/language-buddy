@@ -23,7 +23,6 @@ body {
   margin: 1em;
   background-color: rgb(21, 21, 21);
   color: whitesmoke;
-  // margin: 0px;
 }
 
 li {
@@ -71,21 +70,11 @@ h2 {
 .story-snippet {
   display: block;
   margin-top: 1em;
-  // background-color: rgba(69, 167, 252, 0.267);
-  // background-color: var(--primary-light);
   border-width: 0;
   text-align: left;
-  // border-radius: 15px;
-  // width: 100%;;
-  // @apply p-2;
-  // padding: 2px;
   outline-color: var(--primary-light);
   @apply rounded-lg  outline outline-2;
 }
-
-/* .snippet-p {
-  margin: 0.2em;
-} */
 
 .data-word {
   margin-top: 1em;
@@ -98,10 +87,6 @@ h2 {
 .page-heading {
   color: var(--secondary-light-accent);
 }
-
-// .secondary-color {
-//   color: var(--secondary-light-accent);
-// }
 
 .primary-btn {
   border-radius: 10px;
@@ -128,11 +113,10 @@ h2 {
   height: 5em;
 }
 .options-div {
-  height: 5em;
   display: flex;
   flex-flow: row wrap;
   justify-content: space-evenly;
-  @apply mb-4;
+  @apply mb-4 mt-3;
 }
 
 .go-btn {
@@ -146,10 +130,8 @@ h2 {
 }
 
 .btn {
-  position: relative;
-  left: 50%;
-  -ms-transform: translateX(-50%);
-  transform: translateX(-50%);
+  display: block;
+  margin: auto;
   @apply rounded-lg py-1 px-5 mb-3 mt-6;
 }
 
@@ -194,21 +176,6 @@ h2 {
 .card-container h2 {
   color: var(--secondary-light-accent);
 }
-
-// .black-card-container {
-//   @apply outline outline-1 rounded-lg p-2 my-3  outline-black;
-// }
-
-// .black-card-container p {
-//   @apply text-black text-lg/6;
-// }
-// .black-card-container li {
-//   @apply text-black text-lg/6;
-// }
-
-// .black-card-container h2 {
-//   color: var(--secondary-dark-accent);
-// }
 
 .sentence-correction {
   background-color: rgb(31, 31, 31);

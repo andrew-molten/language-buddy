@@ -135,14 +135,14 @@ function WordChunks({ phrase, setProgress, progress }: Props) {
         </button>
       )}
       {lessonOutcome.message.length > 0 ? (
-        <div>
+        <>
           <p className={`${lessonOutcome.class} message`}>
             {lessonOutcome.message}
           </p>{' '}
           <button className={`${lessonOutcome.class} btn`} onClick={handleNext}>
             Next
           </button>
-        </div>
+        </>
       ) : (
         ''
       )}
