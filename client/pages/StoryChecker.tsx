@@ -65,7 +65,7 @@ function StoryChecker() {
         <textarea
           value={stories.nativeStory}
           name="nativeStory"
-          placeholder={`Write about anything you like here! What happened today, what do you wish you could say in ${user.data[0].nativeLanguage}...`}
+          placeholder={`Write about anything you like here! What happened today, what do you wish you could say in ${user.data[0].learningLanguage}...`}
           // maxLength={}
           onChange={handleChange}
           // style={{ width: '400px', height: '200px' }}
@@ -79,7 +79,7 @@ function StoryChecker() {
         <textarea
           value={stories.learningLanguageStory}
           name="learningLanguageStory"
-          placeholder={`Try to write same story in ${user.data[0].nativeLanguage}, & I'll help you improve!`}
+          placeholder={`Try to write same story in ${user.data[0].learningLanguage}, & I'll help you improve!`}
           // maxLength={}
           onChange={handleChange}
           // style={{ width: '400px', height: '200px' }}
