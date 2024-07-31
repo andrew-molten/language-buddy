@@ -54,8 +54,6 @@ function StoryChecker() {
     setStories({ ...stories, [name]: value })
   }
 
-  // if (differentiate.data) console.log(differentiate.data)
-
   return (
     <div className="page">
       <h1 className="page-heading">Story Checker</h1>
@@ -66,9 +64,7 @@ function StoryChecker() {
           value={stories.nativeStory}
           name="nativeStory"
           placeholder={`Write about anything you like here! What happened today, what do you wish you could say in ${user.data[0].learningLanguage}...`}
-          // maxLength={}
           onChange={handleChange}
-          // style={{ width: '400px', height: '200px' }}
           className="story-text-box"
         />
         <br />
@@ -80,9 +76,7 @@ function StoryChecker() {
           value={stories.learningLanguageStory}
           name="learningLanguageStory"
           placeholder={`Try to write same story in ${user.data[0].learningLanguage}, & I'll help you improve!`}
-          // maxLength={}
           onChange={handleChange}
-          // style={{ width: '400px', height: '200px' }}
           className="story-text-box"
         />
         <br />
@@ -96,7 +90,6 @@ function StoryChecker() {
       </form>
       {differentiate.isPending && <p>Loading...</p>}
       {differentiate.error && <p>Error: {differentiate.error.message}</p>}
-      {/* {differentiate.data && <StoryDifference data={differentiate.data} />} */}
     </div>
   )
 }
