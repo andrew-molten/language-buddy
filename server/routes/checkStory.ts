@@ -15,6 +15,7 @@ import type {
   NewWord,
   PhraseCorrection,
   Stories,
+  TokenUsage,
   WordToAdd,
 } from '../../models/stories'
 import * as storyProcessor from '../db/functions/storyProcessor'
@@ -106,7 +107,8 @@ router.post('/', checkJwt, async (req: JwtRequest, res) => {
         ],
         // max_tokens: 300, //having the max tokens can cause it to stop writing mid json.
       })
-
+    const tokenUsage = response.body.usage
+    console.log(tokenUsage)
     const messageContent = response.body.choices[0].message.content
     const preprocessedResponse = preprocessResponse(messageContent)
     const parsedContent = JSON.parse(preprocessedResponse)
@@ -118,6 +120,7 @@ router.post('/', checkJwt, async (req: JwtRequest, res) => {
       nativeLanguage,
       learningLanguage,
       authId,
+      tokenUsage,
     )
   } catch (err) {
     if (err instanceof Error) {
@@ -142,6 +145,7 @@ const saveToDB = async (
   nativeLanguage: string,
   learningLanguage: string,
   authId: string,
+  tokenUsage: TokenUsage,
 ) => {
   const userId = await getUserIdByAuthId(authId)
   console.log('userId: ', userId)
