@@ -157,6 +157,7 @@ const saveToDB = async (
     language_learning: learningLanguage,
     user_id: userId,
     date_added: addDate(),
+    token_usage: tokenUsage,
   }
   const lemmasData = await checkLemmas(data.wordsToAddToVocabulary)
   const wordsData = await checkWords(
