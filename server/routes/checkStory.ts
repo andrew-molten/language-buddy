@@ -191,7 +191,6 @@ const saveToDB = async (
   }
 
   await storyProcessor.saveStory(dataToSend)
-  // run getWordPhraseAssociations here
   getWordPhraseAssociations(data.wordsToAddToVocabulary, data.user_id)
 }
 

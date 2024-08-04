@@ -1,22 +1,22 @@
-/**
- * @param { import("knex").Knex } knex
- * @returns { Promise<void> }
- */
-export async function up(knex) {
-  return knex.schema.alterTable('story_history', (table) => {
-    table.string('token_usage').defaultTo('')
-  })
-}
+// /**
+//  * @param { import("knex").Knex } knex
+//  * @returns { Promise<void> }
+//  */
+// export async function up(knex) {
+//   return knex.schema.alterTable('story_history', (table) => {
+//     table.string('token_usage').defaultTo('')
+//   })
+// }
 
-/**
- * @param { import("knex").Knex } knex
- * @returns { Promise<void> }
- */
-export async function down(knex) {
-  return knex.schema.alterTable('story_history', (table) => {
-    table.dropColumn('token_usage')
-  })
-}
+// /**
+//  * @param { import("knex").Knex } knex
+//  * @returns { Promise<void> }
+//  */
+// export async function down(knex) {
+//   return knex.schema.alterTable('story_history', (table) => {
+//     table.dropColumn('token_usage')
+//   })
+// }
 // should maybe include all 3 token usages separately for each story, or at least the total usage separate
 
 // For the user:

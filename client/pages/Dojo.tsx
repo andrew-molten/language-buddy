@@ -9,6 +9,7 @@ function Dojo() {
   const dojoPhrases = useDojoPhrases(languageLearning, languageNative)
   const [progress, setProgress] = useState({
     currentWord: 0,
+    lessonsToRetry: false,
     proficiencyChange: [
       { points: 0, passed: false },
       { points: 0, passed: false },

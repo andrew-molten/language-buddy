@@ -6,10 +6,12 @@ interface Props {
   phrase: PracticePhrase
   setProgress: (newprogress: {
     currentWord: number
+    lessonsToRetry: boolean
     proficiencyChange: PhraseProficiency[]
   }) => void
   progress: {
     currentWord: number
+    lessonsToRetry: boolean
     proficiencyChange: PhraseProficiency[]
   }
 }
@@ -80,6 +82,16 @@ function WordChunks({ phrase, setProgress, progress }: Props) {
     updateStates()
   }
 
+  function checkIfLessonsNeedRedoing(proficiencyArr: PhraseProficiency[]) {
+    const flatPassedArr = proficiencyArr.map((phrase) => phrase.passed)
+    return flatPassedArr.includes(false)
+  }
+
+  // function findNextSentence(currentSentence) {
+  //   // if any of the sentences.passed after the currentSentence are true, then the next lesson is the index of the first sentence.passed
+  //   // otherwise the next sentence is the current sentence + 1
+  // }
+
   function updateStates() {
     const newProficiencyArr = [...progress.proficiencyChange]
     newProficiencyArr[progress.currentWord] = {
@@ -88,7 +100,13 @@ function WordChunks({ phrase, setProgress, progress }: Props) {
         lessonOutcome.proficiencyPoint,
       passed: lessonOutcome.passed,
     }
+
+    const lessonsToRetry = checkIfLessonsNeedRedoing(newProficiencyArr)
+
+    // const nextSentence = findNextSentence(progress.currentWord)
+
     const newProgress = {
+      lessonsToRetry: lessonsToRetry,
       currentWord: progress.currentWord + 1,
       proficiencyChange: [...newProficiencyArr],
     }
@@ -102,6 +120,10 @@ function WordChunks({ phrase, setProgress, progress }: Props) {
     setPhraseOptions([])
     setGuessSentence([])
     setProgress({ ...newProgress })
+  }
+
+  function handleFinish() {
+    console.log('Finnniiiiished!!!!')
   }
 
   return (
@@ -139,9 +161,21 @@ function WordChunks({ phrase, setProgress, progress }: Props) {
           <p className={`${lessonOutcome.class} message`}>
             {lessonOutcome.message}
           </p>{' '}
-          <button className={`${lessonOutcome.class} btn`} onClick={handleNext}>
-            Next
-          </button>
+          {progress.currentWord < 9 || progress.lessonsToRetry === true ? (
+            <button
+              className={`${lessonOutcome.class} btn`}
+              onClick={handleNext}
+            >
+              Next
+            </button>
+          ) : (
+            <button
+              className={`${lessonOutcome.class} btn`}
+              onClick={handleFinish}
+            >
+              Finish
+            </button>
+          )}
         </>
       ) : (
         ''
