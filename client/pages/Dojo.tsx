@@ -7,7 +7,7 @@ import { User } from '../../models/admin'
 import { PracticePhrase } from '../../models/stories'
 
 function Dojo() {
-  // get 10 phrases, with all of the definitions of the word
+  // get 10 phrases
   const queryClient = useQueryClient()
   const user: User[] | undefined = queryClient.getQueryData(['user'])
   const learningLanguage = user![0].learningLanguage
@@ -40,7 +40,6 @@ function Dojo() {
   }
 
   async function handleFinish() {
-    console.log('Finnniish')
     const phrasesToUpdate = dojoPhrases.data.map(
       (phrase: PracticePhrase, i: number) => {
         return {
@@ -50,8 +49,7 @@ function Dojo() {
         }
       },
     )
-    const ummm = await updatePhrases.mutateAsync(phrasesToUpdate)
-    console.log(ummm)
+    await updatePhrases.mutateAsync(phrasesToUpdate)
     setProgress(emptyProgress)
   }
 
@@ -61,15 +59,10 @@ function Dojo() {
   if (dojoPhrases.isError) {
     return <p>{String(dojoPhrases.error)}</p>
   }
-  console.log(progress)
 
   // remove fullstops etc from words to test
 
   // add an option to skip & delete a sentence if you don't like it. (Are you sure)
-
-  // Once they have all passed finish lesson and update the proficiency in the database
-  // console.log(dojoPhrases.data)
-  // console.log(progress)
 
   return (
     <div className="dojo-container">

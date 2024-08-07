@@ -36,7 +36,6 @@ export const useUpdatePhrases = () => {
         .patch(`${rootUrl}/dojo`)
         .send(phrasesToUpdate)
         .set('Authorization', `Bearer ${token}`)
-      console.log(res)
       return res.status
     },
     onSuccess: () => {

@@ -207,7 +207,6 @@ function WordChunks({ phrase, setProgress, progress, handleFinish }: Props) {
             <button
               className={`${lessonOutcome.class} btn`}
               onClick={() => {
-                console.log('clicked')
                 handleFinish()
               }}
             >
