@@ -1,19 +1,11 @@
 import { useState } from 'react'
 import { PracticePhrase } from '../../../models/stories'
-import { PhraseProficiency } from '../../../models/dojo'
+import { ProgressState } from '../../../models/dojo'
 
 interface Props {
   phrase: PracticePhrase
-  setProgress: (newprogress: {
-    currentWord: number
-    lessonsToRetry: boolean
-    proficiencyChange: PhraseProficiency[]
-  }) => void
-  progress: {
-    currentWord: number
-    lessonsToRetry: boolean
-    proficiencyChange: PhraseProficiency[]
-  }
+  setProgress: (newprogress: ProgressState) => void
+  progress: ProgressState
 }
 
 function WordChunks({ phrase, setProgress, progress }: Props) {
@@ -26,6 +18,9 @@ function WordChunks({ phrase, setProgress, progress }: Props) {
     message: '',
     class: '',
     passed: false,
+    lessonsNeedRetry: progress.lessonsNeedRetry,
+    newFailedLessons: progress.failedLessons,
+    attemptedAll: progress.attemptedAll,
   })
 
   /* Randomize array in-place using Durstenfeld shuffle algorithm */
@@ -59,12 +54,22 @@ function WordChunks({ phrase, setProgress, progress }: Props) {
 
   function handleSubmit() {
     const guess = guessSentence.join(' ')
-    if (guess === phrase.phrase) {
+    const passed = guess === phrase.phrase
+    const newFailedLessons = updateFailedLessons(passed)
+    const lessonsNeedRetry = checkIfLessonsNeedRedoing(newFailedLessons)
+    const attemptedAll = getAttemptedAll(
+      progress.currentWord,
+      progress.attemptedAll,
+    )
+    if (passed) {
       setLessonOutcome({
         proficiencyPoint: 1,
         message: 'Well done!',
         class: 'pass',
         passed: true,
+        lessonsNeedRetry: lessonsNeedRetry,
+        newFailedLessons: newFailedLessons,
+        attemptedAll: attemptedAll,
       })
     } else {
       setLessonOutcome({
@@ -72,6 +77,9 @@ function WordChunks({ phrase, setProgress, progress }: Props) {
         message: `Oops, correct answer is: ${phrase.phrase}`,
         class: 'fail',
         passed: false,
+        lessonsNeedRetry: lessonsNeedRetry,
+        newFailedLessons: newFailedLessons,
+        attemptedAll: attemptedAll,
       })
     }
   }
@@ -82,15 +90,53 @@ function WordChunks({ phrase, setProgress, progress }: Props) {
     updateStates()
   }
 
-  function checkIfLessonsNeedRedoing(proficiencyArr: PhraseProficiency[]) {
-    const flatPassedArr = proficiencyArr.map((phrase) => phrase.passed)
-    return flatPassedArr.includes(false)
+  function checkIfLessonsNeedRedoing(failedLessonsArr: number[]) {
+    return failedLessonsArr.length > 0
   }
 
-  // function findNextSentence(currentSentence) {
-  //   // if any of the sentences.passed after the currentSentence are true, then the next lesson is the index of the first sentence.passed
-  //   // otherwise the next sentence is the current sentence + 1
-  // }
+  function findNextSentence(
+    currentSentence: number,
+    lessonsNeedRetry: boolean,
+    attemptedAll: boolean,
+    failedLessons: number[],
+  ) {
+    // ALL LESSONS PASSED
+    if (attemptedAll && !lessonsNeedRetry) return currentSentence
+    // HAVEN'T ATTEMPTED ALL
+    if (!attemptedAll) {
+      return currentSentence + 1
+    }
+    // RETRY LESSONS
+    if (attemptedAll && lessonsNeedRetry) {
+      if (failedLessons.includes(currentSentence)) {
+        const indexInFailedLessons = failedLessons.indexOf(currentSentence)
+        // CURRENT SENTENCE IS LAST IN ARRAY - RESTART
+        if (indexInFailedLessons === failedLessons.length - 1) {
+          return failedLessons[0]
+        } else return failedLessons[indexInFailedLessons + 1] // NEXT
+      } else return failedLessons[0] // START
+      // FINISHED ALL
+    } else return currentSentence
+  }
+
+  function updateFailedLessons(passed: boolean) {
+    const newFailedLessons = [...progress.failedLessons]
+    // ADD FAILED LESSON
+    if (!passed && !newFailedLessons.includes(progress.currentWord)) {
+      newFailedLessons.push(progress.currentWord)
+    }
+    // REMOVE PASSED LESSON
+    if (passed && newFailedLessons.includes(progress.currentWord)) {
+      const index = newFailedLessons.indexOf(progress.currentWord)
+      newFailedLessons.splice(index, 1)
+    }
+    return newFailedLessons
+  }
+
+  function getAttemptedAll(currWord: number, attemptedAll: boolean) {
+    if (currWord === 9 || attemptedAll === true) return true
+    else return false
+  }
 
   function updateStates() {
     const newProficiencyArr = [...progress.proficiencyChange]
@@ -101,22 +147,31 @@ function WordChunks({ phrase, setProgress, progress }: Props) {
       passed: lessonOutcome.passed,
     }
 
-    const lessonsToRetry = checkIfLessonsNeedRedoing(newProficiencyArr)
-
-    // const nextSentence = findNextSentence(progress.currentWord)
+    const nextSentenceIndex = findNextSentence(
+      progress.currentWord,
+      lessonOutcome.lessonsNeedRetry,
+      lessonOutcome.attemptedAll,
+      lessonOutcome.newFailedLessons,
+    )
 
     const newProgress = {
-      lessonsToRetry: lessonsToRetry,
-      currentWord: progress.currentWord + 1,
+      lessonsNeedRetry: lessonOutcome.lessonsNeedRetry,
+      attemptedAll: lessonOutcome.attemptedAll,
+      currentWord: nextSentenceIndex,
+      failedLessons: lessonOutcome.newFailedLessons,
       proficiencyChange: [...newProficiencyArr],
     }
-    newProgress.proficiencyChange[progress.currentWord]
-    setLessonOutcome({
-      proficiencyPoint: 0,
-      message: '',
-      class: '',
-      passed: false,
-    })
+
+    // newProgress.proficiencyChange[progress.currentWord]
+
+    // setLessonOutcome({
+    //   proficiencyPoint: 0,
+    //   message: '',
+    //   class: '',
+    //   passed: false,
+    //   lessonsNeedRetry: progress.lessonsNeedRetry,
+    //   newFailedLessons: progress.failedLessons,
+    // })
     setPhraseOptions([])
     setGuessSentence([])
     setProgress({ ...newProgress })
@@ -161,7 +216,8 @@ function WordChunks({ phrase, setProgress, progress }: Props) {
           <p className={`${lessonOutcome.class} message`}>
             {lessonOutcome.message}
           </p>{' '}
-          {progress.currentWord < 9 || progress.lessonsToRetry === true ? (
+          {!lessonOutcome.attemptedAll ||
+          lessonOutcome.lessonsNeedRetry === true ? (
             <button
               className={`${lessonOutcome.class} btn`}
               onClick={handleNext}

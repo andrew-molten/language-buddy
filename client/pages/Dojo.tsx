@@ -1,15 +1,18 @@
 import { useDojoPhrases } from '../hooks/useDojo'
 import WordChunks from '../components/phraseLessons/WordChunks'
 import { useState } from 'react'
+import { ProgressState } from '../../models/dojo'
 
 function Dojo() {
   // get 10 phrases, with all of the definitions of the word
   const languageLearning = 'German'
   const languageNative = 'English'
   const dojoPhrases = useDojoPhrases(languageLearning, languageNative)
-  const [progress, setProgress] = useState({
+  const [progress, setProgress] = useState<ProgressState>({
     currentWord: 0,
-    lessonsToRetry: false,
+    lessonsNeedRetry: false,
+    attemptedAll: false,
+    failedLessons: [],
     proficiencyChange: [
       { points: 0, passed: false },
       { points: 0, passed: false },
