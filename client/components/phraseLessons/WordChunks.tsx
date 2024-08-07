@@ -44,7 +44,6 @@ function WordChunks({ phrase, setProgress, progress }: Props) {
 
   function handleGuessClick(e: React.MouseEvent<HTMLButtonElement>) {
     const clicked = (e.nativeEvent.target as HTMLElement)?.textContent
-    console.log(phraseOptions, clicked)
     setPhraseOptions([...phraseOptions, clicked!])
     const newGuessSentence = [...guessSentence]
     const indexOf = newGuessSentence.indexOf(clicked!)
@@ -85,10 +84,6 @@ function WordChunks({ phrase, setProgress, progress }: Props) {
   }
 
   // Next step is to check if this is the last lesson, and go back through any lessons that need to be repeated.
-
-  function handleNext() {
-    updateStates()
-  }
 
   function checkIfLessonsNeedRedoing(failedLessonsArr: number[]) {
     return failedLessonsArr.length > 0
@@ -138,7 +133,7 @@ function WordChunks({ phrase, setProgress, progress }: Props) {
     else return false
   }
 
-  function updateStates() {
+  function handleNext() {
     const newProficiencyArr = [...progress.proficiencyChange]
     newProficiencyArr[progress.currentWord] = {
       points:
@@ -161,15 +156,13 @@ function WordChunks({ phrase, setProgress, progress }: Props) {
       proficiencyChange: [...newProficiencyArr],
     }
 
-    setPhraseOptions([])
-    setGuessSentence([])
+    setLessonOutcome({ ...lessonOutcome, message: '' })
     setProgress({ ...newProgress })
   }
 
   function handleFinish() {
     console.log('Finnniiiiished!!!!')
   }
-
   return (
     <div>
       <p>{phrase.translation}</p>
