@@ -1,11 +1,11 @@
 export interface NewUser {
   email: string
   givenName: string
-  familyName: string
+  familyName?: string
   username: string
   birthdate: string
-  languageLearning: string
-  languageNative: string
+  learningLanguage: string
+  nativeLanguage: string
 }
 
 export interface RegistrationForm {
@@ -22,4 +22,12 @@ export interface ConflictError extends Error {
 export interface UpdatedUser {
   learningLanguage: string
   nativeLanguage: string
+}
+
+export interface User extends NewUser {
+  authId: string
+  dateOfBirth: string
+  id: number
+  isPremium: number
+  lastName: string
 }

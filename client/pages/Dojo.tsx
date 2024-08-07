@@ -2,12 +2,16 @@ import { useDojoPhrases } from '../hooks/useDojo'
 import WordChunks from '../components/phraseLessons/WordChunks'
 import { useState } from 'react'
 import { ProgressState } from '../../models/dojo'
+import { useQueryClient } from '@tanstack/react-query'
+import { User } from '../../models/admin'
 
 function Dojo() {
   // get 10 phrases, with all of the definitions of the word
-  const languageLearning = 'German'
-  const languageNative = 'English'
-  const dojoPhrases = useDojoPhrases(languageLearning, languageNative)
+  const queryClient = useQueryClient()
+  const user: User[] | undefined = queryClient.getQueryData(['user'])
+  const learningLanguage = user![0].learningLanguage
+  const nativeLanguage = user![0].nativeLanguage
+  const dojoPhrases = useDojoPhrases(learningLanguage, nativeLanguage)
   const [progress, setProgress] = useState<ProgressState>({
     currentSentence: 0,
     lessonsNeedRetry: false,
@@ -53,7 +57,7 @@ function Dojo() {
           progress={progress}
         />
       ) : (
-        <p>{`Use the story checker some more first. You need ${10 - dojoPhrases.data.length} more sentences corrected to use the dojo.`}</p>
+        <p>{`Hey friend👋 Use the story checker some more... You need ${10 - dojoPhrases.data.length} more ${learningLanguage} sentences to use the dojo.`}</p>
       )}
     </div>
   )

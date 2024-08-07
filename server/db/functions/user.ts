@@ -34,8 +34,8 @@ export async function createUser(newUser: NewUser, authId: string) {
     date_of_birth: newUser.birthdate,
     auth_id: authId,
     is_premium: 0,
-    learning_language: newUser.languageLearning,
-    native_language: newUser.languageNative,
+    learning_language: newUser.learningLanguage,
+    native_language: newUser.nativeLanguage,
   })
 }
 

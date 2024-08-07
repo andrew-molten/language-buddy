@@ -55,8 +55,8 @@ function Registration() {
       familyName: formState.familyName,
       username: formState.username,
       birthdate: formState.birthdate,
-      languageLearning: languageLearning!.value,
-      languageNative: languageNative!.value,
+      learningLanguage: languageLearning!.value,
+      nativeLanguage: languageNative!.value,
     }
 
     createUser.mutateAsync(newUser)
