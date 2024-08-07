@@ -9,3 +9,8 @@ export interface ProgressState {
   failedLessons: number[]
   proficiencyChange: PhraseProficiency[]
 }
+
+export interface PhraseToUpdate {
+  id: number
+  proficiency: number
+}

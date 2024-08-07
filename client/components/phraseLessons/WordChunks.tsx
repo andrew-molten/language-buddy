@@ -6,9 +6,10 @@ interface Props {
   phrase: PracticePhrase
   setProgress: (newprogress: ProgressState) => void
   progress: ProgressState
+  handleFinish: () => void
 }
 
-function WordChunks({ phrase, setProgress, progress }: Props) {
+function WordChunks({ phrase, setProgress, progress, handleFinish }: Props) {
   const options = phrase.phrase.split(' ')
   shuffleArr(options)
   const [phraseOptions, setPhraseOptions] = useState(options)
@@ -82,8 +83,6 @@ function WordChunks({ phrase, setProgress, progress }: Props) {
       })
     }
   }
-
-  // Next step is to check if this is the last lesson, and go back through any lessons that need to be repeated.
 
   function checkIfLessonsNeedRedoing(failedLessonsArr: number[]) {
     return failedLessonsArr.length > 0
@@ -160,9 +159,6 @@ function WordChunks({ phrase, setProgress, progress }: Props) {
     setProgress({ ...newProgress })
   }
 
-  function handleFinish() {
-    console.log('Finnniiiiished!!!!')
-  }
   return (
     <div>
       <p>{phrase.translation}</p>

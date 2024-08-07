@@ -1,3 +1,4 @@
+import { PhraseToUpdate } from '../../../models/dojo.ts'
 import connection from '../connection.ts'
 const db = connection
 
@@ -42,4 +43,16 @@ export const trimAllPhrases = async () => {
     .catch((err) => {
       console.error('Error updating phrases:', err)
     })
+}
+
+export const updatePhraseProficiency = async (
+  phrasesToUpdate: PhraseToUpdate[],
+  user_id: number,
+) => {
+  for (const phrase of phrasesToUpdate) {
+    await db('user_phrases')
+      .where({ id: phrase.id })
+      .where({ user_id })
+      .update({ proficiency: phrase.proficiency })
+  }
 }

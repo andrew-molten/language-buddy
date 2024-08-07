@@ -6,6 +6,7 @@ import { PracticePhrase } from '../../models/stories.ts'
 
 const router = express.Router()
 
+// GET DOJO PHRASES
 router.get(
   '/:languageLearning/:languageNative',
   checkJwt,
@@ -39,6 +40,32 @@ router.get(
     }
   },
 )
+
+// UPDATE DOJO PHRASES
+router.patch('/', checkJwt, async (req: JwtRequest, res) => {
+  const authId = req.auth?.sub
+
+  if (!authId) {
+    console.log('no authId')
+    return res.status(401).send('unauthorized')
+  }
+
+  try {
+    const phrasesToUpdate = req.body
+    const userId = await getUserIdByAuthId(authId)
+    await dojoQueries.updatePhraseProficiency(phrasesToUpdate, userId)
+    res.status(200)
+  } catch (err) {
+    if (err instanceof Error) {
+      console.log('error: ', err)
+      res.status(500).send((err as Error).message)
+    } else {
+      console.log('error: ', err)
+      res.status(500).send('Something went wrong')
+    }
+  }
+})
+
 function selectPhrases(phrases: PracticePhrase[]) {
   // if proficiency > 10 put into highProficiency array
   // <= 10 && >5 = mediumProficiency

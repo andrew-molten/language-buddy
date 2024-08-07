@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { ProgressState } from '../../models/dojo'
 import { useQueryClient } from '@tanstack/react-query'
 import { User } from '../../models/admin'
+import { PracticePhrase } from '../../models/stories'
 
 function Dojo() {
   // get 10 phrases, with all of the definitions of the word
@@ -31,18 +32,33 @@ function Dojo() {
     ],
   })
 
+  function handleFinish() {
+    const phrasesToUpdate = dojoPhrases.data.map(
+      (phrase: PracticePhrase, i: number) => {
+        return {
+          id: phrase.userPhraseId,
+          proficiency: progress.proficiencyChange[i].points,
+        }
+      },
+    )
+    console.log(phrasesToUpdate)
+  }
+
   if (dojoPhrases.isPending) {
     return <p>Loading..</p>
   }
   if (dojoPhrases.isError) {
     return <p>{String(dojoPhrases.error)}</p>
   }
+  handleFinish()
 
   // remove fullstops etc from words to test
 
   // add an option to skip & delete a sentence if you don't like it. (Are you sure)
 
   // Once they have all passed finish lesson and update the proficiency in the database
+  // console.log(dojoPhrases.data)
+  // console.log(progress)
 
   return (
     <div className="dojo-container">
@@ -53,6 +69,7 @@ function Dojo() {
           phrase={dojoPhrases.data[progress.currentSentence]}
           setProgress={setProgress}
           progress={progress}
+          handleFinish={handleFinish}
         />
       ) : (
         <p>{`Hey friend👋 Use the story checker some more... You need ${10 - dojoPhrases.data.length} more ${learningLanguage} sentences to use the dojo.`}</p>
