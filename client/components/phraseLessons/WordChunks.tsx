@@ -144,7 +144,6 @@ function WordChunks({ phrase, setProgress, progress }: Props) {
       points:
         newProficiencyArr[progress.currentWord].points +
         lessonOutcome.proficiencyPoint,
-      passed: lessonOutcome.passed,
     }
 
     const nextSentenceIndex = findNextSentence(
@@ -162,16 +161,6 @@ function WordChunks({ phrase, setProgress, progress }: Props) {
       proficiencyChange: [...newProficiencyArr],
     }
 
-    // newProgress.proficiencyChange[progress.currentWord]
-
-    // setLessonOutcome({
-    //   proficiencyPoint: 0,
-    //   message: '',
-    //   class: '',
-    //   passed: false,
-    //   lessonsNeedRetry: progress.lessonsNeedRetry,
-    //   newFailedLessons: progress.failedLessons,
-    // })
     setPhraseOptions([])
     setGuessSentence([])
     setProgress({ ...newProgress })
