@@ -7,7 +7,9 @@ function NavBar() {
   const { user, logout, loginWithRedirect } = useAuth0()
 
   const handleSignOut = () => {
-    logout()
+    logout({
+      logoutParams: { returnTo: 'https://languagebuddy.andrewmolten.com' },
+    })
   }
 
   const handleSignIn = () => {
