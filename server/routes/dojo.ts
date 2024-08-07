@@ -54,7 +54,7 @@ router.patch('/', checkJwt, async (req: JwtRequest, res) => {
     const phrasesToUpdate = req.body
     const userId = await getUserIdByAuthId(authId)
     await dojoQueries.updatePhraseProficiency(phrasesToUpdate, userId)
-    res.status(200)
+    res.status(200).send('Successfully updated')
   } catch (err) {
     if (err instanceof Error) {
       console.log('error: ', err)

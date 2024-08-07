@@ -55,4 +55,5 @@ export const updatePhraseProficiency = async (
       .where({ user_id })
       .update({ proficiency: phrase.proficiency })
   }
+  return
 }

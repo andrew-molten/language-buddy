@@ -3,6 +3,7 @@ export interface PhraseProficiency {
 }
 
 export interface ProgressState {
+  lessonStarted: boolean
   currentSentence: number
   lessonsNeedRetry: boolean
   attemptedAll: boolean
