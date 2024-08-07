@@ -9,7 +9,7 @@ function Dojo() {
   const languageNative = 'English'
   const dojoPhrases = useDojoPhrases(languageLearning, languageNative)
   const [progress, setProgress] = useState<ProgressState>({
-    currentWord: 0,
+    currentSentence: 0,
     lessonsNeedRetry: false,
     attemptedAll: false,
     failedLessons: [],
@@ -34,9 +34,6 @@ function Dojo() {
     return <p>{String(dojoPhrases.error)}</p>
   }
 
-  console.log(dojoPhrases.data)
-  console.log(progress)
-
   // remove fullstops etc from words to test
 
   // add an option to skip & delete a sentence if you don't like it. (Are you sure)
@@ -50,8 +47,8 @@ function Dojo() {
       <h2>Dojo</h2>
       {dojoPhrases.data.length > 9 ? (
         <WordChunks
-          key={progress.currentWord}
-          phrase={dojoPhrases.data[progress.currentWord]}
+          key={progress.currentSentence}
+          phrase={dojoPhrases.data[progress.currentSentence]}
           setProgress={setProgress}
           progress={progress}
         />

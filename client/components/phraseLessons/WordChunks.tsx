@@ -57,7 +57,7 @@ function WordChunks({ phrase, setProgress, progress }: Props) {
     const newFailedLessons = updateFailedLessons(passed)
     const lessonsNeedRetry = checkIfLessonsNeedRedoing(newFailedLessons)
     const attemptedAll = getAttemptedAll(
-      progress.currentWord,
+      progress.currentSentence,
       progress.attemptedAll,
     )
     if (passed) {
@@ -117,12 +117,12 @@ function WordChunks({ phrase, setProgress, progress }: Props) {
   function updateFailedLessons(passed: boolean) {
     const newFailedLessons = [...progress.failedLessons]
     // ADD FAILED LESSON
-    if (!passed && !newFailedLessons.includes(progress.currentWord)) {
-      newFailedLessons.push(progress.currentWord)
+    if (!passed && !newFailedLessons.includes(progress.currentSentence)) {
+      newFailedLessons.push(progress.currentSentence)
     }
     // REMOVE PASSED LESSON
-    if (passed && newFailedLessons.includes(progress.currentWord)) {
-      const index = newFailedLessons.indexOf(progress.currentWord)
+    if (passed && newFailedLessons.includes(progress.currentSentence)) {
+      const index = newFailedLessons.indexOf(progress.currentSentence)
       newFailedLessons.splice(index, 1)
     }
     return newFailedLessons
@@ -135,14 +135,14 @@ function WordChunks({ phrase, setProgress, progress }: Props) {
 
   function handleNext() {
     const newProficiencyArr = [...progress.proficiencyChange]
-    newProficiencyArr[progress.currentWord] = {
+    newProficiencyArr[progress.currentSentence] = {
       points:
-        newProficiencyArr[progress.currentWord].points +
+        newProficiencyArr[progress.currentSentence].points +
         lessonOutcome.proficiencyPoint,
     }
 
     const nextSentenceIndex = findNextSentence(
-      progress.currentWord,
+      progress.currentSentence,
       lessonOutcome.lessonsNeedRetry,
       lessonOutcome.attemptedAll,
       lessonOutcome.newFailedLessons,
@@ -151,7 +151,7 @@ function WordChunks({ phrase, setProgress, progress }: Props) {
     const newProgress = {
       lessonsNeedRetry: lessonOutcome.lessonsNeedRetry,
       attemptedAll: lessonOutcome.attemptedAll,
-      currentWord: nextSentenceIndex,
+      currentSentence: nextSentenceIndex,
       failedLessons: lessonOutcome.newFailedLessons,
       proficiencyChange: [...newProficiencyArr],
     }
