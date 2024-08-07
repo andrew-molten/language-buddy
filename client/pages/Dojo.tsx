@@ -42,8 +42,6 @@ function Dojo() {
 
   // add an option to skip & delete a sentence if you don't like it. (Are you sure)
 
-  // when you get to the end of the ten questions, it goes back to any that you failed on
-
   // Once they have all passed finish lesson and update the proficiency in the database
 
   return (

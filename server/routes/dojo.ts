@@ -2,6 +2,7 @@ import express from 'express'
 import * as dojoQueries from '../db/functions/dojoQueries.ts'
 import checkJwt, { JwtRequest } from '../auth0.ts'
 import { getUserIdByAuthId } from '../db/functions/user.ts'
+import { PracticePhrase } from '../../models/stories.ts'
 
 const router = express.Router()
 
@@ -25,6 +26,7 @@ router.get(
         languageLearning,
         languageNative,
       )
+      selectPhrases(phrases)
       res.json(phrases)
     } catch (err) {
       if (err instanceof Error) {
@@ -37,5 +39,18 @@ router.get(
     }
   },
 )
+function selectPhrases(phrases: PracticePhrase[]) {
+  // if proficiency > 10 put into highProficiency array
+  // <= 10 && >5 = mediumProficiency
+  // <5 = lowProficiency
+
+  // randomly select 1 from 10, 5 from medium, & 4 from low - (if any have -proficiency pick them) otherwise the highest proficiency from low
+
+  // if the array does not make up 10 repeat algorithm until it does
+  // or check each array and add as many as possible starting with medium, low then high
+
+  // return array
+  console.log(phrases)
+}
 
 export default router
