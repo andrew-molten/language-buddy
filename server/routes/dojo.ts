@@ -2,7 +2,8 @@ import express from 'express'
 import * as dojoQueries from '../db/functions/dojoQueries.ts'
 import checkJwt, { JwtRequest } from '../auth0.ts'
 import { getUserIdByAuthId } from '../db/functions/user.ts'
-import { PracticePhrase } from '../../models/stories.ts'
+import { popAndPushPhrase, shuffleArr } from '../helperFunctions/helper.ts'
+import { Phrase } from '../../models/dojo.ts'
 
 const router = express.Router()
 
@@ -27,7 +28,9 @@ router.get(
         languageLearning,
         languageNative,
       )
-      selectPhrases(phrases)
+      console.log('before')
+      await selectPhrases(userId, languageLearning, languageNative)
+      console.log('after')
       res.json(phrases)
     } catch (err) {
       if (err instanceof Error) {
@@ -66,18 +69,59 @@ router.patch('/', checkJwt, async (req: JwtRequest, res) => {
   }
 })
 
-function selectPhrases(phrases: PracticePhrase[]) {
+async function selectPhrases(
+  userId: number,
+  languageLearning: string,
+  languageNative: string,
+) {
   // if proficiency > 10 put into highProficiency array
+  const high = await dojoQueries.getPhrasesByProficiency(
+    userId,
+    languageLearning,
+    languageNative,
+    10,
+    '>',
+    10,
+    '>',
+  )
   // <= 10 && >5 = mediumProficiency
+  const medium = await dojoQueries.getPhrasesByProficiency(
+    userId,
+    languageLearning,
+    languageNative,
+    10,
+    '<=',
+    5,
+    '>',
+  )
   // <5 = lowProficiency
+  const low = await dojoQueries.getPhrasesByProficiency(
+    userId,
+    languageLearning,
+    languageNative,
+    5,
+    '<',
+    5,
+    '<',
+  )
+  console.log(high)
+  console.log(medium)
+  console.log(low)
 
-  // randomly select 1 from 10, 5 from medium, & 4 from low - (if any have -proficiency pick them) otherwise the highest proficiency from low
+  // randomly select 1 from high, 5 from medium, & 4 from low - (if any have -proficiency pick them) otherwise the highest proficiency from low
+  shuffleArr(high)
+  shuffleArr(medium)
+  const phrases: Phrase[] = []
+  popAndPushPhrase(high, phrases)
+  popAndPushPhrase(medium, phrases)
+  popAndPushPhrase(low, phrases)
 
+  console.log('Phrases: ', phrases)
   // if the array does not make up 10 repeat algorithm until it does
   // or check each array and add as many as possible starting with medium, low then high
 
   // return array
-  console.log(phrases)
+  // console.log(phrases)
 }
 
 export default router
