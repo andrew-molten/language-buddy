@@ -35,19 +35,22 @@ function WordChunks({ phrase, setProgress, progress, handleFinish }: Props) {
   }
 
   function handleOptionClick(e: React.MouseEvent<HTMLButtonElement>) {
-    const clicked = (e.nativeEvent.target as HTMLElement)?.textContent
+    // need to add the index to the words
+    const target = e.nativeEvent.target as HTMLElement
+    const clicked = target.textContent
     setGuessSentence([...guessSentence, clicked!])
     const newPhraseOptions = [...phraseOptions]
-    const indexOf = newPhraseOptions.indexOf(clicked!)
+    const indexOf = Number(target.dataset.index!)
     newPhraseOptions.splice(indexOf, 1)
     setPhraseOptions(newPhraseOptions)
   }
 
   function handleGuessClick(e: React.MouseEvent<HTMLButtonElement>) {
-    const clicked = (e.nativeEvent.target as HTMLElement)?.textContent
+    const target = e.nativeEvent.target as HTMLElement
+    const clicked = target.textContent
     setPhraseOptions([...phraseOptions, clicked!])
     const newGuessSentence = [...guessSentence]
-    const indexOf = newGuessSentence.indexOf(clicked!)
+    const indexOf = Number(target.dataset.index!)
     newGuessSentence.splice(indexOf, 1)
     setGuessSentence(newGuessSentence)
   }
@@ -101,7 +104,7 @@ function WordChunks({ phrase, setProgress, progress, handleFinish }: Props) {
       return currentSentence + 1
     }
     // RETRY LESSONS
-    if (attemptedAll && lessonsNeedRetry) {
+    if (lessonsNeedRetry) {
       if (failedLessons.includes(currentSentence)) {
         const indexInFailedLessons = failedLessons.indexOf(currentSentence)
         // CURRENT SENTENCE IS LAST IN ARRAY - RESTART
@@ -169,6 +172,7 @@ function WordChunks({ phrase, setProgress, progress, handleFinish }: Props) {
             className="word-btn"
             key={word + i + 'guess'}
             onClick={handleGuessClick}
+            data-index={i}
           >
             {word}
           </button>
@@ -180,6 +184,7 @@ function WordChunks({ phrase, setProgress, progress, handleFinish }: Props) {
             className="word-btn"
             key={word + i + 'option'}
             onClick={handleOptionClick}
+            data-index={i}
           >
             {word}
           </button>
