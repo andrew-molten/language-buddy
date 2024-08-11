@@ -10,7 +10,7 @@
   --secondary-light: #fe2a83;
   --secondary-light-accent: #ff7948;
   --secondary-dark-accent: #feb89e;
-  --tertiary-color: #90ff00;
+  --tertiary-color: #6abb00;
   --tertiary-light-accent: #86ed00;
   --tertiary-dark-accent: #6ec300;
   --quarternary-color: #ffff00;
@@ -53,7 +53,7 @@ h2 {
 }
 
 .header h1 {
-  color: rgb(206, 206, 206);
+  color: rgb(244, 208, 116);
   margin: 0;
 }
 
@@ -109,15 +109,19 @@ h2 {
   @apply outline outline-1;
 }
 
+.guess-div {
+  min-height: 5em;
+}
 .options-div {
   display: flex;
   flex-flow: row wrap;
   justify-content: center;
+  min-height: 1em;
   @apply mb-4 mt-3;
 }
 
 .go-btn {
-  background-color: #86ed00;
+  background-color: var(--tertiary-color);
 }
 
 .word-btn {
@@ -137,7 +141,7 @@ h2 {
 }
 
 .pass {
-  background-color: #396204;
+  background-color: var(--tertiary-color);
 }
 
 .message {

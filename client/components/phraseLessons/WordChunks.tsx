@@ -163,7 +163,7 @@ function WordChunks({ phrase, setProgress, progress, handleFinish }: Props) {
   return (
     <div>
       <p>{phrase.translation}</p>
-      <div>
+      <div className="guess-div">
         {guessSentence.map((word, i) => (
           <button
             className="word-btn"
