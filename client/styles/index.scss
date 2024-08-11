@@ -38,10 +38,14 @@ h2 {
 }
 
 .app {
+  display: flex;
+  flex-direction: column;
   margin: 0;
   border-radius: 25px;
   border: solid;
+  height: 90vh;
   border-color: var(--primary-color);
+  overflow-y: auto;
 }
 
 .header {
@@ -55,6 +59,12 @@ h2 {
 .header h1 {
   color: rgb(255, 227, 155);
   margin: 0;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
 }
 
 .story-difference {
@@ -149,7 +159,18 @@ h2 {
 }
 
 .dojo-container {
+  position: relative;
+  flex-grow: 1;
   @apply p-3;
+}
+
+.center {
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
 }
 
 .auth {
@@ -192,6 +213,9 @@ h2 {
   html,
   body {
     margin: 0;
+  }
+  .app {
+    height: 100vh;
   }
   .story-text-box {
     width: 90vw;

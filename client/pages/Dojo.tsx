@@ -88,7 +88,7 @@ function Dojo() {
           )}{' '}
         </>
       ) : (
-        <button className="go-btn btn" onClick={handleStart}>
+        <button className="go-btn btn center" onClick={handleStart}>
           Start lesson
         </button>
       )}

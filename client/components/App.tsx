@@ -5,8 +5,12 @@ import Registration from './Registration'
 import { useAuth0 } from '@auth0/auth0-react'
 
 function App() {
-  const { isAuthenticated } = useAuth0()
+  const { isAuthenticated, loginWithRedirect } = useAuth0()
   const user = useGetUser()
+
+  const handleSignIn = () => {
+    loginWithRedirect()
+  }
 
   // Loading
   if (isAuthenticated && user.isPending) {
@@ -42,7 +46,7 @@ function App() {
             <NavBar />
           </header>
 
-          <main>
+          <main className="main">
             <Outlet />
           </main>
         </div>
@@ -59,8 +63,10 @@ function App() {
           <NavBar />
         </header>
 
-        <main>
-          <p className="text-center">Please Sign In</p>
+        <main className="main">
+          <button className="btn" onClick={handleSignIn}>
+            Please Sign In
+          </button>
         </main>
       </div>
     </>
