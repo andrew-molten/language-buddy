@@ -109,13 +109,10 @@ h2 {
   @apply outline outline-1;
 }
 
-.guess-div {
-  height: 5em;
-}
 .options-div {
   display: flex;
   flex-flow: row wrap;
-  justify-content: space-evenly;
+  justify-content: center;
   @apply mb-4 mt-3;
 }
 
