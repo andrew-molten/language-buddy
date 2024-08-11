@@ -40,8 +40,16 @@ function Dojo() {
   }
 
   async function handleFinish() {
+    console.log('dojoPhrases: ', dojoPhrases)
+    console.log('progress: ', progress)
     const phrasesToUpdate = dojoPhrases.data.map(
       (phrase: PracticePhrase, i: number) => {
+        console.log(
+          'phrase: ',
+          phrase.proficiency,
+          'progress: ',
+          progress.proficiencyChange[i],
+        )
         return {
           id: phrase.userPhraseId,
           proficiency:
