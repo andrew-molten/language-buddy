@@ -37,13 +37,9 @@ function Dojo() {
 
   function handleStart() {
     setProgress({ ...progress, lessonStarted: true })
-    console.log(dojoPhrases.data)
-    console.log('length: ', dojoPhrases.data.length)
   }
 
   async function handleFinish() {
-    console.log('dojoPhrases: ', dojoPhrases)
-    console.log('progress: ', progress)
     const phrasesToUpdate = dojoPhrases.data.map(
       (phrase: PracticePhrase, i: number) => {
         console.log(

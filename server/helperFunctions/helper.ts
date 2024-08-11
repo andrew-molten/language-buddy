@@ -16,7 +16,6 @@ export function popAndPushPhrase(
   numPhrases: number,
   phraseCount: number,
 ) {
-  // let phraseCountdown = phraseCount
   for (let i = 0; i < numPhrases; i++) {
     if (popFrom.length > 0) {
       const popped = popFrom.pop()
@@ -24,7 +23,5 @@ export function popAndPushPhrase(
       phraseCount--
     }
   }
-  // console.log(phraseCount)
-  // console.log(pushTo)
   return phraseCount
 }
