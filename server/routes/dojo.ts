@@ -23,14 +23,12 @@ router.get(
       const userId = await getUserIdByAuthId(authId)
       const languageLearning = req.params.languageLearning
       const languageNative = req.params.languageNative
-      const phrases = await dojoQueries.getLowestProficiencyPhrasesToTrain(
+      const phrases = await selectPhrases(
         userId,
         languageLearning,
         languageNative,
       )
-      console.log('before')
       await selectPhrases(userId, languageLearning, languageNative)
-      console.log('after')
       res.json(phrases)
     } catch (err) {
       if (err instanceof Error) {
@@ -79,9 +77,9 @@ async function selectPhrases(
     userId,
     languageLearning,
     languageNative,
-    10,
+    11,
     '>',
-    10,
+    11,
     '>',
   )
   // <= 10 && >5 = mediumProficiency
@@ -89,39 +87,52 @@ async function selectPhrases(
     userId,
     languageLearning,
     languageNative,
-    10,
+    11,
     '<=',
     5,
     '>',
   )
-  // <5 = lowProficiency
-  const low = await dojoQueries.getPhrasesByProficiency(
+  // <=5 = lowProficiency
+  const lowDB = await dojoQueries.getPhrasesByProficiency(
     userId,
     languageLearning,
     languageNative,
     5,
-    '<',
+    '<=',
     5,
-    '<',
+    '<=',
   )
-  console.log(high)
-  console.log(medium)
-  console.log(low)
 
-  // randomly select 1 from high, 5 from medium, & 4 from low - (if any have -proficiency pick them) otherwise the highest proficiency from low
+  // randomly select 1 from high, 5 from medium, & 4 from low
   shuffleArr(high)
   shuffleArr(medium)
+  const low = sortLow(lowDB)
   const phrases: Phrase[] = []
-  popAndPushPhrase(high, phrases)
-  popAndPushPhrase(medium, phrases)
-  popAndPushPhrase(low, phrases)
+  popAndPushPhrase(high, phrases, 1)
+  popAndPushPhrase(medium, phrases, 5)
+  popAndPushPhrase(low, phrases, 4)
+  // if that hasn't filled the quota:
+  popAndPushPhrase(medium, phrases, 10)
+  popAndPushPhrase(low, phrases, 10)
+  popAndPushPhrase(high, phrases, 10)
+  shuffleArr<Phrase>(phrases)
 
-  console.log('Phrases: ', phrases)
-  // if the array does not make up 10 repeat algorithm until it does
-  // or check each array and add as many as possible starting with medium, low then high
+  return phrases
+}
 
-  // return array
-  // console.log(phrases)
+function sortLow(lowArr: Phrase[]) {
+  lowArr.sort((a, b) => a.proficiency - b.proficiency)
+  const isNonNegative = (phrase: Phrase) => phrase.proficiency > -1
+  const firstNonNegativeIndex = lowArr.findIndex(isNonNegative)
+  // put negative proficiency at end of []
+  if (firstNonNegativeIndex > -1) {
+    for (let i = 0; i < firstNonNegativeIndex; i++) {
+      const phrase = lowArr[0]
+      lowArr.push(phrase)
+      lowArr.splice(0, 1)
+    }
+  }
+  return lowArr
 }
 
 export default router
