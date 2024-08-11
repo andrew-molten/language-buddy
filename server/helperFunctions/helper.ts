@@ -14,11 +14,14 @@ export function popAndPushPhrase(
   popFrom: Phrase[],
   pushTo: Phrase[],
   numPhrases: number,
+  phraseCountdown: number,
 ) {
   for (let i = 0; i < numPhrases; i++) {
     if (popFrom.length > 0) {
       const popped = popFrom.pop()
       pushTo.push(popped!)
+      phraseCountdown - 1
     }
   }
+  return phraseCountdown
 }

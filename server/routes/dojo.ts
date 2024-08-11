@@ -108,13 +108,16 @@ async function selectPhrases(
   shuffleArr(medium)
   const low = sortLow(lowDB)
   const phrases: Phrase[] = []
-  popAndPushPhrase(high, phrases, 1)
-  popAndPushPhrase(medium, phrases, 5)
-  popAndPushPhrase(low, phrases, 4)
+  let phraseCount = 10 // decreases every time a phrase is added
+  phraseCount = popAndPushPhrase(high, phrases, 1, phraseCount)
+  phraseCount = popAndPushPhrase(medium, phrases, 5, phraseCount)
+  phraseCount = popAndPushPhrase(low, phrases, 4, phraseCount)
   // if that hasn't filled the quota:
-  popAndPushPhrase(medium, phrases, 10)
-  popAndPushPhrase(low, phrases, 10)
-  popAndPushPhrase(high, phrases, 10)
+  if (phraseCount > 0) {
+    phraseCount = popAndPushPhrase(medium, phrases, phraseCount, phraseCount)
+    phraseCount = popAndPushPhrase(low, phrases, phraseCount, phraseCount)
+    popAndPushPhrase(high, phrases, phraseCount, phraseCount)
+  }
   shuffleArr<Phrase>(phrases)
 
   return phrases
