@@ -28,7 +28,6 @@ router.get(
         languageLearning,
         languageNative,
       )
-      await selectPhrases(userId, languageLearning, languageNative)
       res.json(phrases)
     } catch (err) {
       if (err instanceof Error) {

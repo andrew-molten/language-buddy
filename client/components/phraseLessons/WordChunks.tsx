@@ -57,7 +57,7 @@ function WordChunks({ phrase, setProgress, progress, handleFinish }: Props) {
 
   function handleSubmit() {
     const guess = guessSentence.join(' ')
-    const passed = guess === phrase.phrase
+    const passed = guess.toLowerCase() === phrase.phrase.toLowerCase()
     const newFailedLessons = updateFailedLessons(passed)
     const lessonsNeedRetry = checkIfLessonsNeedRedoing(newFailedLessons)
     const attemptedAll = getAttemptedAll(

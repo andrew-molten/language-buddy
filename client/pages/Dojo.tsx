@@ -37,6 +37,8 @@ function Dojo() {
 
   function handleStart() {
     setProgress({ ...progress, lessonStarted: true })
+    console.log(dojoPhrases.data)
+    console.log('length: ', dojoPhrases.data.length)
   }
 
   async function handleFinish() {
