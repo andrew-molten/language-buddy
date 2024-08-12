@@ -2,6 +2,7 @@ import Select from 'react-select'
 import { learningLanguages } from '../data/languages'
 import { useState } from 'react'
 import { useGetUser, useUpdateUser } from '../hooks/useUser'
+import SignOutBtn from '../components/buttons/SignOut'
 
 function Settings() {
   const user = useGetUser()
@@ -81,6 +82,7 @@ function Settings() {
           className="primary-btn py-2 px-4 mt-4"
           onClick={handleSubmit}
         >{`Update me`}</button>
+        <SignOutBtn text="Sign out" />
       </form>
     </div>
   )

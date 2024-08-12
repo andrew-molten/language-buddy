@@ -5,6 +5,7 @@ import FormField from './FormField'
 import { ConflictError, NewUser } from '../../models/admin'
 import { useCreateUser } from '../hooks/useUser'
 import { learningLanguages } from '../data/languages'
+import SignOutBtn from './buttons/SignOut'
 
 function Registration() {
   const { user } = useAuth0()
@@ -126,6 +127,7 @@ function Registration() {
           onClick={handleSubmit}
         >{`Let's go`}</button>
       </form>
+      <SignOutBtn text="Use different account" />
     </div>
   )
 }

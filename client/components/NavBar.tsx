@@ -4,13 +4,7 @@ import { useAuth0 } from '@auth0/auth0-react'
 import settingsIcon from '../icons/settings.svg'
 
 function NavBar() {
-  const { user, logout, loginWithRedirect } = useAuth0()
-
-  const handleSignOut = () => {
-    logout({
-      logoutParams: { returnTo: 'https://languagebuddy.andrewmolten.com' },
-    })
-  }
+  const { user, loginWithRedirect } = useAuth0()
 
   const handleSignIn = () => {
     loginWithRedirect()
@@ -36,7 +30,6 @@ function NavBar() {
       <div className="auth">
         <IfAuthenticated>
           {user && <p>Hi {user?.given_name}</p>}
-          <button onClick={handleSignOut}>Sign out</button>
         </IfAuthenticated>
         <IfNotAuthenticated>
           <button onClick={handleSignIn}>Sign in</button>
