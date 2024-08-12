@@ -150,6 +150,11 @@ function WordChunks({ phrase, setProgress, progress, handleFinish }: Props) {
       lessonOutcome.newFailedLessons,
     )
 
+    if (nextSentenceIndex === progress.currentSentence) {
+      setGuessSentence([])
+      setPhraseOptions(options)
+    }
+
     const newProgress = {
       lessonStarted: progress.lessonStarted,
       lessonsNeedRetry: lessonOutcome.lessonsNeedRetry,
