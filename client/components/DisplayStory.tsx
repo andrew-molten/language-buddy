@@ -34,11 +34,12 @@ function DisplayStory({ data }: Props) {
         <div className="card-container history-card">
           <h2>Words learnt</h2>
           <ul>
-            {JSON.parse(data.new_words).map((newWord: NewWord) => {
+            {JSON.parse(data.new_words).map((newWord: NewWord, i: number) => {
               return (
-                <li key={newWord.word}>
-                  <strong>{newWord.word}</strong>({newWord.grammaticalForm}):{' '}
-                  {newWord.definition}
+                <li key={`${newWord.word}+${i}`}>
+                  <strong>{newWord.word}</strong>
+                  {newWord.grammaticalForm &&
+                    `(${newWord.grammaticalForm})`}: {newWord.definition}
                   <br />
                   Lemma: {newWord.lemma} - {newWord.lemmaDefinition}
                 </li>
