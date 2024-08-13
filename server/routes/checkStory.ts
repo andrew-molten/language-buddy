@@ -41,10 +41,8 @@ router.post('/', checkJwt, async (req: JwtRequest, res) => {
 
     const gptModels = {
       gpt35: 'gpt-3.5-turbo-0613',
-      gpt4: 'gpt-4o',
+      gpt4: 'gpt-4o-2024-08-06',
     }
-
-    // create a preference for spelling accuracy
 
     const {
       nativeStory,
@@ -65,51 +63,133 @@ router.post('/', checkJwt, async (req: JwtRequest, res) => {
             content: `
     I'm going to give you 2 stories, one in ${nativeLanguage}, and one in ${learningLanguage}. I'm learning ${learningLanguage} so please tell me how to improve my ${learningLanguage} story so that it translates to the ${nativeLanguage} story.
 
-    The response MUST be JSON formatted like this so that it is easy to parse: '{correctTranslatedStory: "string", corrections: PhraseCorrection[], wordsToAddToVocabulary: NewWord[], wellUsedWords: Word[], shortSummary: string}'
-
-    interface PhraseCorrection {
-      sentenceCorrection: "string",
-      translation: "string",
-      explanations: "string[]"
-      }
- 
-    interface NewWord {
-    word: "string",
-    gender: "string",
-    definition: "string",
-    grammaticalForm: "string",
-    lemma: "string",
-    lemmaDefinition: "string"
-    }
-
-    interface Word {
-      word: "string"
-      lemma: "string"
-    }
-
-    sentenceCorrection, correctTranslatedStory, lemma & word is in ${learningLanguage}
-    grammaticalForm is in English
-    everything else including definition & translation is in ${nativeLanguage}
-    
-    shortSummary is a shortSummary of how well I did.
-    explanations is an array of explanations about why I was wrong, and why the translation is correct, including any grammar lessons.
-    wordsToAddToVocabulary should only include words that I didn't use. 
-    grammaticalForm should indicate the grammatical form of a word if not a lemma, e.g. past participle, second person singular, plural etc.
-    gender is only for nouns, otherwise value should be "".
-
-    wellUsedWords has a max length of 5 & only returns words that I used perfectly in my ${learningLanguage} story, return more complex words first, don't return names of people or places.
-
     ${nativeLanguage} story:
     ${nativeStory}
 
     ${learningLanguage} story: ${learningLanguageStory}`,
           },
         ],
-        // max_tokens: 300, //having the max tokens can cause it to stop writing mid json.
+        response_format: {
+          type: 'json_schema',
+          json_schema: {
+            name: 'translated_story',
+            strict: true,
+            schema: {
+              type: 'object',
+              properties: {
+                correctTranslatedStory: {
+                  type: 'string',
+                  description: `The correct translation in ${learningLanguage}`,
+                },
+                corrections: {
+                  type: 'array',
+                  description:
+                    'A list of sentences that needed to be corrected',
+                  items: {
+                    type: 'object',
+                    properties: {
+                      sentenceCorrection: {
+                        type: 'string',
+                        description: `corrected sentence in ${learningLanguage}`,
+                      },
+                      translation: {
+                        type: 'string',
+                        description: `the translation in ${nativeLanguage}`,
+                      },
+                      explanations: {
+                        type: 'array',
+                        description: `A list of explanations about why I was wrong, and why the translation is correct, including any grammar lessons. Use single quotation marks to reference any words or parts of sentences`,
+                        items: { type: 'string' },
+                      },
+                    },
+                    required: [
+                      'sentenceCorrection',
+                      'translation',
+                      'explanations',
+                    ],
+                    additionalProperties: false,
+                  },
+                },
+                wordsToAddToVocabulary: {
+                  type: 'array',
+                  description:
+                    'A list of words that I should have used or used incorrectly. This list does not include any words that were used correctly',
+                  items: {
+                    type: 'object',
+                    properties: {
+                      word: {
+                        type: 'string',
+                        description: `is in ${learningLanguage}`,
+                      },
+                      gender: {
+                        type: 'string',
+                        definition:
+                          "gender is only for nouns, otherwise value should be ''",
+                      },
+                      definition: {
+                        type: 'string',
+                        description: `is in ${nativeLanguage}`,
+                      },
+                      grammaticalForm: {
+                        type: 'string',
+                        description: `is in ${nativeLanguage} & indicates the grammatical form of a word if not a lemma, e.g. past participle, second person singular, plural etc. otherwise return ""`,
+                      },
+                      lemma: {
+                        type: 'string',
+                        description: `is in ${learningLanguage}`,
+                      },
+                      lemmaDefinition: { type: 'string' },
+                    },
+                    required: [
+                      'word',
+                      'gender',
+                      'definition',
+                      'grammaticalForm',
+                      'lemma',
+                      'lemmaDefinition',
+                    ],
+
+                    additionalProperties: false,
+                  },
+                },
+
+                shortSummary: {
+                  type: 'string',
+                  description: `A short summary of how well I did in ${nativeLanguage}`,
+                },
+              },
+              required: [
+                'correctTranslatedStory',
+                'corrections',
+                'wordsToAddToVocabulary',
+                'shortSummary',
+              ],
+
+              additionalProperties: false,
+            },
+          },
+        },
       })
+
+    // wellUsedWords: {
+    //   type: 'array',
+    //   description: `a list of words that I used perfectly in my ${learningLanguage} story, especially complex words, don't return names of people or places.`,
+    //   items: {
+    //     type: 'object',
+    //     properties: {
+    //       word: { type: 'string' },
+    //       lemma: { type: 'string' },
+    //     },
+    //     required: ['word', 'lemma'],
+
+    //     additionalProperties: false,
+    //   },
+    // },
     const tokenUsage = response.body.usage
     console.log(tokenUsage)
+    console.log('response.body: ', response.body)
     const messageContent = response.body.choices[0].message.content
+    console.log('messageContent: ', messageContent)
     const preprocessedResponse = preprocessResponse(messageContent)
     const parsedContent = JSON.parse(preprocessedResponse)
     res.json(response.body)
