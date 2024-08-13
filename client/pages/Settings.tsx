@@ -56,10 +56,9 @@ function Settings() {
     <div className="page">
       <h1 className="page-heading">Settings</h1>
       <form>
-        <label
-          htmlFor="nativeLanguage"
-          className="mt-4 inline-block"
-        >{`What's your native language?`}</label>
+        <label htmlFor="nativeLanguage" className="mt-4 inline-block">
+          Native language?
+        </label>
         <Select
           name="nativeLanguage"
           defaultValue={nativeLanguage}
@@ -68,7 +67,7 @@ function Settings() {
           className="text-black"
         />
         <label htmlFor="learningLanguage" className="mt-4 inline-block">
-          What language are you learning?
+          Language you are learning?
         </label>
         <Select
           name="learningLanguage"

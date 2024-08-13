@@ -84,7 +84,7 @@ router.post('/', checkJwt, async (req: JwtRequest, res) => {
                 corrections: {
                   type: 'array',
                   description:
-                    'A list of sentences that needed to be corrected',
+                    'A list of sentences that needed to be corrected, or were not even attempted, do not include sentences that I translated correctly',
                   items: {
                     type: 'object',
                     properties: {
