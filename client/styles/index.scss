@@ -20,7 +20,7 @@
 html,
 body {
   font-family: 'Montserrat', sans-serif;
-  margin: 1em;
+  margin: 0.5em;
   background-color: rgb(21, 21, 21);
   color: whitesmoke;
 }
@@ -42,24 +42,25 @@ h2 {
   flex-direction: column;
   margin: 0;
   border-radius: 25px;
-  border: solid;
-  height: 90vh;
+  // border: solid;
+  box-shadow: 0 0 0 3px var(--primary-color);
+  height: 95vh;
   border-color: var(--primary-color);
-  overflow-y: auto;
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+::-webkit-scrollbar {
+  display: none;
 }
 
 .header {
   margin: 0;
   border-radius: 20px 20px 0px 0px;
+  border-color: var(--primary-color);
   padding: 0.5em 0 0.3em 1em;
   background-color: var(--primary-color);
   position: relative;
-}
-
-::-webkit-scrollbar {
-  display: none;
 }
 
 .header h1 {
@@ -71,6 +72,7 @@ h2 {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+  overflow-y: auto;
 }
 
 .story-difference {
@@ -222,6 +224,7 @@ h2 {
   }
   .app {
     height: 100vh;
+    border-radius: 0px;
   }
   .story-text-box {
     width: 90vw;
@@ -229,6 +232,10 @@ h2 {
   .auth {
     top: 0.1em;
   }
+  .header {
+    border-radius: 0px;
+  }
+
   .header h1 {
     @apply pb-2;
   }
