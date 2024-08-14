@@ -12,8 +12,6 @@ import Vocabulary from './pages/Vocabulary'
 import Dojo from './pages/Dojo'
 import Settings from './pages/Settings'
 
-// give StoryDifference data
-
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<App />}>
