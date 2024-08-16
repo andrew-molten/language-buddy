@@ -39,19 +39,6 @@ export const getPhrasesByProficiency = async (
     )
 }
 
-export const trimAllPhrases = async () => {
-  return await db('phrases')
-    .update({
-      phrase: db.raw('TRIM(phrase)'),
-    })
-    .then(() => {
-      console.log('Phrases updated successfully')
-    })
-    .catch((err) => {
-      console.error('Error updating phrases:', err)
-    })
-}
-
 export const updatePhraseProficiency = async (
   phrasesToUpdate: PhraseToUpdate[],
   user_id: number,

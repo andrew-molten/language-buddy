@@ -1,0 +1,73 @@
+import { PhraseCorrectionWithId } from '../../../models/stories.ts'
+import connection from '../connection.ts'
+const db = connection
+
+export const trimAllPhrases = async () => {
+  return await db('phrases')
+    .update({
+      phrase: db.raw('TRIM(phrase)'),
+    })
+    .then(() => {
+      console.log('Phrases updated successfully')
+    })
+    .catch((err) => {
+      console.error('Error updating phrases:', err)
+    })
+}
+
+export const extractExplanations = async () => {
+  // get the corrections from story_history
+  const corrections = await db('story_history').select('corrections')
+  const parsed = corrections.flatMap((element) =>
+    JSON.parse(element.corrections),
+  )
+  const justPhraseArr = parsed.map(
+    (correction) => correction.sentenceCorrection,
+  )
+  // get PhraseIDs
+  const phraseIds = await findPhraseIds(justPhraseArr)
+  phraseIds.forEach((phrase) => {
+    const idOf = parsed.findIndex(
+      (corrections) => corrections.sentenceCorrection === phrase.phrase,
+    )
+    parsed[idOf].id = phrase.id
+  })
+  // console.log(parsed)
+  await insertExplanations(parsed)
+}
+
+export const findPhraseIds = async (phrases: string[]) => {
+  return await db('phrases').select('id', 'phrase').whereIn('phrase', phrases)
+}
+
+export const insertExplanations = async (
+  corrections: PhraseCorrectionWithId[],
+) => {
+  await db.transaction(async (trx) => {
+    const explanationsFromDB = await trx('explanations').select()
+    if (explanationsFromDB.length === 0 || corrections.length < 1) return
+    // add all explanations for each phrase
+    console.log(corrections)
+
+    // need to add language to explanation first
+
+    for (const correction of corrections) {
+      const insertedExplanations = await trx('explanations')
+        .insert(
+          correction.explanations.map((explanation) => ({
+            explanation,
+          })),
+        )
+        .returning('id')
+
+      await trx('explanations_phrases').insert(
+        insertedExplanations.map((explanation) => ({
+          explanation_id: explanation.id,
+          phrase_id: correction.id,
+        })),
+      )
+    }
+
+    // create entry in explanations_phrases with new explanation id
+  })
+}

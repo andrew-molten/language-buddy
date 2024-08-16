@@ -1,5 +1,6 @@
 import express from 'express'
 import * as queries from '../db/functions/queries.ts'
+import * as maintenance from '../db/functions/maintenance.ts'
 import { JwtRequest } from '../auth0.ts'
 import checkJwt from '../auth0.ts'
 import { getUserIdByAuthId } from '../db/functions/user.ts'
@@ -17,6 +18,7 @@ router.get('/', checkJwt, async (req: JwtRequest, res) => {
     const userId = await getUserIdByAuthId(authId)
     const result = await queries.getAllStoriesByUserId(userId)
     res.json(result)
+    await maintenance.extractExplanations()
   } catch (err) {
     if (err instanceof Error) {
       console.log('error: ', err)

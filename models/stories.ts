@@ -12,6 +12,10 @@ export interface PhraseCorrection {
   explanations: string[]
 }
 
+export interface PhraseCorrectionWithId extends PhraseCorrection {
+  id: number
+}
+
 export interface NewWord {
   word: string
   definition: string
