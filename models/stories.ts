@@ -14,6 +14,7 @@ export interface PhraseCorrection {
 
 export interface PhraseCorrectionWithId extends PhraseCorrection {
   id: number
+  language: string
 }
 
 export interface NewWord {

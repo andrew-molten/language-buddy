@@ -17,23 +17,31 @@ export const trimAllPhrases = async () => {
 
 export const extractExplanations = async () => {
   // get the corrections from story_history
-  const corrections = await db('story_history').select('corrections')
-  const parsed = corrections.flatMap((element) =>
-    JSON.parse(element.corrections),
+  const corrections = await db('story_history').select(
+    'corrections',
+    'language_native',
   )
+  const parsed = corrections.flatMap((element) => {
+    const correctionArr = JSON.parse(element.corrections)
+    correctionArr.forEach(
+      (phrase: PhraseCorrectionWithId) =>
+        (phrase.language = element.language_native),
+    )
+    return correctionArr
+  })
+
   const justPhraseArr = parsed.map(
     (correction) => correction.sentenceCorrection,
   )
-  // get PhraseIDs
   const phraseIds = await findPhraseIds(justPhraseArr)
-  phraseIds.forEach((phrase) => {
-    const idOf = parsed.findIndex(
-      (corrections) => corrections.sentenceCorrection === phrase.phrase,
-    )
-    parsed[idOf].id = phrase.id
+  const correctionsAndIds = phraseIds.map((phrase) => {
+    const object = parsed.find((corrections) => {
+      return corrections.sentenceCorrection === phrase.phrase
+    })
+    object.id = phrase.id
+    return object
   })
-  // console.log(parsed)
-  await insertExplanations(parsed)
+  await insertExplanations(correctionsAndIds)
 }
 
 export const findPhraseIds = async (phrases: string[]) => {
@@ -45,17 +53,18 @@ export const insertExplanations = async (
 ) => {
   await db.transaction(async (trx) => {
     const explanationsFromDB = await trx('explanations').select()
-    if (explanationsFromDB.length === 0 || corrections.length < 1) return
+    if (explanationsFromDB.length > 0 || corrections.length < 1) return
     // add all explanations for each phrase
-    console.log(corrections)
 
     // need to add language to explanation first
 
     for (const correction of corrections) {
+      // console.log(correction.id)
       const insertedExplanations = await trx('explanations')
         .insert(
           correction.explanations.map((explanation) => ({
             explanation,
+            language: correction.language,
           })),
         )
         .returning('id')
