@@ -74,3 +74,10 @@ export const insertExplanations = async (
     }
   })
 }
+
+export const getUsers = async () => {
+  return await db('users').select('first_name', 'last_name')
+}
+export const getStories = async () => {
+  return await db('story_history').select()
+}
