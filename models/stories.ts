@@ -151,15 +151,6 @@ export interface VocabWordWithDefinitions extends DBVocabWord {
   definitions: string[]
 }
 
-export interface PracticePhrase {
-  userPhraseId: number
-  translation: string
-  proficiency: number
-  phrase: string
-  phraseId: number
-  userId: number
-}
-
 export interface TokenUsage {
   prompt_tokens: number
   completion_tokens: number
