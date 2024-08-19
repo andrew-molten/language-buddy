@@ -1,9 +1,9 @@
 import { useState } from 'react'
-import { PracticePhrase } from '../../../models/stories'
+import { Phrase } from '../../../models/dojo'
 import { ProgressState } from '../../../models/dojo'
 
 interface Props {
-  phrase: PracticePhrase
+  phrase: Phrase
   setProgress: (newprogress: ProgressState) => void
   progress: ProgressState
   handleFinish: () => void
@@ -77,7 +77,7 @@ function WordChunks({ phrase, setProgress, progress, handleFinish }: Props) {
     } else {
       setLessonOutcome({
         proficiencyPoint: -1,
-        message: `Oops, correct answer is: ${phrase.phrase}`,
+        message: `Oops: ${phrase.phrase}`,
         class: 'fail',
         passed: false,
         lessonsNeedRetry: lessonsNeedRetry,
@@ -202,9 +202,27 @@ function WordChunks({ phrase, setProgress, progress, handleFinish }: Props) {
       )}
       {lessonOutcome.message.length > 0 ? (
         <>
-          <p className={`${lessonOutcome.class} message`}>
-            {lessonOutcome.message}
-          </p>{' '}
+          <div className={`${lessonOutcome.class} message`}>
+            <p>
+              <strong>{lessonOutcome.message}</strong>
+            </p>{' '}
+            {lessonOutcome.class === 'fail' &&
+              phrase.explanations &&
+              phrase.explanations.length > 0 && (
+                <>
+                  <h3 className={`${lessonOutcome.class} mt-3`}>
+                    Explanations:
+                  </h3>
+                  <ul>
+                    {phrase.explanations?.map((explanation, index) => (
+                      <li key={`${index}+${explanation}`} className="ml-3 mt-1">
+                        ‣ <em>{explanation}</em>
+                      </li>
+                    ))}
+                  </ul>
+                </>
+              )}
+          </div>
           {!lessonOutcome.attemptedAll ||
           lessonOutcome.lessonsNeedRetry === true ? (
             <button

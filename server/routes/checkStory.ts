@@ -186,10 +186,10 @@ router.post('/', checkJwt, async (req: JwtRequest, res) => {
     //   },
     // },
     const tokenUsage = response.body.usage
-    console.log(tokenUsage)
-    console.log('response.body: ', response.body)
+    // console.log(tokenUsage)
+    // console.log('response.body: ', response.body)
     const messageContent = response.body.choices[0].message.content
-    console.log('messageContent: ', messageContent)
+    // console.log('messageContent: ', messageContent)
     const preprocessedResponse = preprocessResponse(messageContent)
     const parsedContent = JSON.parse(preprocessedResponse)
     res.json(response.body)
@@ -311,7 +311,7 @@ const getWordPhraseAssociations = async (words: NewWord[], userId: number) => {
         phraseIdArr: associationPhrasesToAdd,
       })
     }
-    console.log('existingAssociations', existingAssociations)
+    // console.log('existingAssociations', existingAssociations)
   })
 }
 
@@ -352,6 +352,11 @@ const checkPhrases = async (phrases: PhraseCorrection[]) => {
     })
   return { phrasesToAdd, existingPhrases }
 }
+// some existing phrases might get some extra explanations here or might have some that already exist.
+
+// some phrasesToAdd might have explanations that already exist.
+
+// need a function to check each phrase as a string if it exists - flat map explanations
 
 const checkLemmas = async (newWords: NewWord[]) => {
   const lemmaArr: string[] = getStringArray(newWords, 'lemma')

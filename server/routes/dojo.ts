@@ -119,7 +119,12 @@ async function selectPhrases(
   }
   shuffleArr<Phrase>(phrases)
 
-  return phrases
+  const finalPhrases = dojoQueries.addExplanationsToPhrases(
+    phrases,
+    languageNative,
+  )
+
+  return finalPhrases
 }
 
 function sortLow(lowArr: Phrase[]) {

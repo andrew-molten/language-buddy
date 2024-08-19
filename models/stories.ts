@@ -12,6 +12,11 @@ export interface PhraseCorrection {
   explanations: string[]
 }
 
+export interface PhraseCorrectionWithId extends PhraseCorrection {
+  id: number
+  language: string
+}
+
 export interface NewWord {
   word: string
   definition: string
@@ -144,15 +149,6 @@ export interface DBVocabWord {
 
 export interface VocabWordWithDefinitions extends DBVocabWord {
   definitions: string[]
-}
-
-export interface PracticePhrase {
-  userPhraseId: number
-  translation: string
-  proficiency: number
-  phrase: string
-  phraseId: number
-  userId: number
 }
 
 export interface TokenUsage {

@@ -65,7 +65,7 @@ function Dojo() {
   if (dojoPhrases.isError) {
     return <p>{String(dojoPhrases.error)}</p>
   }
-
+  console.log(dojoPhrases.data)
   // remove fullstops etc from words to test
 
   // add an option to skip & delete a sentence if you don't like it. (Are you sure)

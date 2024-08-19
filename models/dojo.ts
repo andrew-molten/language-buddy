@@ -23,4 +23,5 @@ export interface Phrase {
   proficiency: number
   phrase: string
   translation: string
+  explanations?: string[]
 }
