@@ -145,6 +145,30 @@ export async function saveStory(data: BackendStory) {
             translation_language: data.language_native,
           })),
         )
+
+        // EXPLANATIONS
+        // TODO: Check if the explanations already exist & if there is a relationship with that particular phrase.
+        // If so then remove from array
+        // TODO: Add a column on user phrases: story_id
+        //  remove corrections from story_history
+        for (const [index, phrase] of data.phraseData.phrasesToAdd.entries()) {
+          const insertedExplanationIds = await trx('explanations')
+            .insert(
+              phrase.explanations.map((explanation) => ({
+                explanation,
+                language: data.language_native,
+              })),
+            )
+            .returning('id')
+
+          // EXPLANATIONS_PHRASES
+          await trx('explanations_phrases').insert(
+            insertedExplanationIds.map((explanation) => ({
+              explanation_id: explanation.id,
+              phrase_id: correctionIds[index].id,
+            })),
+          )
+        }
       }
 
       // USERS NEW PHRASES

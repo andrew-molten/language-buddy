@@ -55,11 +55,7 @@ export const insertExplanations = async (
     const explanationsFromDB = await trx('explanations').select()
     if (explanationsFromDB.length > 0 || corrections.length < 1) return
     // add all explanations for each phrase
-
-    // need to add language to explanation first
-
     for (const correction of corrections) {
-      // console.log(correction.id)
       const insertedExplanations = await trx('explanations')
         .insert(
           correction.explanations.map((explanation) => ({
@@ -76,7 +72,5 @@ export const insertExplanations = async (
         })),
       )
     }
-
-    // create entry in explanations_phrases with new explanation id
   })
 }
