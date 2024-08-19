@@ -1,4 +1,4 @@
-import { PhraseToUpdate } from '../../../models/dojo.ts'
+import { Phrase, PhraseToUpdate } from '../../../models/dojo.ts'
 import connection from '../connection.ts'
 const db = connection
 
@@ -15,8 +15,8 @@ export const getPhrasesByProficiency = async (
     .where({
       user_id,
     })
-    .andWhere({ language: languageLearning })
-    .andWhere({ translation_language: languageNative })
+    .andWhere('phrases.language', languageLearning)
+    .andWhere('phrase_translation.translation_language', languageNative)
     .andWhere(function () {
       this.where('proficiency', operator, proficiency)
     })
@@ -50,4 +50,25 @@ export const updatePhraseProficiency = async (
       .update({ proficiency: phrase.proficiency })
   }
   return
+}
+
+export const addExplanationsToPhrases = async (
+  phrases: Phrase[],
+  languageNative: string,
+) => {
+  for (const phrase of phrases) {
+    const explanations = await db('explanations')
+      .join(
+        'explanations_phrases',
+        'explanations.id',
+        'explanations_phrases.explanation_id',
+      )
+      .where('explanations_phrases.phrase_id', phrase.phraseId)
+      .where('explanations.language', languageNative)
+      .pluck('explanations.explanation')
+
+    phrase.explanations = explanations
+  }
+
+  return phrases
 }
