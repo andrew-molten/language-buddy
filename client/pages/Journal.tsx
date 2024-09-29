@@ -1,8 +1,10 @@
 import { useState } from 'react'
 import { useGetUser } from '../hooks/useUser'
+import { useCheckJournalEntry } from '../hooks/useStories'
 
 function Journal() {
   const user = useGetUser()
+  const checkJournalEntry = useCheckJournalEntry()
 
   const [journalEntry, setJournalEntry] = useState('')
 
@@ -13,6 +15,14 @@ function Journal() {
 
   const handleSubmit = async function (e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault()
+
+    const journalToSend = {
+      journalEntry,
+      nativeLanguage: user.data[0].nativeLanguage,
+      learningLanguage: user.data[0].learningLanguage,
+    }
+
+    await checkJournalEntry.mutateAsync(journalToSend)
   }
 
   return (

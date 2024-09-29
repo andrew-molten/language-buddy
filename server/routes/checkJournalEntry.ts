@@ -112,7 +112,7 @@ router.post('/', checkJwt, async (req: JwtRequest, res) => {
                       },
                     },
                     required: [
-                      'learningLanguageSentence',
+                      'translatedSentence',
                       'nativeLanguageSentence',
                       'explanations',
                     ],
@@ -169,8 +169,10 @@ router.post('/', checkJwt, async (req: JwtRequest, res) => {
                 },
               },
               required: [
-                'correctTranslatedStory',
-                'corrections',
+                'correctJournalEntryLearning',
+                'correctJournalEntryNative',
+                'learningLanguageSentences',
+                'nativeLanguageSentences',
                 'wordsToAddToVocabulary',
                 'shortSummary',
               ],
@@ -186,6 +188,7 @@ router.post('/', checkJwt, async (req: JwtRequest, res) => {
     // // console.log('messageContent: ', messageContent)
     // const preprocessedResponse = preprocessResponse(messageContent)
     // const parsedContent = JSON.parse(preprocessedResponse)
+    console.log(response.body.choices[0].message.content)
     res.json(response.body)
   } catch (err) {
     if (err instanceof Error) {
@@ -197,3 +200,5 @@ router.post('/', checkJwt, async (req: JwtRequest, res) => {
     }
   }
 })
+
+export default router
