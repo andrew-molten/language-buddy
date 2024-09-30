@@ -42,6 +42,10 @@ function Journal() {
       <button className="check-stories-btn primary-btn" onClick={handleSubmit}>
         Submit Journal Entry
       </button>
+      <p>
+        This is an experimental feature, it will give you feedback on the
+        journal entry, but it will not save to the database yet.
+      </p>
     </div>
   )
 }

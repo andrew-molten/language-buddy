@@ -72,7 +72,7 @@ export const useVocabulary = () => {
 
 export const useCheckJournalEntry = () => {
   const { getAccessTokenSilently } = useAuth0()
-  // const navigate = useNavigate()
+  const navigate = useNavigate()
 
   return useMutation({
     mutationKey: ['checkJournalEntry'],
@@ -92,7 +92,7 @@ export const useCheckJournalEntry = () => {
         .set('Authorization', `Bearer ${token}`)
 
       console.log('useCheckJournalEntry: ', res.body)
-      // navigate('/story-differences', { state: { response: res.body } })
+      navigate('/journal-feedback', { state: { response: res.body } })
       // return res.body
     },
     onSuccess: () => {},
