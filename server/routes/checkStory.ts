@@ -123,7 +123,7 @@ router.post('/', checkJwt, async (req: JwtRequest, res) => {
                       },
                       gender: {
                         type: 'string',
-                        definition:
+                        description:
                           "gender is only for nouns, otherwise value should be ''",
                       },
                       definition: {

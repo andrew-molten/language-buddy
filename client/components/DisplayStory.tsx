@@ -4,6 +4,7 @@ interface Props {
   data: StoryData
 }
 function DisplayStory({ data }: Props) {
+  console.log(data)
   return (
     <>
       <div className="card-container history-card">

@@ -3,6 +3,7 @@ import request from 'superagent'
 import type { Stories } from '../../models/stories'
 import { useNavigate } from 'react-router-dom'
 import { useAuth0 } from '@auth0/auth0-react'
+import { JournalEntryCheck } from '../../models/journal'
 
 const rootUrl = '/api/v1'
 
@@ -66,5 +67,34 @@ export const useVocabulary = () => {
 
       return res.body
     },
+  })
+}
+
+export const useCheckJournalEntry = () => {
+  const { getAccessTokenSilently } = useAuth0()
+  const navigate = useNavigate()
+
+  return useMutation({
+    mutationKey: ['checkJournalEntry'],
+    mutationFn: async ({
+      journalEntry,
+      nativeLanguage,
+      learningLanguage,
+    }: JournalEntryCheck) => {
+      const token = await getAccessTokenSilently()
+      const res = await request
+        .post(`${rootUrl}/check-journal-entry`)
+        .send({
+          journalEntry,
+          nativeLanguage,
+          learningLanguage,
+        })
+        .set('Authorization', `Bearer ${token}`)
+
+      console.log('useCheckJournalEntry: ', res.body)
+      navigate('/journal-feedback', { state: { response: res.body } })
+      // return res.body
+    },
+    onSuccess: () => {},
   })
 }

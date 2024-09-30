@@ -11,12 +11,14 @@ import StoryHistory from './pages/StoryHistory'
 import Vocabulary from './pages/Vocabulary'
 import Dojo from './pages/Dojo'
 import Settings from './pages/Settings'
+import JournalFeedback from './pages/JournalFeedback'
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<App />}>
       <Route index element={<StoryChecker />} />
       <Route path="story-differences" element={<StoryDifference />} />
+      <Route path="journal-feedback" element={<JournalFeedback />} />
       <Route path="story-history" element={<StoryHistory />} />
       <Route path="vocabulary" element={<Vocabulary />} />
       <Route path="dojo" element={<Dojo />} />

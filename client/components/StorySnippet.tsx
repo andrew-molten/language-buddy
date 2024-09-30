@@ -8,7 +8,7 @@ interface Props {
 
 function StorySnippet({ data }: Props) {
   const [clicked, setClicked] = useState(false)
-  const storyOneSnippet = data.story_one.split(' ').slice(0, 12).join(' ')
+  const storyOneSnippet = data.story_one?.split(' ').slice(0, 12).join(' ')
   const storyTranslated = data.story_translated
     .split(' ')
     .slice(0, 10)
