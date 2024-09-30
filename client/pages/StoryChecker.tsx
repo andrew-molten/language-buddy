@@ -3,22 +3,25 @@ import TwoStories from './TwoStories.tsx'
 import Journal from './Journal.tsx'
 
 function StoryChecker() {
-  const [currentMode, setCurrentMode] = useState('Journal')
+  const [mode, setMode] = useState({ current: 'Journal', next: 'Checker' })
 
   const handleModeChange = function () {
-    if (currentMode === 'Journal') {
-      setCurrentMode('Checker')
+    if (mode.current === 'Journal') {
+      setMode({ current: 'Story Checker', next: 'Journal' })
     } else {
-      setCurrentMode('Journal')
+      setMode({ current: 'Journal', next: 'Story Checker' })
     }
   }
 
   return (
     <div>
       <div>
-        <button onClick={handleModeChange}>{`${currentMode} mode`}</button>
+        <button
+          className="switch-btn"
+          onClick={handleModeChange}
+        >{`< ${mode.next}`}</button>
       </div>
-      {currentMode === 'Journal' ? <Journal /> : <TwoStories />}
+      {mode.current === 'Journal' ? <Journal /> : <TwoStories />}
     </div>
   )
 }

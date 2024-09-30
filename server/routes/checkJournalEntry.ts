@@ -122,7 +122,7 @@ router.post('/', checkJwt, async (req: JwtRequest, res) => {
                 wordsToAddToVocabulary: {
                   type: 'array',
                   description:
-                    'A list of words that I need to learn to use. Do not include any words I used correctly',
+                    'A list of words that I need to learn to use based on what I wrote. Do not include any words I used correctly. Leave array empty if there are none to add',
                   items: {
                     type: 'object',
                     properties: {
