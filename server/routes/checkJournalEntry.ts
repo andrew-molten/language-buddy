@@ -42,7 +42,7 @@ router.post('/', checkJwt, async (req: JwtRequest, res) => {
           {
             role: 'user',
             content: `
-    Here is a journal entry, I've tried my best to write it in ${learningLanguage} which I am learning so defaulted to ${nativeLanguage} (my native language) when needed. Please analyze it and give me a correct translation in both languages, and some feedback.
+    Here is a journal entry, I've tried my best to write it in ${learningLanguage} which I am learning so defaulted to ${nativeLanguage} (my native language) when needed. Please analyze it and give me a correct translation in both languages, and some feedback..
 
     Journal entry: ${journalEntry}`,
           },
